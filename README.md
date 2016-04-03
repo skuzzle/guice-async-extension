@@ -4,7 +4,7 @@
 
 Execute arbitrary methods asynchronously by simply putting an `@Async` annotation on them.
 
-Sample usage:
+### Sample usage:
 
 First, enable Asynchronous Method support in any of your modules:
 
@@ -24,7 +24,7 @@ public class MyModule extends AbstractModule {
 Now, mark a method within any injected class to be executed asynchronously with the 
 default `ExecutorService`:
 
-```
+```java
 import de.skuzzle.inject.async.Async;
 
 public class MailService {
@@ -38,7 +38,7 @@ public class MailService {
 
 Now inject your service and call the method:
 
-```
+```java
 public class MailController {
 
     @Inject
@@ -51,12 +51,12 @@ public class MailController {
 }
 ```
 
-## Returning values
+### Returning values
 
 You can also return values that have been calculated asynchronously by giving your method
 a `Future` return type:
 
-```
+```java
 import de.skuzzle.inject.async.Async;
 import de.skuzzle.inject.async.Futures;
 
@@ -70,13 +70,13 @@ public class MailService {
 }
 ```
 
-## Defining an `ExecutorService` to use
+### Defining an `ExecutorService` to use
 
 By default, all `@Async` methods are executed by a `CachedExecutorService`. It is easy 
 to customize by providing the `Key` that the `Injector` will use to look up the 
 `ExecutorService` instance:
 
-```
+```java
 public class MyModule extends AbstractModule {
 
     @Provides
@@ -95,7 +95,7 @@ public class MyModule extends AbstractModule {
 
 Use a custom `ExecutorService`:
 
-```
+```java
 import de.skuzzle.inject.async.Executor;
 
 public class MailService {
@@ -115,7 +115,7 @@ public class MailService {
 }
 ```
 
-## Exceptions
+### Exceptions
 
 All exceptions that are thrown by a method that is executed asynchronously are delegated
 to the thread's `UncaughtExceptionHandler`.

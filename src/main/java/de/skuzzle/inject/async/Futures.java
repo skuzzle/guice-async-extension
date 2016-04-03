@@ -34,7 +34,7 @@ public final class Futures {
      *          Future and create an actual Future object by submitting the
      *          method invocation to an {@link ExecutorService}.
      */
-    public static <T> Future<T> wrap(T obj) {
+    public static <T> Future<T> delegate(T obj) {
         return new Future<T>() {
 
             @Override

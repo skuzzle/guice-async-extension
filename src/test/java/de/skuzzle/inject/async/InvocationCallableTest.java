@@ -25,7 +25,7 @@ public class InvocationCallableTest {
     @Test
     public void testProceed() throws Throwable {
         final String expected = "result";
-        when(this.invocation.proceed()).thenReturn(Futures.wrap(expected));
+        when(this.invocation.proceed()).thenReturn(Futures.delegate(expected));
         final Callable<?> callable = InvocationCallable.fromInvocation(this.invocation);
         final Object result = callable.call();
 

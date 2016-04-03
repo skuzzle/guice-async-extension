@@ -34,7 +34,7 @@ public class AsyncIntegrationTest {
         public Future<String> asyncMethodWithFutureReturnType() throws InterruptedException {
             final String result = "result";
             Thread.sleep(2000);
-            return Futures.wrap(result);
+            return Futures.delegate(result);
         }
     }
 

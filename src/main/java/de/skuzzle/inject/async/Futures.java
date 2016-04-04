@@ -1,10 +1,8 @@
 package de.skuzzle.inject.async;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.aopalliance.intercept.MethodInterceptor;
 
@@ -18,38 +16,40 @@ public final class Futures {
      * &#64;Async
      * public Future&lt;Integer&gt; calculateAsync() {
      *     final Integer result = doHeavyCalculation();
-     *     return Futures.wrap(result);
+     *     return Futures.delegate(result);
      * }
      * </pre>
      *
-     * The returned object only supports the {@link Future#get()} method which
-     * will return the object that has been passed as argument. All other
-     * methods will throw an exception.
+     * You should not use the returned dummy object for any other purpose than returning
+     * it from a method which is annotated with {@link Async}.
      *
      * @param <T> Type of the Object to return.
      * @param obj The Object to return.
      * @return The dummy object.
+     * @see Async
      * @apiNote The {@link MethodInterceptor} which handles the asynchronous
      *          invocations will extract the wrapped Object from this dummy
      *          Future and create an actual Future object by submitting the
-     *          method invocation to an {@link ExecutorService}.
+     *          method invocation to an {@link ExecutorService}. Thus, the dummy Object
+     *          created here will never leave the context of the method it is created in
+     *          (if you do not manually leak it to the outside).
      */
     public static <T> Future<T> delegate(T obj) {
         return new Future<T>() {
 
             @Override
             public boolean cancel(boolean mayInterruptIfRunning) {
-                throw new UnsupportedOperationException();
+                return false;
             }
 
             @Override
             public boolean isCancelled() {
-                throw new UnsupportedOperationException();
+                return false;
             }
 
             @Override
             public boolean isDone() {
-                throw new UnsupportedOperationException();
+                return true;
             }
 
             @Override
@@ -58,9 +58,8 @@ public final class Futures {
             }
 
             @Override
-            public T get(long timeout, TimeUnit unit) throws InterruptedException,
-                    ExecutionException, TimeoutException {
-                throw new UnsupportedOperationException();
+            public T get(long timeout, TimeUnit unit) {
+                return get();
             }
         };
     }

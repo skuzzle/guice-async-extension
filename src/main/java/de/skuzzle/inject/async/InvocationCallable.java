@@ -29,6 +29,8 @@ class InvocationCallable<T> implements Callable<T> {
     @Override
     public T call() throws Exception {
         try {
+            // As by the AsynchronousMethodInterceptor, the return type of the intercepted
+            // method is either a Future or void.
             final Object result = this.invocation.proceed();
             if (result instanceof Future<?>) {
                 return (T) ((Future<?>) result).get();

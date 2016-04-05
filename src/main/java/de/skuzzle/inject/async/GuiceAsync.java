@@ -26,13 +26,14 @@ import com.google.inject.Module;
  */
 public final class GuiceAsync {
 
+    private GuiceAsync() {
+        // hidden constructor
+    }
+
     public static void enableFor(Binder binder) {
         checkArgument(binder != null, "binder must not be null");
         final Module module = new AsyncModule();
         binder.install(module);
     }
 
-    private GuiceAsync() {
-        // hidden constructor
-    }
 }

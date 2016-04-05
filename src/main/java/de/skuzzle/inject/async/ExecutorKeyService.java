@@ -39,7 +39,7 @@ class ExecutorKeyService {
         final Key<? extends ExecutorService> key;
         if (bindingAnnotation == null && executorSpecified) {
             key = Key.get(type);
-        } else if (bindingAnnotation == null && !executorSpecified) {
+        } else if (bindingAnnotation == null) {
             key = DEFAULT_KEY;
         } else {
             key = Key.get(type, bindingAnnotation);

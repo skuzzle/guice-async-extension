@@ -35,7 +35,7 @@ class AsynchronousMethodInterceptor implements MethodInterceptor {
         return future;
     }
 
-    private void checkReturnType(Class<?> returnType) {
+    private static void checkReturnType(Class<?> returnType) {
         if (returnType != Void.class && returnType != Void.TYPE
                 && !Future.class.isAssignableFrom(returnType)) {
             throw new IllegalArgumentException(

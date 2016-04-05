@@ -16,14 +16,14 @@ import com.google.common.base.Throwables;
  */
 class InvocationCallable<T> implements Callable<T> {
 
-    public static Callable<?> fromInvocation(MethodInvocation invocation) {
-        return new InvocationCallable(invocation);
-    }
-
     private final MethodInvocation invocation;
 
     private InvocationCallable(MethodInvocation invocation) {
         this.invocation = invocation;
+    }
+
+    public static Callable<?> fromInvocation(MethodInvocation invocation) {
+        return new InvocationCallable(invocation);
     }
 
     @Override

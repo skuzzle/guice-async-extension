@@ -14,6 +14,10 @@ import org.aopalliance.intercept.MethodInterceptor;
  */
 public final class Futures {
 
+    private Futures() {
+        // hidden ctor
+    }
+
     /**
      * Returns a dummy {@link Future} object to be used to return a value in
      * methods that are annotated with {@link Async}. Sample usage:
@@ -69,9 +73,5 @@ public final class Futures {
                 return get();
             }
         };
-    }
-
-    private Futures() {
-        // hidden ctor
     }
 }

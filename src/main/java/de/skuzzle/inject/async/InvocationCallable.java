@@ -22,7 +22,7 @@ class InvocationCallable<T> implements Callable<T> {
         this.invocation = invocation;
     }
 
-    public static Callable<?> fromInvocation(MethodInvocation invocation) {
+    static Callable<?> fromInvocation(MethodInvocation invocation) {
         return new InvocationCallable(invocation);
     }
 

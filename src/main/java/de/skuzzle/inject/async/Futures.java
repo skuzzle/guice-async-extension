@@ -6,6 +6,12 @@ import java.util.concurrent.TimeUnit;
 
 import org.aopalliance.intercept.MethodInterceptor;
 
+/**
+ * Utility to created dummy {@link Future} objects to use in methods annotated
+ * with {@link Async}.
+ *
+ * @author Simon Taddiken
+ */
 public final class Futures {
 
     /**
@@ -20,8 +26,8 @@ public final class Futures {
      * }
      * </pre>
      *
-     * You should not use the returned dummy object for any other purpose than returning
-     * it from a method which is annotated with {@link Async}.
+     * You should not use the returned dummy object for any other purpose than
+     * returning it from a method which is annotated with {@link Async}.
      *
      * @param <T> Type of the Object to return.
      * @param obj The Object to return.
@@ -30,9 +36,10 @@ public final class Futures {
      * @apiNote The {@link MethodInterceptor} which handles the asynchronous
      *          invocations will extract the wrapped Object from this dummy
      *          Future and create an actual Future object by submitting the
-     *          method invocation to an {@link ExecutorService}. Thus, the dummy Object
-     *          created here will never leave the context of the method it is created in
-     *          (if you do not manually leak it to the outside).
+     *          method invocation to an {@link ExecutorService}. Thus, the dummy
+     *          Object created here will never leave the context of the method
+     *          it is created in (if you do not manually leak it to the
+     *          outside).
      */
     public static <T> Future<T> delegate(T obj) {
         return new Future<T>() {

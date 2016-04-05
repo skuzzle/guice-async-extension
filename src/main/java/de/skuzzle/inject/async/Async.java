@@ -55,8 +55,26 @@ import com.google.inject.Key;
  * <p>
  * If you leave out the {@link Executor} part, the class defaults to
  * {@code ExecutorService.class}. If you leave out the binding annotation, that
- * created key will not have an annotation part.
+ * created key will not have an annotation part. If you put neither a binding annotation
+ * nor an Executor class on the method, a default ExecutorService is used that is created
+ * internally. You should make no assumptions about the actual behavior of that service
+ * and it is highly recommended to bind and specify an ExecutorService yourself.
  * </p>
+ *
+ * <pre>
+ * public class MyModule extends AbstractModule {
+ *     &#64Provides
+ *     public ThreadFactory provideMyThreadFactory() {
+ *         return new ThreadFactoryBuilder()....build(); // class from Google guava
+ *     }
+ *
+ *     &#64;Provides
+ *     &#64;Named("mainThreadPool")
+ *     public ExecutorService provideMyExecutor(ThreadFactory threadFactory) {
+ *         return Executors.newFixedThreadPool(4, threadFactory);
+ *     }
+ * }
+ * </pre>
  *
  * <h2>Returning values</h2> You can return a value from an asynchronous method
  * by returning a {@link Future} object. To implement such a method, you can

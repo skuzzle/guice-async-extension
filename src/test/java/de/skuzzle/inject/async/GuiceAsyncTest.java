@@ -16,4 +16,9 @@ public class GuiceAsyncTest {
         GuiceAsync.enableFor(binder);
         verify(binder).install(Mockito.isA(AsyncModule.class));
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testNullBinder() throws Exception {
+        GuiceAsync.enableFor(null);
+    }
 }

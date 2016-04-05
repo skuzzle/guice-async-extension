@@ -36,6 +36,12 @@ public class AsyncIntegrationTest {
             Thread.sleep(2000);
             return Futures.delegate(result);
         }
+
+        @Async
+        public void asyncMethodForDefaultExecutor(String[] arg) throws InterruptedException {
+            arg[0] = "result";
+            Thread.sleep(2000);
+        }
     }
 
     public static class TestModule extends AbstractModule {
@@ -64,6 +70,15 @@ public class AsyncIntegrationTest {
     public void testVoid() throws Exception {
         final String[] arg = new String[1];
         this.injectMe.asyncMethodWithVoidReturnType(arg);
+        assertNull(arg[0]);
+        Thread.sleep(3000);
+        assertEquals("result", arg[0]);
+    }
+
+    @Test
+    public void testVoidWithDefaultExecutor() throws Exception {
+        final String[] arg = new String[1];
+        this.injectMe.asyncMethodForDefaultExecutor(arg);
         assertNull(arg[0]);
         Thread.sleep(3000);
         assertEquals("result", arg[0]);

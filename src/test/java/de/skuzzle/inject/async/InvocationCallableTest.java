@@ -1,9 +1,12 @@
 package de.skuzzle.inject.async;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.util.concurrent.Callable;
 
 import org.aopalliance.intercept.MethodInvocation;
@@ -44,5 +47,13 @@ public class InvocationCallableTest {
         doThrow(Exception.class).when(this.invocation).proceed();
         final Callable<?> callable = InvocationCallable.fromInvocation(this.invocation);
         callable.call();
+    }
+
+    @Test
+    public void testPrivateCtor() throws Exception {
+        final Constructor<GuiceAsync> ctor = GuiceAsync.class.getDeclaredConstructor();
+        ctor.setAccessible(true);
+        ctor.newInstance();
+        assertTrue(Modifier.isPrivate(ctor.getModifiers()));
     }
 }

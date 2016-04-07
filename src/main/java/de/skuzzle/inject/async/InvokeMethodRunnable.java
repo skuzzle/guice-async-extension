@@ -6,7 +6,7 @@ import org.aopalliance.intercept.MethodInvocation;
 
 import com.google.common.base.Throwables;
 
-public class InvokeMethodRunnable implements Runnable {
+class InvokeMethodRunnable implements Runnable {
 
     private final MethodInvocation invocation;
 
@@ -14,7 +14,7 @@ public class InvokeMethodRunnable implements Runnable {
         this.invocation = invocation;
     }
 
-    public static Runnable of(MethodInvocation invocation) {
+    static Runnable of(MethodInvocation invocation) {
         checkArgument(invocation != null);
         return new InvokeMethodRunnable(invocation);
     }
@@ -24,8 +24,7 @@ public class InvokeMethodRunnable implements Runnable {
         try {
             this.invocation.proceed();
         } catch (final Throwable e) {
-            Throwables.propagateIfPossible(e);
-            throw new RuntimeException("Unexpected error", e);
+            Throwables.propagate(e);
         }
     }
 }

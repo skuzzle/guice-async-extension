@@ -10,6 +10,7 @@ import com.google.inject.internal.Annotations;
 import com.google.inject.internal.Errors;
 
 import de.skuzzle.inject.async.annotation.Executor;
+import de.skuzzle.inject.async.annotation.Scheduler;
 
 class ExecutorKeyService {
 
@@ -41,20 +42,20 @@ class ExecutorKeyService {
                 DEFAULT_EXECUTOR_KEY, executorSpecified);
     }
 
-//    public Key<? extends ScheduledExecutorService> getSchedulerKey(Method method) {
-//        final Class<? extends ScheduledExecutorService> type;
-//        boolean executorSpecified = false;
-//        if (method.isAnnotationPresent(Scheduler.class)) {
-//            type = method.getAnnotation(Scheduler.class).value();
-//            executorSpecified = true;
-//        } else {
-//            type = ScheduledExecutorService.class;
-//        }
-//        return (Key<? extends ScheduledExecutorService>) createKey(type, method,
-//                DEFAULT_SCHEDULER_KEY, executorSpecified);
-//    }
+    public Key<? extends ScheduledExecutorService> getSchedulerKey(Method method) {
+        final Class<? extends ScheduledExecutorService> type;
+        boolean executorSpecified = false;
+        if (method.isAnnotationPresent(Scheduler.class)) {
+            type = method.getAnnotation(Scheduler.class).value();
+            executorSpecified = true;
+        } else {
+            type = ScheduledExecutorService.class;
+        }
+        return (Key<? extends ScheduledExecutorService>) createKey(type, method,
+                DEFAULT_SCHEDULER_KEY, executorSpecified);
+    }
 
-    private Key<?> createKey(
+    private static Key<?> createKey(
             Class<?> type,
             Method method,
             Key<?> defaultKey,

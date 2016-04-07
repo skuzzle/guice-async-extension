@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.aopalliance.intercept.MethodInterceptor;
 
+import de.skuzzle.inject.async.annotation.Async;
+
 /**
  * Utility to created dummy {@link Future} objects to use in methods annotated
  * with {@link Async}.

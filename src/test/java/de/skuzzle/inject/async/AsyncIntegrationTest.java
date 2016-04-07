@@ -18,6 +18,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Provides;
 
+import de.skuzzle.inject.async.annotation.Async;
+
 public class AsyncIntegrationTest {
 
     public static class InjectMe {

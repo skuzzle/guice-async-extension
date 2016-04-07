@@ -14,7 +14,7 @@ import com.google.common.base.Throwables;
  * @author Simon Taddiken
  * @param <T> The return type of the method invocation.
  */
-class InvocationCallable<T> implements Callable<T> {
+public class InvocationCallable<T> implements Callable<T> {
 
     private final MethodInvocation invocation;
 
@@ -22,11 +22,13 @@ class InvocationCallable<T> implements Callable<T> {
         this.invocation = invocation;
     }
 
-    static Callable<?> fromInvocation(MethodInvocation invocation) {
+    @SuppressWarnings("rawtypes")
+    public static Callable<?> fromInvocation(MethodInvocation invocation) {
         return new InvocationCallable(invocation);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T call() throws Exception {
         try {
             // As by the AsynchronousMethodInterceptor, the return type of the intercepted
@@ -34,6 +36,10 @@ class InvocationCallable<T> implements Callable<T> {
             final Object result = this.invocation.proceed();
             if (result instanceof Future<?>) {
                 return (T) ((Future<?>) result).get();
+            } else if (result != null) {
+                throw new IllegalStateException(
+                        "Wrapped invocation is expected to either " +
+                        "return null or an instance of Future");
             }
             return null;
         } catch (final Throwable e) {

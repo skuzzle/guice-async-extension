@@ -5,6 +5,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
+import de.skuzzle.inject.async.annotation.Async;
+
 /**
  * Entry point for enabling asynchronous method support within your guice
  * application.

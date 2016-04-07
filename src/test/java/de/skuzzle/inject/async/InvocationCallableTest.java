@@ -16,6 +16,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import de.skuzzle.inject.async.Futures;
+import de.skuzzle.inject.async.GuiceAsync;
+import de.skuzzle.inject.async.InvocationCallable;
+
 @RunWith(MockitoJUnitRunner.class)
 public class InvocationCallableTest {
 
@@ -55,5 +59,12 @@ public class InvocationCallableTest {
         ctor.setAccessible(true);
         ctor.newInstance();
         assertTrue(Modifier.isPrivate(ctor.getModifiers()));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testUnsupportedType() throws Throwable {
+        when(this.invocation.proceed()).thenReturn(new Object()); // any not null object
+        final Callable<?> callable = InvocationCallable.fromInvocation(this.invocation);
+        callable.call();
     }
 }

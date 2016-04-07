@@ -25,10 +25,6 @@ class AsyncModule extends AbstractModule {
 
         bindInterceptor(Matchers.any(), Matchers.annotatedWith(Async.class),
                 asyncInterceptor);
-
-        // Scheduled related
-
-        bind(AnnotationHelper.class).in(Singleton.class);
     }
 
     @Provides

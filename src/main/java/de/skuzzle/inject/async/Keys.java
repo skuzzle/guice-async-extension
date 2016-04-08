@@ -12,24 +12,29 @@ import com.google.inject.internal.Errors;
 import de.skuzzle.inject.async.annotation.Executor;
 import de.skuzzle.inject.async.annotation.Scheduler;
 
-class ExecutorKeyService {
+final class Keys {
 
     /** Fall back key if the user did not bind any executor service */
     private static final Key<? extends ExecutorService> DEFAULT_EXECUTOR_KEY =
-            Key.get(ExecutorService.class, DefaultExecutor.class);
+            Key.get(ExecutorService.class, DefaultBinding.class);
 
     /** Fall back key if the user did not bind any scheduled executor service */
     private static final Key<? extends ScheduledExecutorService> DEFAULT_SCHEDULER_KEY =
-            Key.get(ScheduledExecutorService.class, DefaultExecutor.class);
+            Key.get(ScheduledExecutorService.class, DefaultBinding.class);
+
+    private Keys() {
+        // hidden ctor
+    }
 
     /**
-     * Finds the key of the {@link ExecutorService} to use to execute the given method.
+     * Finds the key of the {@link ExecutorService} to use to execute the given
+     * method.
      *
      * @param method The method to find the key for.
      * @return The ExecutorService key.
      */
     @SuppressWarnings("unchecked")
-    public Key<? extends ExecutorService> getExecutorKey(Method method) {
+    public static Key<? extends ExecutorService> getExecutorKey(Method method) {
         final Class<? extends ExecutorService> type;
         boolean executorSpecified = false;
         if (method.isAnnotationPresent(Executor.class)) {
@@ -42,7 +47,15 @@ class ExecutorKeyService {
                 DEFAULT_EXECUTOR_KEY, executorSpecified);
     }
 
-    public Key<? extends ScheduledExecutorService> getSchedulerKey(Method method) {
+    /**
+     * Finds the key of the {@link ScheduledExecutorService} to use to execute
+     * the given method.
+     *
+     * @param method the method to find the key for.
+     * @return The ScheduledExecutorService key.
+     */
+    @SuppressWarnings("unchecked")
+    public static Key<? extends ScheduledExecutorService> getSchedulerKey(Method method) {
         final Class<? extends ScheduledExecutorService> type;
         boolean executorSpecified = false;
         if (method.isAnnotationPresent(Scheduler.class)) {

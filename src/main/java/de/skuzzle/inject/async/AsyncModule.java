@@ -2,6 +2,7 @@ package de.skuzzle.inject.async;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 
 import javax.inject.Singleton;
@@ -19,26 +20,38 @@ class AsyncModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(ExecutorKeyService.class).in(Singleton.class);
         final MethodInterceptor asyncInterceptor = new AsynchronousMethodInterceptor();
         requestInjection(asyncInterceptor);
 
         bindInterceptor(Matchers.any(), Matchers.annotatedWith(Async.class),
                 asyncInterceptor);
+
+        bind(TriggerStrategyRegistry.class)
+                .to(SpiTriggerStrategyRegistryImpl.class)
+                .in(Singleton.class);
+        bindListener(Matchers.any(), new SchedulerTypeListener());
     }
 
     @Provides
-    @DefaultExecutor
+    @DefaultBinding
     ThreadFactory provideThreadFactory() {
         return new ThreadFactoryBuilder()
                 .setNameFormat("guice-async-%d").build();
     }
 
     @Provides
-    @DefaultExecutor
+    @DefaultBinding
     ExecutorService provideDefaultExecutor(
-            @DefaultExecutor ThreadFactory threadFactory) {
+            @DefaultBinding ThreadFactory threadFactory) {
         return Executors.newCachedThreadPool(threadFactory);
+    }
+
+    @Provides
+    @DefaultBinding
+    ScheduledExecutorService provideScheduler(
+            @DefaultBinding ThreadFactory threadFactory) {
+        final int cores = Runtime.getRuntime().availableProcessors();
+        return Executors.newScheduledThreadPool(cores, threadFactory);
     }
 
 }

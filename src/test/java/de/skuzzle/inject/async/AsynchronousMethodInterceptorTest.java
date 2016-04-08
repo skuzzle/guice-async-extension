@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
@@ -27,8 +26,6 @@ import com.google.inject.Key;
 @RunWith(MockitoJUnitRunner.class)
 public class AsynchronousMethodInterceptorTest {
 
-    @Spy
-    private ExecutorKeyService executorKeyService;
     @Mock
     private Injector injector;
     @InjectMocks

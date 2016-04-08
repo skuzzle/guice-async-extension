@@ -24,7 +24,7 @@ class InvokeMethodRunnable implements Runnable {
         try {
             this.invocation.proceed();
         } catch (final Throwable e) {
-            Throwables.propagate(e);
+            throw Throwables.propagate(e);
         }
     }
 }

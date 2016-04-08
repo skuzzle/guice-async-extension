@@ -1,15 +1,17 @@
 package de.skuzzle.inject.async;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Named;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import com.google.inject.Key;
@@ -17,14 +19,8 @@ import com.google.inject.Key;
 import de.skuzzle.inject.async.annotation.Executor;
 import de.skuzzle.inject.async.annotation.Scheduler;
 
-public class ExecutorKeyServiceTest {
+public class KeysTest {
 
-    private ExecutorKeyService subject;
-
-    @Before
-    public void setUp() throws Exception {
-        this.subject = new ExecutorKeyService();
-    }
 
     public void methodWithNoAnnotations() {
 
@@ -63,15 +59,15 @@ public class ExecutorKeyServiceTest {
     @Test
     public void testFallBackDefault() throws Exception {
         final Method method = getMethod("methodWithNoAnnotations");
-        final Key<? extends ExecutorService> key = this.subject.getExecutorKey(method);
+        final Key<? extends ExecutorService> key = Keys.getExecutorKey(method);
         assertType(ExecutorService.class, key);
-        assertBindingAnnotation(DefaultExecutor.class, key);
+        assertBindingAnnotation(DefaultBinding.class, key);
     }
 
     @Test
     public void testBindingAnnotationOnlyExecutor() throws Exception {
         final Method method = getMethod("methodWithBindingAnnoation");
-        final Key<? extends ExecutorService> key = this.subject.getExecutorKey(method);
+        final Key<? extends ExecutorService> key = Keys.getExecutorKey(method);
         assertType(ExecutorService.class, key);
         assertBindingAnnotation(com.google.inject.name.Named.class, key);
     }
@@ -79,7 +75,7 @@ public class ExecutorKeyServiceTest {
     @Test
     public void testBindingAnnotationOnlyScheduler() throws Exception {
         final Method method = getMethod("methodWithBindingAnnoation");
-        final Key<? extends ScheduledExecutorService> key = this.subject.getSchedulerKey(
+        final Key<? extends ScheduledExecutorService> key = Keys.getSchedulerKey(
                 method);
         assertType(ScheduledExecutorService.class, key);
         assertBindingAnnotation(com.google.inject.name.Named.class, key);
@@ -88,7 +84,7 @@ public class ExecutorKeyServiceTest {
     @Test
     public void testTypeAndBindingAnnotationExecutor() throws Exception {
         final Method method = getMethod("methodWithBindingAndType");
-        final Key<? extends ExecutorService> key = this.subject.getExecutorKey(method);
+        final Key<? extends ExecutorService> key = Keys.getExecutorKey(method);
         assertType(ScheduledExecutorService.class, key);
         assertBindingAnnotation(com.google.inject.name.Named.class, key);
     }
@@ -96,7 +92,7 @@ public class ExecutorKeyServiceTest {
     @Test
     public void testTypeAndBindingAnnotationScheduler() throws Exception {
         final Method method = getMethod("methodWithBindingAndType");
-        final Key<? extends ScheduledExecutorService> key = this.subject.getSchedulerKey(
+        final Key<? extends ScheduledExecutorService> key = Keys.getSchedulerKey(
                 method);
         assertType(ScheduledExecutorService.class, key);
         assertBindingAnnotation(com.google.inject.name.Named.class, key);
@@ -105,7 +101,7 @@ public class ExecutorKeyServiceTest {
     @Test
     public void testTypeOnlyExecutor() throws Exception {
         final Method method = getMethod("methodWithExecutorOnly");
-        final Key<? extends ExecutorService> key = this.subject.getExecutorKey(method);
+        final Key<? extends ExecutorService> key = Keys.getExecutorKey(method);
         assertType(ScheduledExecutorService.class, key);
         assertBindingAnnotation(null, key);
     }
@@ -113,9 +109,17 @@ public class ExecutorKeyServiceTest {
     @Test
     public void testTypeOnlyScheduler() throws Exception {
         final Method method = getMethod("methodWithExecutorOnly");
-        final Key<? extends ScheduledExecutorService> key = this.subject.getSchedulerKey(
+        final Key<? extends ScheduledExecutorService> key = Keys.getSchedulerKey(
                 method);
         assertType(ScheduledExecutorService.class, key);
         assertBindingAnnotation(null, key);
+    }
+
+    @Test
+    public void testPrivateCtor() throws Exception {
+        final Constructor<Keys> ctor = Keys.class.getDeclaredConstructor();
+        ctor.setAccessible(true);
+        ctor.newInstance();
+        assertTrue(Modifier.isPrivate(ctor.getModifiers()));
     }
 }

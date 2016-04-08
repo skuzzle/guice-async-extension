@@ -15,8 +15,6 @@ import com.google.inject.Key;
 class AsynchronousMethodInterceptor implements MethodInterceptor {
 
     @Inject
-    private ExecutorKeyService executorKeyService;
-    @Inject
     private Injector injector;
 
     @Override
@@ -24,7 +22,7 @@ class AsynchronousMethodInterceptor implements MethodInterceptor {
         final Method method = invocation.getMethod();
         checkReturnType(method.getReturnType());
 
-        final Key<? extends ExecutorService> key = this.executorKeyService.getExecutorKey(method);
+        final Key<? extends ExecutorService> key = Keys.getExecutorKey(method);
         final ExecutorService executor = this.injector.getInstance(key);
         final Future<?> future = executor.submit(InvocationCallable
                 .fromInvocation(invocation));

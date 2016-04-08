@@ -6,25 +6,29 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 
 import de.skuzzle.inject.async.annotation.Async;
+import de.skuzzle.inject.async.annotation.Scheduled;
 
 /**
  * Entry point for enabling asynchronous method support within your guice
  * application.
  *
  * <pre>
- *
  * public class MyModule extends AbstractModule {
  *
- * &#64;Override public void configure() { GuiceAsync.enableFor(binder()); //
- * ... } }
+ *     &#64;Override
+ *     public void configure() {
+ *         GuiceAsync.enableFor(binder());
+ *         // ...
+ *     }
+ * }
+ * </pre>
  *
- * <pre>
- *
- * Please see the JavaDoc of the {@link Async} annotation for further usage
- * information.
+ * Please see the JavaDoc of the {@link Async} and {@link Scheduled} annotation for
+ * further usage information.
  *
  * @author Simon Taddiken
  * @see Async
+ * @see Scheduled
  */
 public final class GuiceAsync {
 

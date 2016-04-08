@@ -20,6 +20,6 @@ import com.google.inject.BindingAnnotation;
 @BindingAnnotation
 @Target({ FIELD, PARAMETER, METHOD })
 @Retention(RUNTIME)
-@interface DefaultExecutor {
+@interface DefaultBinding {
 
 }

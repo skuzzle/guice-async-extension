@@ -5,6 +5,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.lang.reflect.Method;
 import java.util.concurrent.ScheduledExecutorService;
 
+import javax.inject.Inject;
+
 import org.aopalliance.intercept.MethodInvocation;
 
 import com.cronutils.model.Cron;
@@ -19,16 +21,14 @@ import de.skuzzle.inject.async.annotation.CronTrigger;
 
 public class CronTriggerStrategy implements TriggerStrategy {
 
-    private final Injector injector;
+    @Inject
+    private Injector injector;
+
     private final CronDefinition cronDefinition;
-    private final CronParser cronParser;
 
-    public CronTriggerStrategy(Injector injector) {
-        this.injector = injector;
-
+    public CronTriggerStrategy() {
         this.cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(
                 CronType.QUARTZ);
-        this.cronParser = new CronParser(this.cronDefinition);
     }
 
     @Override
@@ -41,7 +41,9 @@ public class CronTriggerStrategy implements TriggerStrategy {
         final CronTrigger trigger = method.getAnnotation(getTriggerType());
         checkArgument(trigger != null, "Method '%s' not annotated with @CronTrigger",
                 method);
-        final Cron cron = this.cronParser.parse(trigger.value());
+
+        final CronParser parser = new CronParser(this.cronDefinition);
+        final Cron cron = parser.parse(trigger.value());
         final ExecutionTime execTime = ExecutionTime.forCron(cron);
         final MethodInvocation invocation = InjectedMethodInvocation.forMethod(method,
                 self, this.injector);

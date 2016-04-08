@@ -11,6 +11,14 @@ class MethodVisitor {
         // hidden ctor
     }
 
+    /**
+     * Starting at given type, traverses all super types (except Object.class)
+     * and passes each encountered method (including private and static ones) to
+     * the given consumer.
+     *
+     * @param type The type to start traversal.
+     * @param action Action to execute for each encountered method.
+     */
     public static void forEachMemberMethod(Class<?> type, Consumer<Method> action) {
         if (type == Object.class) {
             return;

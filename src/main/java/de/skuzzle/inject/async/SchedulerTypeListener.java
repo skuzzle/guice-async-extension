@@ -5,10 +5,11 @@ import java.lang.reflect.Method;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 
+import javax.inject.Provider;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;

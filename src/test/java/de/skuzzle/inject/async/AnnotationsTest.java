@@ -5,7 +5,9 @@ import static org.junit.Assert.assertTrue;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -75,5 +77,13 @@ public class AnnotationsTest {
     public void testFindTriggerAnnotationNoAnnotation() throws Exception {
         final Method method = getClass().getMethod("withoutTrigger");
         this.subject.findTriggerAnnotation(method);
+    }
+
+    @Test
+    public void testPrivateCtor() throws Exception {
+        final Constructor<Annotations> ctor = Annotations.class.getDeclaredConstructor();
+        ctor.setAccessible(true);
+        ctor.newInstance();
+        assertTrue(Modifier.isPrivate(ctor.getModifiers()));
     }
 }

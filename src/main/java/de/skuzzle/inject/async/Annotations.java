@@ -5,7 +5,11 @@ import java.lang.reflect.Method;
 
 import de.skuzzle.inject.async.annotation.Trigger;
 
-class Annotations {
+final class Annotations {
+
+    private Annotations() {
+        // hidden ctor
+    }
 
     public static Annotation findTriggerAnnotation(Method method) {
         Annotation result = null;

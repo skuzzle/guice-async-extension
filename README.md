@@ -2,12 +2,32 @@
 [![Coverage Status](https://coveralls.io/repos/skuzzle/guice-async-extension/badge.svg?branch=master&service=github)](https://coveralls.io/github/skuzzle/guice-async-extension?branch=master)
 # Guice Asynchronous Methods
 
-Execute arbitrary methods asynchronously by simply putting an `@Async` annotation on them.
+Execute arbitrary methods asynchronously or periodically by marking them with an 
+annotation. Quickstart sample:
 
-### Sample usage:
+```java
+public class MyService {
 
-First, enable Asynchronous Method support in any of your modules:
+    @Scheduled
+    @CronTrigger("0 0 0 * * *")
+    public void executePeriodic(SomeService injectedParameter) {
+        // ...
+    }
+    
+    @Async
+    public void executeAsynchronously(SomeService injectedParameter) {
+    }
+    
+    @Async
+    public Future<Integer> asynchronousWithResult() {
+        return Futures.delegate(1337);
+    }
+}
+```
 
+## Enable asynchronous support
+In order to use the Annotations shown in the quickstart example, you must enable 
+asynchronous support for your injector within a `Module`:
 ```java
 import de.skuzzle.inject.async.GuiceAsync;
 
@@ -21,101 +41,88 @@ public class MyModule extends AbstractModule {
 }
 ```
 
-Now, mark a method within any injected class to be executed asynchronously with the 
-default `ExecutorService`:
+## Scheduled execution
+A method can be marked with `@Scheduled` to have its execution scheduled at a certain 
+periodicity. The periodicity is specified by an additional _trigger annotation_. For 
+example you can use a `@CronTrigger` for defining complex scheduling plans:
 
 ```java
-import de.skuzzle.inject.async.Async;
+@Scheduled
+@Crontrigger("0 0 12 ? * WED") // execute every wednesday at 12pm
+public void scheduleMethod() {
+    // do something
+}
+```
+A method is scheduled according to its trigger annotation by the time an object of its 
+containing type is constructed by the `Injector`.
 
-public class MailService {
+### Parameter injection
+Scheduled methods can have parameters. They will be injected prior to each invocation.
 
-    @Async
-    public void sendMail(MailOptions options) {
-        // all the logic
-    }
+```java
+@Scheduled
+@CronTrigger("...")
+public void methodWithDependencies(@Named("test") SomeService someService) {
+    //...
 }
 ```
 
-Now inject your service and call the method:
+## Asynchronous execution
+A method can be marked with `@Async` to have every call to it intercepted and executed in
+a different thread:
 
 ```java
-public class MailController {
-
-    @Inject
-    private MailService mailService;
-    
-    public void sendMail() {
-        final MailOptions options = prepareOptions();
-        mailService.sendMail(options); // returns immediately
-    }
+@Async
+public void doParallel() {
+    // do something
 }
 ```
 
 ### Returning values
-
-You can also return values that have been calculated asynchronously by giving your method
-a `Future` return type:
+Asynchronous methods can return value by wrapping them in a `Future` object.
 
 ```java
-import de.skuzzle.inject.async.Async;
-import de.skuzzle.inject.async.Futures;
-
-public class MailService {
-
-    @Async
-    public Future<MailResult> sendMail(MailOptions options) {
-        final MailResult result = actuallySendTheMail(options);
-        return Futures.delegate(result);
-    }
+@Async
+public Future<Integer> compute(int n) {
+    final int result = doActualCompute();
+    return Futures.delegate(result);
 }
 ```
 
-### Defining an `ExecutorService` to use
 
-By default, all `@Async` methods are executed by a `CachedExecutorService`. It is easy 
-to customize by providing the `Key` that the `Injector` will use to look up the 
-`ExecutorService` instance:
-
-```java
-public class MyModule extends AbstractModule {
-
-    @Provides
-    @Named("sendMailThread")
-    public ExecutorService provideExecutor() {
-        return Executors.newSingleThreadExecutor();
-    }
-
-    @Provides
-    @Named("firstVerySpecialCustomExecutor")
-    public MyVerySpecialCustomExecutor provideCustomExecutor() {
-        return new MyVerySpecialCustomExecutor();
-    }
-}
-```
-
-Use a custom `ExecutorService`:
+## Specifying the executor or scheduler to use.
+Methods are called asynchronously using an `ExecutorService` and scheduled using a 
+`ScheduledExecutorService`. For each annotated method you can define a `Key` that is 
+used to look up the actual implementation. In case of asynchronous methods, use the 
+`@Executor` annotation for specifying the Executor type. For scheduled methods, use
+`@Scheduler` instead. Optionally you can put a _binding annotation_ to further refine the 
+Key.
 
 ```java
-import de.skuzzle.inject.async.Executor;
-
-public class MailService {
-
     @Async
     @Executor(MyVerySpecialCustomExecutor.class)
     @Named("firstVerySpecialCustomExecutor")
     public void sendMail(MailOptions options) {
-        // all the logic
+        // Executor will be retrieved using Key.get(MyVerySpecialCustomExecutor.class, 
+        //     Names.named("firstVerySpecialCustomExecutor"))
     }
     
     @Async
     @Named("sendMailThread")
     public void sendMailAlternatively(MailOptions options) {
-        // all the logic
+        // Executor will be retrieved using Key.get(ExecutorService.class, 
+        //     Names.named("firstVerySpecialCustomExecutor"))
+    }
+    
+    @Scheduled
+    @CronTrigger("...")
+    @Scheduler(MySchedulerImplementation.class)
+    public void scheduledMethod() {
     }
 }
 ```
 
-### Exceptions
+## Exceptions
 
 All exceptions that are thrown by a method that is executed asynchronously are delegated
 to the thread's `UncaughtExceptionHandler`.

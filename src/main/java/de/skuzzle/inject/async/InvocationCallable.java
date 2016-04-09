@@ -14,7 +14,7 @@ import com.google.common.base.Throwables;
  * @author Simon Taddiken
  * @param <T> The return type of the method invocation.
  */
-public class InvocationCallable<T> implements Callable<T> {
+class InvocationCallable<T> implements Callable<T> {
 
     private final MethodInvocation invocation;
 
@@ -23,7 +23,7 @@ public class InvocationCallable<T> implements Callable<T> {
     }
 
     @SuppressWarnings("rawtypes")
-    public static Callable<?> fromInvocation(MethodInvocation invocation) {
+    static Callable<?> fromInvocation(MethodInvocation invocation) {
         return new InvocationCallable(invocation);
     }
 

@@ -36,6 +36,15 @@ public enum SimpleScheduleType {
         }
     };
 
+    /**
+     * Schedules a {@link Runnable} according to this scheduling type.
+     *
+     * @param scheduler The scheduler to schedule the command with.
+     * @param command The command to schedule.
+     * @param initialDelay The initial delay.
+     * @param rate The scheduling rate.
+     * @param unit Time unit in which rate and delay are interpreted.
+     */
     public abstract void schedule(ScheduledExecutorService scheduler, Runnable command,
             long initialDelay, long rate, TimeUnit unit);
 }

@@ -11,7 +11,15 @@ final class Annotations {
         // hidden ctor
     }
 
-    public static Annotation findTriggerAnnotation(Method method) {
+    /**
+     * Searches the annotations of the provided method for an annotation type
+     * that itself is annotated with {@link Trigger}. An exception is thrown if
+     * the method does not have a unique Trigger annotation.
+     *
+     * @param method The method to search.
+     * @return The unique trigger annotation.
+     */
+    static Annotation findTriggerAnnotation(Method method) {
         Annotation result = null;
         for (final Annotation annotation : method.getAnnotations()) {
             if (isTriggerAnnotation(annotation)) {

@@ -12,6 +12,12 @@ import com.google.inject.Injector;
 
 import de.skuzzle.inject.async.annotation.SimpleTrigger;
 
+/**
+ * TriggerStrategy that handles the {@link SimpleTrigger} annotation for
+ * defining simple periodic executions.
+ *
+ * @author Simon Taddiken
+ */
 public class SimpleTriggerStrategy implements TriggerStrategy {
 
     @Inject

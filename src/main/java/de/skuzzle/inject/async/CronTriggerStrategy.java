@@ -3,6 +3,7 @@ package de.skuzzle.inject.async;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.lang.reflect.Method;
+import java.util.ServiceLoader;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Inject;
@@ -19,6 +20,11 @@ import com.google.inject.Injector;
 
 import de.skuzzle.inject.async.annotation.CronTrigger;
 
+/**
+ * TriggerStrategy that handles the {@link CronTrigger} annotation.
+ *
+ * @author Simon Taddiken
+ */
 public class CronTriggerStrategy implements TriggerStrategy {
 
     @Inject
@@ -26,6 +32,11 @@ public class CronTriggerStrategy implements TriggerStrategy {
 
     private final CronDefinition cronDefinition;
 
+    /**
+     * Public constructor for being instantiated by the {@link ServiceLoader}. Supports
+     * being used with the default {@link TriggerStrategyRegistry} which performs member
+     * injection on all strategies that are loaded using the ServiceLoader.
+     */
     public CronTriggerStrategy() {
         this.cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(
                 CronType.QUARTZ);

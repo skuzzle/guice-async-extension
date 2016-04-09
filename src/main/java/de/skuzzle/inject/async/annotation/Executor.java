@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 import com.google.inject.Key;
 
 /**
- * Allows the specify the class part of the {@link Key} that is used to look up
+ * Allows to specify the class part of the {@link Key} that is used to look up
  * an {@link ExecutorService} for a method annotated with {@link Async}. Please
  * refer to the {@link Async} documentation for further information.
  *

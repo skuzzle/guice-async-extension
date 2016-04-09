@@ -57,7 +57,7 @@ import de.skuzzle.inject.async.GuiceAsync;
  * </p>
  * <p>
  * If you leave out the {@link Executor} part, the class defaults to
- * {@code ExecutorService.class}. If you leave out the binding annotation, that
+ * {@code ExecutorService.class}. If you leave out the binding annotation, the
  * created key will not have an annotation part. If you put neither a binding annotation
  * nor an Executor class on the method, a default ExecutorService is used that is created
  * internally. You should make no assumptions about the actual behavior of that service

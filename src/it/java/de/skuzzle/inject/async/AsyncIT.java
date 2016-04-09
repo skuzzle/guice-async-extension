@@ -20,7 +20,7 @@ import com.google.inject.Provides;
 
 import de.skuzzle.inject.async.annotation.Async;
 
-public class AsyncIntegrationTest {
+public class AsyncIT {
 
     public static class InjectMe {
 

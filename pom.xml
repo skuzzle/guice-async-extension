@@ -29,7 +29,7 @@
 		<site.name>guice-async-extension</site.name>
 		<github.name>guice-async-extension</github.name>
 
-		<skipIT>true</skipIT>
+		<skipIT>false</skipIT>
 		<skuzzle.runtime.version>0.9.5</skuzzle.runtime.version>
 	</properties>
 
@@ -97,11 +97,16 @@
 
 	<build>
 		<plugins>
+		    <!-- Enable coverally reporting -->
 			<plugin>
 				<groupId>org.eluder.coveralls</groupId>
 				<artifactId>coveralls-maven-plugin</artifactId>
-				<version>4.1.0</version>
 			</plugin>
+            <!-- Enable integration tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
 		</plugins>
 	</build>
 

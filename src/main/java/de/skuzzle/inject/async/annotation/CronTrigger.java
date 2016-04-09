@@ -5,9 +5,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.cronutils.model.definition.CronDefinition;
+
+/**
+ * A trigger annotation for specifying a cron pattern which describes the
+ * scheduling of the method.
+ *
+ * @author Simon Taddiken
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Trigger
 public @interface CronTrigger {
+    /**
+     * Specifies the cron pattern to use. The actual format depends on the used
+     * {@link CronDefinition}.
+     *
+     * @return The cron pattern.
+     */
     String value();
 }

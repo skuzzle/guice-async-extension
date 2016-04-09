@@ -13,7 +13,7 @@ import com.google.inject.Guice;
 import de.skuzzle.inject.async.annotation.CronTrigger;
 import de.skuzzle.inject.async.annotation.Scheduled;
 
-public class ScheduledIntegrationTest {
+public class ScheduledIT {
 
     private static CountDownLatch latch = new CountDownLatch(2);
 

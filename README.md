@@ -15,7 +15,7 @@ public class MyService {
     }
     
     @Async
-    public void executeAsynchronously(SomeService injectedParameter) {
+    public void executeAsynchronously(SomeService someService) {
     }
     
     @Async
@@ -26,7 +26,7 @@ public class MyService {
 ```
 
 ## Enable asynchronous support
-In order to use the Annotations shown in the quickstart example, you must enable 
+In order to use the annotations shown in the quickstart example, you must enable 
 asynchronous support for your injector within a `Module`:
 ```java
 import de.skuzzle.inject.async.GuiceAsync;
@@ -37,7 +37,6 @@ public class MyModule extends AbstractModule {
     public void configure() {
         GuiceAsync.enableFor(binder());
     }
-
 }
 ```
 
@@ -79,7 +78,7 @@ public void doParallel() {
 ```
 
 ### Returning values
-Asynchronous methods can return value by wrapping them in a `Future` object.
+Asynchronous methods can return values by wrapping them in a `Future` object.
 
 ```java
 @Async

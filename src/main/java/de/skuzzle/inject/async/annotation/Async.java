@@ -46,7 +46,7 @@ import de.skuzzle.inject.async.GuiceAsync;
  *
  * <pre>
  * &#64;Async
- * &#64Named("computationExecutor")
+ * &#64;Named("computationExecutor")
  * &#64;Executor(AdvancedExecutorService.class)
  * public void compute() {...}
  * </pre>
@@ -66,7 +66,7 @@ import de.skuzzle.inject.async.GuiceAsync;
  *
  * <pre>
  * public class MyModule extends AbstractModule {
- *     &#64Provides
+ *     &#64;Provides
  *     public ThreadFactory provideMyThreadFactory() {
  *         return new ThreadFactoryBuilder()....build(); // class from Google guava
  *     }

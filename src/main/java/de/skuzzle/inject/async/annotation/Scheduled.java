@@ -51,7 +51,7 @@ import de.skuzzle.inject.async.TriggerStrategy;
  * <pre>
  * &#64;Scheduled
  * &#64;SimpleTrigger(5000) // execute every 5 seconds
- * &#64Named("mainScheduler")
+ * &#64;Named("mainScheduler")
  * &#64;Scheduler(AdvancedScheduler.class)
  * public void compute() {...}
  * </pre>
@@ -72,7 +72,7 @@ import de.skuzzle.inject.async.TriggerStrategy;
  *
  * <pre>
  * public class MyModule extends AbstractModule {
- *     &#64Provides
+ *     &#64;Provides
  *     public ThreadFactory provideMyThreadFactory() {
  *         return new ThreadFactoryBuilder()....build(); // class from Google guava
  *     }

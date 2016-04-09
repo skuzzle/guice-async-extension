@@ -35,17 +35,20 @@ public final class Futures {
      * You should not use the returned dummy object for any other purpose than
      * returning it from a method which is annotated with {@link Async}.
      *
+     * <p>
+     * <b>API Note</b><br>
+     * The {@link MethodInterceptor} which handles the asynchronous invocations
+     * will extract the wrapped Object from this dummy Future and create an
+     * actual Future object by submitting the method invocation to an
+     * {@link ExecutorService}. Thus, the dummy Object created here will never
+     * leave the context of the method it is created in (if you do not manually
+     * leak it to the outside).
+     * </p>
+     *
      * @param <T> Type of the Object to return.
      * @param obj The Object to return.
      * @return The dummy object.
      * @see Async
-     * @apiNote The {@link MethodInterceptor} which handles the asynchronous
-     *          invocations will extract the wrapped Object from this dummy
-     *          Future and create an actual Future object by submitting the
-     *          method invocation to an {@link ExecutorService}. Thus, the dummy
-     *          Object created here will never leave the context of the method
-     *          it is created in (if you do not manually leak it to the
-     *          outside).
      */
     public static <T> Future<T> delegate(T obj) {
         return new Future<T>() {

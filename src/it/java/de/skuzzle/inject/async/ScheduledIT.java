@@ -12,10 +12,12 @@ import com.google.inject.Guice;
 
 import de.skuzzle.inject.async.annotation.CronTrigger;
 import de.skuzzle.inject.async.annotation.Scheduled;
+import de.skuzzle.inject.async.annotation.SimpleTrigger;
 
 public class ScheduledIT {
 
-    private static CountDownLatch latch = new CountDownLatch(2);
+    private static volatile CountDownLatch cronLatch = new CountDownLatch(2);
+    private static volatile CountDownLatch simpleLatch = new CountDownLatch(2);
 
     public static class TypeWithScheduledMethods {
 
@@ -23,7 +25,14 @@ public class ScheduledIT {
         @CronTrigger("0/5 * * * * ?")
         public void scheduledSyso(String s) {
             assertEquals("foobar", s);
-            latch.countDown();
+            cronLatch.countDown();
+        }
+
+        @Scheduled
+        @SimpleTrigger(5000)
+        public void simpleTrigger(String s) {
+            assertEquals("foobar", s);
+            simpleLatch.countDown();
         }
     }
 
@@ -42,6 +51,7 @@ public class ScheduledIT {
 
     @Test(timeout = 30000)
     public void testExecuteMultipleTimes() throws Exception {
-        latch.await();
+        cronLatch.await();
+        simpleLatch.await();
     }
 }

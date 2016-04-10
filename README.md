@@ -112,7 +112,7 @@ Key.
     @Named("sendMailThread")
     public void sendMailAlternatively(MailOptions options) {
         // Executor will be retrieved using Key.get(ExecutorService.class, 
-        //     Names.named("firstVerySpecialCustomExecutor"))
+        //     Names.named("sendMailThread"))
     }
     
     @Scheduled

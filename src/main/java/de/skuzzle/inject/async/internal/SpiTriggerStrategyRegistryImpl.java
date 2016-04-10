@@ -23,7 +23,7 @@ import de.skuzzle.inject.async.TriggerStrategyRegistry;
 
 class SpiTriggerStrategyRegistryImpl implements TriggerStrategyRegistry {
 
-    private final static Logger LOG = LoggerFactory.getLogger(
+    private static final Logger LOG = LoggerFactory.getLogger(
             SpiTriggerStrategyRegistryImpl.class);
 
     private final Map<Class<? extends Annotation>, TriggerStrategy> strategies;

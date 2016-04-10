@@ -24,7 +24,7 @@ import de.skuzzle.inject.async.util.MethodVisitor;
 
 class SchedulerTypeListener implements TypeListener {
 
-    private final static Logger LOG = LoggerFactory.getLogger(
+    private static final Logger LOG = LoggerFactory.getLogger(
             SchedulerTypeListener.class);
 
     @Override
@@ -44,7 +44,7 @@ class SchedulerTypeListener implements TypeListener {
         });
     }
 
-    private Consumer<Method> getMethodProcessor(Object self, Provider<Injector> injector,
+    private static Consumer<Method> getMethodProcessor(Object self, Provider<Injector> injector,
             Provider<TriggerStrategyRegistry> registry) {
 
         return method -> {

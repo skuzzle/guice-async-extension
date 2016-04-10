@@ -36,7 +36,7 @@ import de.skuzzle.inject.async.internal.AsyncModule;
  */
 public final class GuiceAsync {
 
-    private final static Logger LOG = LoggerFactory.getLogger(GuiceAsync.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GuiceAsync.class);
 
     private GuiceAsync() {
         // hidden constructor

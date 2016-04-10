@@ -3,6 +3,7 @@ package de.skuzzle.inject.async;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -44,6 +45,11 @@ public class AsyncIT {
         public void asyncMethodForDefaultExecutor(String[] arg) throws InterruptedException {
             arg[0] = "result";
             Thread.sleep(2000);
+        }
+
+        @Async
+        public Future<Void> asyncMethodThrowingException() {
+            throw new UnsupportedOperationException();
         }
     }
 
@@ -91,5 +97,11 @@ public class AsyncIT {
     public void testFuture() throws Exception {
         final Future<String> future = this.injectMe.asyncMethodWithFutureReturnType();
         assertEquals("result", future.get());
+    }
+
+    @Test(expected = ExecutionException.class)
+    public void testAsynchronousException() throws Exception {
+        final Future<Void> future = this.injectMe.asyncMethodThrowingException();
+        future.get();
     }
 }

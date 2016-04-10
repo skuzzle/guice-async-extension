@@ -122,8 +122,3 @@ Key.
     }
 }
 ```
-
-## Exceptions
-
-All exceptions that are thrown by a method that is executed asynchronously are delegated
-to the thread's `UncaughtExceptionHandler`.

@@ -3,12 +3,11 @@ package de.skuzzle.inject.async.annotation;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
 
 import javax.inject.Named;
 
@@ -32,9 +31,8 @@ import de.skuzzle.inject.async.util.Futures;
  * will be used is looked up using the {@link Injector}.
  * </p>
  *
- * <h2>Specifying the Executor</h2>
- * It is possible to customize the look-up {@link Key} that is used to retrieve the actual
- * ExecutorService.
+ * <h2>Specifying the Executor</h2> It is possible to customize the look-up
+ * {@link Key} that is used to retrieve the actual ExecutorService.
  * <ul>
  * <li>You can put any {@link BindingAnnotation} including {@link Named} on the
  * method to specify the annotation part of the Key.</li>
@@ -58,10 +56,11 @@ import de.skuzzle.inject.async.util.Futures;
  * <p>
  * If you leave out the {@link Executor} part, the class defaults to
  * {@code ExecutorService.class}. If you leave out the binding annotation, the
- * created key will not have an annotation part. If you put neither a binding annotation
- * nor an Executor class on the method, a default ExecutorService is used that is created
- * internally. You should make no assumptions about the actual behavior of that service
- * and it is highly recommended to bind and specify an ExecutorService yourself.
+ * created key will not have an annotation part. If you put neither a binding
+ * annotation nor an Executor class on the method, a default ExecutorService is
+ * used that is created internally. You should make no assumptions about the
+ * actual behavior of that service and it is highly recommended to bind and
+ * specify an ExecutorService yourself.
  * </p>
  *
  * <pre>
@@ -100,7 +99,8 @@ import de.skuzzle.inject.async.util.Futures;
  * following:
  * <ul>
  * <li>Do not access attributes of the surrounding class. If you do, use
- * synchronization to ensure visibility of the data that you write and read .</li>
+ * synchronization to ensure visibility of the data that you write and read .
+ * </li>
  * <li>Parameters that are passed to the asynchronous method are also
  * transferred to the executing thread. Thus, all actual parameters must be
  * thread safe. That is, they must use synchronization and/or volatile
@@ -109,10 +109,8 @@ import de.skuzzle.inject.async.util.Futures;
  * </ul>
  *
  * <h2>Exception handling</h2> Asynchronous methods can throw checked
- * exceptions. If they do, those exceptions will be delegated to the
- * {@link UncaughtExceptionHandler} of the executing thread. In most
- * implementations such a handler can be supplied to an ExecutorService by
- * passing a {@link ThreadFactory} upon construction.
+ * exceptions. If they do, the exception will be wrapped in an
+ * {@link ExecutionException} which will be thrown by {@link Future#get()}.
  *
  * <p>
  * This annotation is subject to all limitations that apply to

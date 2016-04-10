@@ -19,6 +19,7 @@ import com.google.inject.Guice;
 import com.google.inject.Provides;
 
 import de.skuzzle.inject.async.annotation.Async;
+import de.skuzzle.inject.async.util.Futures;
 
 public class AsyncIT {
 
@@ -65,7 +66,7 @@ public class AsyncIT {
 
     @Before
     public void setup() {
-        Guice.createInjector(new TestModule(), new AsyncModule()).injectMembers(this);
+        Guice.createInjector(new TestModule(), GuiceAsync.createModule()).injectMembers(this);
     }
 
     @Test

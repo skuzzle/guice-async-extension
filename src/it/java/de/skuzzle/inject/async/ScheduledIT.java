@@ -11,6 +11,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 
 import de.skuzzle.inject.async.annotation.CronTrigger;
+import de.skuzzle.inject.async.annotation.DelayedTrigger;
 import de.skuzzle.inject.async.annotation.Scheduled;
 import de.skuzzle.inject.async.annotation.SimpleTrigger;
 
@@ -18,6 +19,7 @@ public class ScheduledIT {
 
     private static volatile CountDownLatch cronLatch = new CountDownLatch(2);
     private static volatile CountDownLatch simpleLatch = new CountDownLatch(2);
+    private static volatile CountDownLatch delayedLatch = new CountDownLatch(1);
 
     public static class TypeWithScheduledMethods {
 
@@ -33,6 +35,12 @@ public class ScheduledIT {
         public void simpleTrigger(String s) {
             assertEquals("foobar", s);
             simpleLatch.countDown();
+        }
+
+        @Scheduled
+        @DelayedTrigger(5000)
+        public void delayedTrigger() {
+            delayedLatch.countDown();
         }
     }
 
@@ -53,5 +61,6 @@ public class ScheduledIT {
     public void testExecuteMultipleTimes() throws Exception {
         cronLatch.await();
         simpleLatch.await();
+        //delayedLatch.await();
     }
 }

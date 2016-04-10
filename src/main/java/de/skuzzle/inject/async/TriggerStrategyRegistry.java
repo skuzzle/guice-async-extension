@@ -3,7 +3,7 @@ package de.skuzzle.inject.async;
 import java.lang.annotation.Annotation;
 
 /**
- * Holds registered {@link TriggerStrategy} implementations. They way in which
+ * Holds registered {@link TriggerStrategy} implementations. The way in which
  * strategies are registered with a registry is not defined and is thus
  * implementation specific.
  *

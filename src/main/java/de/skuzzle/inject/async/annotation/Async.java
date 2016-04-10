@@ -18,8 +18,8 @@ import com.google.inject.BindingAnnotation;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
-import de.skuzzle.inject.async.Futures;
 import de.skuzzle.inject.async.GuiceAsync;
+import de.skuzzle.inject.async.util.Futures;
 
 /**
  * Tags a method to be run asynchronously. Annotated methods must return either

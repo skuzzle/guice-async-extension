@@ -10,6 +10,7 @@ import com.google.inject.Module;
 
 import de.skuzzle.inject.async.annotation.Async;
 import de.skuzzle.inject.async.annotation.Scheduled;
+import de.skuzzle.inject.async.internal.AsyncModule;
 
 /**
  * Entry point for enabling asynchronous method support within your guice
@@ -49,9 +50,23 @@ public final class GuiceAsync {
      */
     public static void enableFor(Binder binder) {
         checkArgument(binder != null, "binder must not be null");
-        final Module module = new AsyncModule();
+
+        final GuiceAsync principal = new GuiceAsync();
+        final Module module = new AsyncModule(principal);
         binder.install(module);
         LOG.debug("Guice asynchronous method extension has been installed");
+    }
+
+    /**
+     * Creates a module that can be used to enable asynchronous method support.
+     *
+     * @return A module that exposes all bindings needed for asynchronous method
+     *         support.
+     * @since 0.2.0
+     */
+    public static Module createModule() {
+        final GuiceAsync principal = new GuiceAsync();
+        return new AsyncModule(principal);
     }
 
 }

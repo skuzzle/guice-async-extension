@@ -2,6 +2,9 @@ package de.skuzzle.inject.async;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
@@ -23,14 +26,16 @@ import de.skuzzle.inject.async.annotation.Scheduled;
  * }
  * </pre>
  *
- * Please see the JavaDoc of the {@link Async} and {@link Scheduled} annotation for
- * further usage information.
+ * Please see the JavaDoc of the {@link Async} and {@link Scheduled} annotation
+ * for further usage information.
  *
  * @author Simon Taddiken
  * @see Async
  * @see Scheduled
  */
 public final class GuiceAsync {
+
+    private final static Logger LOG = LoggerFactory.getLogger(GuiceAsync.class);
 
     private GuiceAsync() {
         // hidden constructor
@@ -46,6 +51,7 @@ public final class GuiceAsync {
         checkArgument(binder != null, "binder must not be null");
         final Module module = new AsyncModule();
         binder.install(module);
+        LOG.debug("Guice asynchronous method extension has been installed");
     }
 
 }

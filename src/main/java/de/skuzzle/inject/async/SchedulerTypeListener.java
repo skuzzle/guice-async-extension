@@ -7,7 +7,9 @@ import java.util.function.Consumer;
 
 import javax.inject.Provider;
 
-import com.google.common.annotations.VisibleForTesting;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
@@ -18,6 +20,9 @@ import com.google.inject.spi.TypeListener;
 import de.skuzzle.inject.async.annotation.Scheduled;
 
 class SchedulerTypeListener implements TypeListener {
+
+    private final static Logger LOG = LoggerFactory.getLogger(
+            SchedulerTypeListener.class);
 
     @Override
     public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
@@ -36,8 +41,7 @@ class SchedulerTypeListener implements TypeListener {
         });
     }
 
-    @VisibleForTesting
-    Consumer<Method> getMethodProcessor(Object self, Provider<Injector> injector,
+    private Consumer<Method> getMethodProcessor(Object self, Provider<Injector> injector,
             Provider<TriggerStrategyRegistry> registry) {
 
         return method -> {
@@ -45,10 +49,16 @@ class SchedulerTypeListener implements TypeListener {
                 return;
             }
             final Annotation trigger = Annotations.findTriggerAnnotation(method);
-            final Key<? extends ScheduledExecutorService> key =
-                    Keys.getSchedulerKey(method);
+            LOG.trace("Method '{}' is eligible for scheduling. Trigger is: {}", method,
+                    trigger);
+
+            final Key<? extends ScheduledExecutorService> key = Keys.getSchedulerKey(
+                    method);
+            LOG.trace("Scheduler key is: {}", key);
             final ScheduledExecutorService scheduler = injector.get().getInstance(key);
+            LOG.trace("Using scheduler '{}'", scheduler);
             final TriggerStrategy strategy = registry.get().getStrategyFor(trigger);
+            LOG.trace("Using trigger strategy: {}", strategy);
             strategy.schedule(method, self, scheduler);
         };
     }

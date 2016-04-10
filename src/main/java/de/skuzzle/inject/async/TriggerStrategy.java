@@ -16,6 +16,7 @@ import de.skuzzle.inject.async.util.InjectedMethodInvocation;
  * <p>
  * The framework searches for implementations of this class using the Java's
  * {@link ServiceLoader}. In order to implement your own trigger, just follow these steps:
+ * </p>
  * <ol>
  * <li>Create a new Trigger annotation which will hold scheduling meta information:
  * <pre>
@@ -61,7 +62,6 @@ import de.skuzzle.inject.async.util.InjectedMethodInvocation;
  * 'de.skuzzle.inject.async.TriggerStrategy'. Put a single line which contains the
  * full qualified class name of your CustomTriggerStrategy into that file.</li>
  * </ol>
- * </p>
  * @author Simon Taddiken
  */
 public interface TriggerStrategy {

@@ -24,7 +24,6 @@ import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
 import de.skuzzle.inject.async.TriggerStrategy;
-import de.skuzzle.inject.async.TriggerStrategyRegistry;
 import de.skuzzle.inject.async.annotation.CronTrigger;
 import de.skuzzle.inject.async.annotation.Scheduled;
 import de.skuzzle.inject.async.annotation.Scheduler;

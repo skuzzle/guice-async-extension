@@ -8,6 +8,8 @@ import java.util.concurrent.ThreadFactory;
 import javax.inject.Singleton;
 
 import org.aopalliance.intercept.MethodInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.AbstractModule;
@@ -15,7 +17,6 @@ import com.google.inject.Provides;
 import com.google.inject.matcher.Matchers;
 
 import de.skuzzle.inject.async.GuiceAsync;
-import de.skuzzle.inject.async.TriggerStrategyRegistry;
 import de.skuzzle.inject.async.annotation.Async;
 
 /**
@@ -25,6 +26,8 @@ import de.skuzzle.inject.async.annotation.Async;
  * @author Simon Taddiken
  */
 public final class AsyncModule extends AbstractModule {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AsyncModule.class);
 
     /**
      * As {@link GuiceAsync} is not instantiatable from outside, the constructor
@@ -49,6 +52,7 @@ public final class AsyncModule extends AbstractModule {
                 .to(SpiTriggerStrategyRegistryImpl.class)
                 .in(Singleton.class);
         bindListener(Matchers.any(), new SchedulerTypeListener());
+        LOG.debug("Guice asynchronous method extension has been installed");
     }
 
     @Provides

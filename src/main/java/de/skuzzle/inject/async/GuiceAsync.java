@@ -2,9 +2,6 @@ package de.skuzzle.inject.async;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
@@ -36,8 +33,6 @@ import de.skuzzle.inject.async.internal.AsyncModule;
  */
 public final class GuiceAsync {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GuiceAsync.class);
-
     private GuiceAsync() {
         // hidden constructor
     }
@@ -54,7 +49,6 @@ public final class GuiceAsync {
         final GuiceAsync principal = new GuiceAsync();
         final Module module = new AsyncModule(principal);
         binder.install(module);
-        LOG.debug("Guice asynchronous method extension has been installed");
     }
 
     /**

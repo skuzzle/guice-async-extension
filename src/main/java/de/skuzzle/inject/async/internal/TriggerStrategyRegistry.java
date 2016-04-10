@@ -1,6 +1,8 @@
-package de.skuzzle.inject.async;
+package de.skuzzle.inject.async.internal;
 
 import java.lang.annotation.Annotation;
+
+import de.skuzzle.inject.async.TriggerStrategy;
 
 /**
  * Holds registered {@link TriggerStrategy} implementations. The way in which

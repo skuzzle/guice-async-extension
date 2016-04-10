@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Injector;
 
 import de.skuzzle.inject.async.TriggerStrategy;
-import de.skuzzle.inject.async.TriggerStrategyRegistry;
 
 class SpiTriggerStrategyRegistryImpl implements TriggerStrategyRegistry {
 

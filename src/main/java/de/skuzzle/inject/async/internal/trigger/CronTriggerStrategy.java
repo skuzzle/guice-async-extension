@@ -19,8 +19,8 @@ import com.cronutils.parser.CronParser;
 import com.google.inject.Injector;
 
 import de.skuzzle.inject.async.TriggerStrategy;
-import de.skuzzle.inject.async.TriggerStrategyRegistry;
 import de.skuzzle.inject.async.annotation.CronTrigger;
+import de.skuzzle.inject.async.internal.TriggerStrategyRegistry;
 import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 /**

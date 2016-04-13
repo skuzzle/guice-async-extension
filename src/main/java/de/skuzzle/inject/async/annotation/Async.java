@@ -99,7 +99,7 @@ import de.skuzzle.inject.async.util.Futures;
  * following:
  * <ul>
  * <li>Do not access attributes of the surrounding class. If you do, use
- * synchronization to ensure visibility of the data that you write and read .
+ * synchronization to ensure visibility of the data that you write and read.
  * </li>
  * <li>Parameters that are passed to the asynchronous method are also
  * transferred to the executing thread. Thus, all actual parameters must be

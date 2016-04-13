@@ -8,8 +8,6 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Inject;
 
-import org.aopalliance.intercept.MethodInvocation;
-
 import com.cronutils.model.Cron;
 import com.cronutils.model.CronType;
 import com.cronutils.model.definition.CronDefinition;
@@ -59,8 +57,8 @@ public class CronTriggerStrategy implements TriggerStrategy {
         final CronParser parser = new CronParser(this.cronDefinition);
         final Cron cron = parser.parse(trigger.value());
         final ExecutionTime execTime = ExecutionTime.forCron(cron);
-        final MethodInvocation invocation = InjectedMethodInvocation.forMethod(method,
-                self, this.injector);
+        final InjectedMethodInvocation invocation = InjectedMethodInvocation
+                .forMethod(method, self, this.injector);
         final Runnable action = new ReScheduleRunnable(invocation, executor, execTime);
         executor.execute(action);
     }

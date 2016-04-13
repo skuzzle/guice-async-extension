@@ -17,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import de.skuzzle.inject.async.GuiceAsync;
-import de.skuzzle.inject.async.internal.InvocationCallable;
 import de.skuzzle.inject.async.util.Futures;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -32,7 +31,9 @@ public class InvocationCallableTest {
     @Test
     public void testProceed() throws Throwable {
         final String expected = "result";
+        final Object[] args = new Object[0];
         when(this.invocation.proceed()).thenReturn(Futures.delegate(expected));
+        when(this.invocation.getArguments()).thenReturn(args);
         final Callable<?> callable = InvocationCallable.fromInvocation(this.invocation);
         final Object result = callable.call();
 
@@ -63,7 +64,9 @@ public class InvocationCallableTest {
 
     @Test(expected = IllegalStateException.class)
     public void testUnsupportedType() throws Throwable {
+        final Object[] args = new Object[0];
         when(this.invocation.proceed()).thenReturn(new Object()); // any not null object
+        when(this.invocation.getArguments()).thenReturn(args);
         final Callable<?> callable = InvocationCallable.fromInvocation(this.invocation);
         callable.call();
     }

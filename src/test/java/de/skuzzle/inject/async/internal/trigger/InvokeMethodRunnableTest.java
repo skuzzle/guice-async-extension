@@ -3,20 +3,19 @@ package de.skuzzle.inject.async.internal.trigger;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 
-import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import de.skuzzle.inject.async.internal.trigger.InvokeMethodRunnable;
+import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InvokeMethodRunnableTest {
 
     @Mock
-    private MethodInvocation invocation;
+    private InjectedMethodInvocation invocation;
 
     @Before
     public void setUp() throws Exception {}

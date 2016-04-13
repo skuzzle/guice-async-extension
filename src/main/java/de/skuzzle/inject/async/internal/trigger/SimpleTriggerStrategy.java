@@ -5,8 +5,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.lang.reflect.Method;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.aopalliance.intercept.MethodInvocation;
-
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -36,7 +34,7 @@ public class SimpleTriggerStrategy implements TriggerStrategy {
         checkArgument(trigger != null, "Method '%s' not annotated with @SimpleTrigger",
                 method);
 
-        final MethodInvocation invocation = InjectedMethodInvocation.forMethod(
+        final InjectedMethodInvocation invocation = InjectedMethodInvocation.forMethod(
                 method, self, this.injector);
         final Runnable command = InvokeMethodRunnable.of(invocation);
         trigger.scheduleType()

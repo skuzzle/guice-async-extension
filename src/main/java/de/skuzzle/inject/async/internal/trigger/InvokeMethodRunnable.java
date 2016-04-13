@@ -8,6 +8,8 @@ import org.aopalliance.intercept.MethodInvocation;
 
 import com.google.common.base.Throwables;
 
+import de.skuzzle.inject.async.util.InjectedMethodInvocation;
+
 /**
  * Wraps a {@link MethodInvocation} in a {@link Runnable} to allow it to be
  * scheduled with a {@link ScheduledExecutorService}. When the resulting
@@ -19,9 +21,9 @@ import com.google.common.base.Throwables;
  */
 class InvokeMethodRunnable implements Runnable {
 
-    private final MethodInvocation invocation;
+    private final InjectedMethodInvocation invocation;
 
-    private InvokeMethodRunnable(MethodInvocation invocation) {
+    private InvokeMethodRunnable(InjectedMethodInvocation invocation) {
         this.invocation = invocation;
     }
 
@@ -32,7 +34,7 @@ class InvokeMethodRunnable implements Runnable {
      * @param invocation the invocation to call.
      * @return The runnable.
      */
-    public static Runnable of(MethodInvocation invocation) {
+    public static Runnable of(InjectedMethodInvocation invocation) {
         checkArgument(invocation != null);
         return new InvokeMethodRunnable(invocation);
     }

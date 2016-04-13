@@ -5,8 +5,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.lang.reflect.Method;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.aopalliance.intercept.MethodInvocation;
-
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
@@ -36,8 +34,8 @@ public class DelayedTriggerStrategy implements TriggerStrategy {
         checkArgument(trigger != null, "Method '%s' not annotated with @DelayedTrigger",
                 method);
 
-        final MethodInvocation invocation = InjectedMethodInvocation.forMethod(method,
-                self, this.injector);
+        final InjectedMethodInvocation invocation = InjectedMethodInvocation
+                .forMethod(method, self, this.injector);
         final Runnable command = InvokeMethodRunnable.of(invocation);
         executor.schedule(command, trigger.value(), trigger.timeUnit());
     }

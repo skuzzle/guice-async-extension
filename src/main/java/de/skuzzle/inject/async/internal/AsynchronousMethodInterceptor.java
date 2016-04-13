@@ -24,8 +24,8 @@ class AsynchronousMethodInterceptor implements MethodInterceptor {
 
         final Key<? extends ExecutorService> key = Keys.getExecutorKey(method);
         final ExecutorService executor = this.injector.getInstance(key);
-        final Future<?> future = executor.submit(InvocationCallable
-                .fromInvocation(invocation));
+        final Future<?> future = executor.submit(
+                InvocationCallable.fromInvocation(invocation));
 
         if (method.getReturnType() == Void.class || method.getReturnType() == Void.TYPE) {
             return null;

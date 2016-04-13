@@ -3,19 +3,20 @@ package de.skuzzle.inject.async.internal.trigger;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.aopalliance.intercept.MethodInvocation;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
 import com.cronutils.model.time.ExecutionTime;
 
+import de.skuzzle.inject.async.util.InjectedMethodInvocation;
+
 class ReScheduleRunnable implements Runnable {
 
-    private final MethodInvocation invocation;
+    private final InjectedMethodInvocation invocation;
     private final ScheduledExecutorService executor;
     private final ExecutionTime executionTime;
 
-    ReScheduleRunnable(MethodInvocation invocation,
+    ReScheduleRunnable(InjectedMethodInvocation invocation,
             ScheduledExecutorService executor, ExecutionTime executionTime) {
         this.invocation = invocation;
         this.executor = executor;

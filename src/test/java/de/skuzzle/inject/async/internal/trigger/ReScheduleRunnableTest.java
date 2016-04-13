@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.aopalliance.intercept.MethodInvocation;
 import org.joda.time.Duration;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +17,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.cronutils.model.time.ExecutionTime;
 
-import de.skuzzle.inject.async.internal.trigger.ReScheduleRunnable;
+import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReScheduleRunnableTest {
@@ -28,7 +27,7 @@ public class ReScheduleRunnableTest {
     @Mock
     private ExecutionTime executionTime;
     @Mock
-    private MethodInvocation invocation;
+    private InjectedMethodInvocation invocation;
     @InjectMocks
     private ReScheduleRunnable subject;
 

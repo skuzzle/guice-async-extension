@@ -1,13 +1,10 @@
 package de.skuzzle.inject.async.util;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Method;
 
-import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,8 +13,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
-
-import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 public class InjectedMethodInvocationTest {
 
@@ -57,7 +52,7 @@ public class InjectedMethodInvocationTest {
     public void testCallNonStaticMethod() throws Throwable {
         final Method method = getClass().getMethod("nonStaticMethod",
                 Integer.class, String.class);
-        final MethodInvocation invocation = InjectedMethodInvocation.forMethod(method,
+        final InjectedMethodInvocation invocation = InjectedMethodInvocation.forMethod(method,
                 this, this.injector);
         invocation.proceed();
         assertTrue(this.invoked);
@@ -67,32 +62,10 @@ public class InjectedMethodInvocationTest {
     public void testCallStaticMethod() throws Throwable {
         final Method method = getClass().getMethod("staticMethod",
                 Integer.class, String.class);
-        final MethodInvocation invocation = InjectedMethodInvocation.forStatic(method,
+        final InjectedMethodInvocation invocation = InjectedMethodInvocation.forStatic(method,
                 this.injector);
         invocation.proceed();
         assertTrue(invokedStatic);
-    }
-
-    @Test
-    public void testCreateStatic() throws Exception {
-        final Method method = getClass().getMethod("staticMethod",
-                Integer.class, String.class);
-        final MethodInvocation invocation = InjectedMethodInvocation.forStatic(method,
-                this.injector);
-        assertSame(method, invocation.getMethod());
-        assertSame(method, invocation.getStaticPart());
-        assertNull(invocation.getThis());
-    }
-
-    @Test
-    public void testCreateNonStatic() throws Exception {
-        final Method method = getClass().getMethod("nonStaticMethod",
-                Integer.class, String.class);
-        final MethodInvocation invocation = InjectedMethodInvocation.forMethod(method,
-                this, this.injector);
-        assertSame(method, invocation.getMethod());
-        assertSame(method, invocation.getStaticPart());
-        assertSame(this, invocation.getThis());
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -22,6 +22,9 @@ class AsynchronousMethodInterceptor implements MethodInterceptor {
         final Method method = invocation.getMethod();
         checkReturnType(method.getReturnType());
 
+        // Ensure visibility of all arguments to other threads
+        MakeVisible.toOtherThreads(invocation.getArguments());
+
         final Key<? extends ExecutorService> key = Keys.getExecutorKey(method);
         final ExecutorService executor = this.injector.getInstance(key);
         final Future<?> future = executor.submit(

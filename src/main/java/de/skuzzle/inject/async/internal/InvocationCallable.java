@@ -31,9 +31,6 @@ public class InvocationCallable<T> implements Callable<T> {
     @SuppressWarnings("unchecked")
     public T call() throws Exception {
         try {
-            // Ensure visibility of all arguments to the current thread
-            MakeVisible.toCurrentThread(this.invocation.getArguments());
-
             // As by the AsynchronousMethodInterceptor, the return type of the intercepted
             // method is either a Future or void.
             final Object result = this.invocation.proceed();

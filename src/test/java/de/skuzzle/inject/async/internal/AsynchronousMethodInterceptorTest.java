@@ -23,8 +23,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
-import de.skuzzle.inject.async.internal.AsynchronousMethodInterceptor;
-
 @RunWith(MockitoJUnitRunner.class)
 public class AsynchronousMethodInterceptorTest {
 
@@ -53,7 +51,9 @@ public class AsynchronousMethodInterceptorTest {
     private MethodInvocation mockInvocation(String methodName) throws Exception {
         final Method method = getClass().getMethod(methodName);
         final MethodInvocation invocation = mock(MethodInvocation.class);
+        final Object[] args = new Object[0];
         when(invocation.getMethod()).thenReturn(method);
+        when(invocation.getArguments()).thenReturn(args);
         return invocation;
     }
 

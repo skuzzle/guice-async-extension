@@ -1,6 +1,8 @@
 package de.skuzzle.inject.async.internal.trigger;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,7 +20,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
 
+import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.annotation.CronTrigger;
+import de.skuzzle.inject.async.internal.context.ContextFactory;
 import de.skuzzle.inject.async.internal.runnables.Reschedulable;
 import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
 
@@ -29,14 +33,20 @@ public class CronTriggerStrategyTest {
     private Injector injector;
     @Mock
     private RunnableBuilder runnableBuilder;
+    @Mock
+    private ContextFactory contextFactory;
     @InjectMocks
     private CronTriggerStrategy subject;
 
     @Mock
     private ScheduledExecutorService executor;
+    @Mock
+    private ScheduledContext scheduledContext;
 
     @Before
-    public void setUp() throws Exception {}
+    public void setUp() throws Exception {
+        when(this.contextFactory.createContext()).thenReturn(this.scheduledContext);
+    }
 
     @CronTrigger("0 0 0 * * *")
     public void scheduledMethod() {
@@ -64,15 +74,15 @@ public class CronTriggerStrategyTest {
         final Runnable invokeRunnable = mock(Runnable.class);
         final Runnable scopedRunnable = mock(Runnable.class);
         final Reschedulable reschedule = mock(Reschedulable.class);
-        
-        when(runnableBuilder.invoke(Mockito.any())).thenReturn(invokeRunnable);
-        when(runnableBuilder.scope(Mockito.eq(invokeRunnable), Mockito.any()))
-                .thenReturn(scopedRunnable);
-        when(runnableBuilder.reschedule(Mockito.eq(scopedRunnable), Mockito.eq(executor), 
-                Mockito.any(), Mockito.any())).thenReturn(reschedule);
-        
+
+        when(this.runnableBuilder.invoke(Mockito.any())).thenReturn(invokeRunnable);
+        when(this.runnableBuilder.scope(invokeRunnable, this.scheduledContext))
+        .thenReturn(scopedRunnable);
+
+        when(this.runnableBuilder.reschedule(eq(scopedRunnable), eq(this.executor), any())).thenReturn(reschedule);
+
         this.subject.schedule(method, this, this.executor);
-        
+
         verify(reschedule).scheduleNextExecution();
     }
 }

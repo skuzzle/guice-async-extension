@@ -8,35 +8,28 @@ import org.joda.time.Duration;
 
 import com.cronutils.model.time.ExecutionTime;
 
-import de.skuzzle.inject.async.internal.context.ScheduledContextImpl;
-
 class ReScheduleRunnable implements Reschedulable {
 
     private final Runnable invocation;
     private final ScheduledExecutorService executor;
     private final ExecutionTime executionTime;
-    private final ScheduledContextImpl context;
 
     private ReScheduleRunnable(Runnable invocation,
-            ScheduledExecutorService executor, ExecutionTime executionTime,
-            ScheduledContextImpl context) {
+            ScheduledExecutorService executor, ExecutionTime executionTime) {
         this.invocation = invocation;
         this.executor = executor;
         this.executionTime = executionTime;
-        this.context = context;
     }
 
     static Reschedulable of(Runnable invocation, ScheduledExecutorService scheduler,
-            ExecutionTime executionTime, ScheduledContextImpl context) {
-        return new ReScheduleRunnable(invocation, scheduler, executionTime, context);
+            ExecutionTime executionTime) {
+        return new ReScheduleRunnable(invocation, scheduler, executionTime);
     }
 
     @Override
     public void run() {
-        if (!context.isStopRequested()) {
-            scheduleNextExecution();
-            invocation.run();
-        }
+        scheduleNextExecution();
+        this.invocation.run();
     }
 
     @Override

@@ -7,12 +7,12 @@ import de.skuzzle.inject.async.ExecutionContext;
 
 /**
  * Holds contextual information about a single scheduled method invocation.
- * 
+ *
  * @author Simon Taddiken
  */
 class ExecutionContextImpl implements ExecutionContext {
 
-    private final Map<String, Object> beanMap = new HashMap<>();
+    private final Map<String, Object> properties = new HashMap<>();
     private final int executionNr;
 
     ExecutionContextImpl(int executionNr) {
@@ -24,12 +24,8 @@ class ExecutionContextImpl implements ExecutionContext {
         return this.executionNr;
     }
 
-    /**
-     * Returns the map that stores the beans in the scope of this execution.
-     * 
-     * @return The bean map.
-     */
-    Map<String, Object> getBeanMap() {
-        return this.beanMap;
+    @Override
+    public Map<String, Object> getProperties() {
+        return this.properties;
     }
 }

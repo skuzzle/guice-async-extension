@@ -33,7 +33,7 @@ public final class ContextInstaller {
         @Override
         protected void configure() {
             final Provider<Map<String, Object>> executionMap = 
-                    () -> ScheduledContextHolder.getContext().getExecution().getBeanMap();
+                    () -> ScheduledContextHolder.getContext().getExecution().getProperties();
             bindScope(ExecutionScope.class, MapBasedScope.withMapSupplier(executionMap));
             
             final Provider<Map<String, Object>> scheduledMap = 

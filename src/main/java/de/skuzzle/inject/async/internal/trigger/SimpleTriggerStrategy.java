@@ -8,9 +8,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
+import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.SimpleTrigger;
-import de.skuzzle.inject.async.internal.context.ScheduledContextImpl;
+import de.skuzzle.inject.async.internal.context.ContextFactory;
 import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
 import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
@@ -26,7 +27,9 @@ public class SimpleTriggerStrategy implements TriggerStrategy {
     private Injector injector;
     @Inject
     private RunnableBuilder runnableBuilder;
-    
+    @Inject
+    private ContextFactory contextFactory;
+
     @Override
     public Class<SimpleTrigger> getTriggerType() {
         return SimpleTrigger.class;
@@ -40,15 +43,14 @@ public class SimpleTriggerStrategy implements TriggerStrategy {
 
         final InjectedMethodInvocation invocation = InjectedMethodInvocation.forMethod(
                 method, self, this.injector);
-        
-        final ScheduledContextImpl context = new ScheduledContextImpl();
-        final Runnable invokeRunnable = runnableBuilder.invoke(invocation);
-        final Runnable scopedRunnable = runnableBuilder.scope(invokeRunnable, context);
-        final Runnable skipRunnable = runnableBuilder.skip(scopedRunnable, context);
-        
+
+        final ScheduledContext context = this.contextFactory.createContext();
+        final Runnable invokeRunnable = this.runnableBuilder.invoke(invocation);
+        final Runnable scopedRunnable = this.runnableBuilder.scope(invokeRunnable, context);
+
         trigger.scheduleType().schedule(
                 executor,
-                skipRunnable,
+                scopedRunnable,
                 trigger.initialDelay(),
                 trigger.value(),
                 trigger.timeUnit());

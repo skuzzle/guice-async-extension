@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import de.skuzzle.inject.async.GuiceAsync;
+import de.skuzzle.inject.async.internal.runnables.InvocationCallable;
 import de.skuzzle.inject.async.util.Futures;
 
 @RunWith(MockitoJUnitRunner.class)

@@ -34,7 +34,7 @@ public class ScheduledIT {
 
         @Scheduled
         @CronTrigger("0/5 * * * * ?")
-        public void scheduledSyso(String s) {
+        public void scheduledSyso(String s, ScheduledContext ctx, ExecutionContext execCtx) {
             assertEquals("foobar", s);
             cronLatch.countDown();
         }

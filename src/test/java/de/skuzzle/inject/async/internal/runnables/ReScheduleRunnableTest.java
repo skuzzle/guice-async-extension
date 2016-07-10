@@ -1,6 +1,7 @@
-package de.skuzzle.inject.async.internal.trigger;
+package de.skuzzle.inject.async.internal.runnables;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -17,7 +18,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.cronutils.model.time.ExecutionTime;
 
-import de.skuzzle.inject.async.util.InjectedMethodInvocation;
+import de.skuzzle.inject.async.internal.context.ScheduledContextImpl;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ReScheduleRunnableTest {
@@ -27,18 +28,28 @@ public class ReScheduleRunnableTest {
     @Mock
     private ExecutionTime executionTime;
     @Mock
-    private InjectedMethodInvocation invocation;
+    private Runnable invocation;
+    @Mock
+    private ScheduledContextImpl context;
     @InjectMocks
     private ReScheduleRunnable subject;
 
     @Before
-    public void setUp() throws Exception {}
+    public void setUp() throws Exception {
+        final Duration toNext = Duration.millis(5000);
+        when(this.executionTime.timeToNextExecution(Mockito.any())).thenReturn(toNext);
+    }
 
     @Test
     public void testRun() throws Exception {
-        final Duration toNext = Duration.millis(5000);
-        when(this.executionTime.timeToNextExecution(Mockito.any())).thenReturn(toNext);
         this.subject.run();
         verify(this.executor).schedule(this.subject, 5000, TimeUnit.MILLISECONDS);
+    }
+
+    @Test
+    public void testRunstopRequested() throws Exception {
+        when(this.context.isStopRequested()).thenReturn(true);
+        this.subject.run();
+        verifyNoMoreInteractions(this.executor);
     }
 }

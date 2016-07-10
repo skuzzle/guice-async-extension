@@ -12,6 +12,8 @@ import org.aopalliance.intercept.MethodInvocation;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
+import de.skuzzle.inject.async.internal.runnables.InvocationCallable;
+
 class AsynchronousMethodInterceptor implements MethodInterceptor {
 
     @Inject

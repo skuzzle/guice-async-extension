@@ -18,6 +18,8 @@ import com.google.inject.matcher.Matchers;
 
 import de.skuzzle.inject.async.GuiceAsync;
 import de.skuzzle.inject.async.annotation.Async;
+import de.skuzzle.inject.async.internal.context.ContextInstaller;
+import de.skuzzle.inject.async.internal.runnables.RunnablesInstaller;
 
 /**
  * Exposes required bindings. Use {@link GuiceAsync} to install this module for
@@ -42,19 +44,22 @@ public final class AsyncModule extends AbstractModule {
 
     @Override
     protected void configure() {
+        // the interceptor for @Async methods
         final MethodInterceptor asyncInterceptor = new AsynchronousMethodInterceptor();
         requestInjection(asyncInterceptor);
-
         bindInterceptor(Matchers.any(), Matchers.annotatedWith(Async.class),
                 asyncInterceptor);
 
+        ContextInstaller.install(binder());
+        RunnablesInstaller.install(binder());
+        
         bind(TriggerStrategyRegistry.class)
                 .to(SpiTriggerStrategyRegistryImpl.class)
                 .in(Singleton.class);
         bindListener(Matchers.any(), new SchedulerTypeListener());
         LOG.debug("Guice asynchronous method extension has been installed");
     }
-
+    
     @Provides
     @DefaultBinding
     ThreadFactory provideThreadFactory() {

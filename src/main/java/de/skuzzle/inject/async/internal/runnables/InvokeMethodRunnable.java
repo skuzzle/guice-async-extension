@@ -1,4 +1,4 @@
-package de.skuzzle.inject.async.internal.trigger;
+package de.skuzzle.inject.async.internal.runnables;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -19,7 +19,7 @@ import de.skuzzle.inject.async.util.InjectedMethodInvocation;
  *
  * @author Simon Taddiken
  */
-class InvokeMethodRunnable implements Runnable {
+public class InvokeMethodRunnable implements Runnable {
 
     private final InjectedMethodInvocation invocation;
 

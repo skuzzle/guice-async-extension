@@ -10,6 +10,8 @@ import com.google.inject.Injector;
 
 import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.DelayedTrigger;
+import de.skuzzle.inject.async.internal.context.ScheduledContextImpl;
+import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
 import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 /**
@@ -22,6 +24,8 @@ public class DelayedTriggerStrategy implements TriggerStrategy {
 
     @Inject
     private Injector injector;
+    @Inject
+    private RunnableBuilder runnableBuilder;
 
     @Override
     public Class<DelayedTrigger> getTriggerType() {
@@ -36,8 +40,11 @@ public class DelayedTriggerStrategy implements TriggerStrategy {
 
         final InjectedMethodInvocation invocation = InjectedMethodInvocation
                 .forMethod(method, self, this.injector);
-        final Runnable command = InvokeMethodRunnable.of(invocation);
-        executor.schedule(command, trigger.value(), trigger.timeUnit());
+
+        final ScheduledContextImpl context = new ScheduledContextImpl();
+        final Runnable invokeRunnable = runnableBuilder.invoke(invocation);
+        final Runnable scopedRunnable = runnableBuilder.scope(invokeRunnable, context);
+        executor.schedule(scopedRunnable, trigger.value(), trigger.timeUnit());
     }
 
 }

@@ -1,7 +1,9 @@
 package de.skuzzle.inject.async.internal.trigger;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.ScheduledExecutorService;
@@ -17,14 +19,16 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.google.inject.Injector;
 
 import de.skuzzle.inject.async.annotation.CronTrigger;
-import de.skuzzle.inject.async.internal.trigger.CronTriggerStrategy;
-import de.skuzzle.inject.async.internal.trigger.ReScheduleRunnable;
+import de.skuzzle.inject.async.internal.runnables.Reschedulable;
+import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CronTriggerStrategyTest {
 
     @Mock
     private Injector injector;
+    @Mock
+    private RunnableBuilder runnableBuilder;
     @InjectMocks
     private CronTriggerStrategy subject;
 
@@ -57,7 +61,18 @@ public class CronTriggerStrategyTest {
     @Test
     public void testSchedule() throws Exception {
         final Method method = getClass().getMethod("scheduledMethod");
+        final Runnable invokeRunnable = mock(Runnable.class);
+        final Runnable scopedRunnable = mock(Runnable.class);
+        final Reschedulable reschedule = mock(Reschedulable.class);
+        
+        when(runnableBuilder.invoke(Mockito.any())).thenReturn(invokeRunnable);
+        when(runnableBuilder.scope(Mockito.eq(invokeRunnable), Mockito.any()))
+                .thenReturn(scopedRunnable);
+        when(runnableBuilder.reschedule(Mockito.eq(scopedRunnable), Mockito.eq(executor), 
+                Mockito.any(), Mockito.any())).thenReturn(reschedule);
+        
         this.subject.schedule(method, this, this.executor);
-        verify(this.executor).execute(Mockito.isA(ReScheduleRunnable.class));
+        
+        verify(reschedule).scheduleNextExecution();
     }
 }

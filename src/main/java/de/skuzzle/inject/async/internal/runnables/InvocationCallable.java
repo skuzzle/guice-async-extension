@@ -1,4 +1,4 @@
-package de.skuzzle.inject.async.internal;
+package de.skuzzle.inject.async.internal.runnables;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -22,8 +22,14 @@ public class InvocationCallable<T> implements Callable<T> {
         this.invocation = invocation;
     }
 
+    /**
+     * Wraps the given AOP method invocation into a runnable for asynchronous execution.
+     * 
+     * @param invocation The invocation to wrap.
+     * @return The callable to submit to an executor.
+     */
     @SuppressWarnings("rawtypes")
-    static Callable<?> fromInvocation(MethodInvocation invocation) {
+    public static Callable<?> fromInvocation(MethodInvocation invocation) {
         return new InvocationCallable(invocation);
     }
 

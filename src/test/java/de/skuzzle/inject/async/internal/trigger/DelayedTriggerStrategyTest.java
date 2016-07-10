@@ -18,6 +18,7 @@ import com.google.inject.Injector;
 
 import de.skuzzle.inject.async.annotation.DelayedTrigger;
 import de.skuzzle.inject.async.annotation.Scheduled;
+import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
 import de.skuzzle.inject.async.internal.trigger.DelayedTriggerStrategy;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -25,6 +26,8 @@ public class DelayedTriggerStrategyTest {
 
     @Mock
     private Injector injector;
+    @Mock
+    private RunnableBuilder runnableBuilder;
     @Mock
     private ScheduledExecutorService scheduler;
     @InjectMocks

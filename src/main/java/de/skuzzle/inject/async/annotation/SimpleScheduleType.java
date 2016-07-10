@@ -1,6 +1,7 @@
 package de.skuzzle.inject.async.annotation;
 
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,9 +19,9 @@ public enum SimpleScheduleType {
     AT_FIXED_RATE {
 
         @Override
-        public void schedule(ScheduledExecutorService scheduler, Runnable command,
-                long initialDelay, long period, TimeUnit unit) {
-            scheduler.scheduleAtFixedRate(command, initialDelay, period, unit);
+        public ScheduledFuture<?> schedule(ScheduledExecutorService scheduler, 
+                Runnable command, long initialDelay, long period, TimeUnit unit) {
+            return scheduler.scheduleAtFixedRate(command, initialDelay, period, unit);
         }
 
     },
@@ -30,9 +31,9 @@ public enum SimpleScheduleType {
      */
     WITH_FIXED_DELAY {
         @Override
-        public void schedule(ScheduledExecutorService scheduler, Runnable command,
-                long initialDelay, long delay, TimeUnit unit) {
-            scheduler.scheduleWithFixedDelay(command, initialDelay, delay, unit);
+        public ScheduledFuture<?> schedule(ScheduledExecutorService scheduler, 
+                Runnable command, long initialDelay, long delay, TimeUnit unit) {
+            return scheduler.scheduleWithFixedDelay(command, initialDelay, delay, unit);
         }
     };
 
@@ -44,7 +45,8 @@ public enum SimpleScheduleType {
      * @param initialDelay The initial delay.
      * @param rate The scheduling rate.
      * @param unit Time unit in which rate and delay are interpreted.
+     * @return The future object.
      */
-    public abstract void schedule(ScheduledExecutorService scheduler, Runnable command,
-            long initialDelay, long rate, TimeUnit unit);
+    public abstract ScheduledFuture<?> schedule(ScheduledExecutorService scheduler, 
+            Runnable command, long initialDelay, long rate, TimeUnit unit);
 }

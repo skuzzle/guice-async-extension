@@ -1,4 +1,4 @@
-package de.skuzzle.inject.async.internal.trigger;
+package de.skuzzle.inject.async.internal.runnables;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import de.skuzzle.inject.async.internal.runnables.InvokeMethodRunnable;
 import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 @RunWith(MockitoJUnitRunner.class)

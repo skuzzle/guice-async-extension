@@ -9,7 +9,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import de.skuzzle.inject.async.annotation.Async;
 
 /**
- * Utility to created dummy {@link Future} objects to use in methods annotated
+ * Utility to create dummy {@link Future} objects to use in methods annotated
  * with {@link Async}.
  *
  * @author Simon Taddiken

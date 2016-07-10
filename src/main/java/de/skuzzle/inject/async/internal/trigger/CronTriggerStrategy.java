@@ -19,6 +19,9 @@ import com.google.inject.Injector;
 import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.CronTrigger;
 import de.skuzzle.inject.async.internal.TriggerStrategyRegistry;
+import de.skuzzle.inject.async.internal.context.ScheduledContextImpl;
+import de.skuzzle.inject.async.internal.runnables.Reschedulable;
+import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
 import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 /**
@@ -30,6 +33,8 @@ public class CronTriggerStrategy implements TriggerStrategy {
 
     @Inject
     private Injector injector;
+    @Inject
+    private RunnableBuilder runnableBuilder;
 
     private final CronDefinition cronDefinition;
 
@@ -57,9 +62,19 @@ public class CronTriggerStrategy implements TriggerStrategy {
         final CronParser parser = new CronParser(this.cronDefinition);
         final Cron cron = parser.parse(trigger.value());
         final ExecutionTime execTime = ExecutionTime.forCron(cron);
+
         final InjectedMethodInvocation invocation = InjectedMethodInvocation
                 .forMethod(method, self, this.injector);
-        final Runnable action = new ReScheduleRunnable(invocation, executor, execTime);
-        executor.execute(action);
+        
+        final ScheduledContextImpl context = new ScheduledContextImpl();
+        final Runnable invokeRunnable = runnableBuilder.invoke(invocation);
+        final Runnable scopedRunnable = runnableBuilder.scope(invokeRunnable, context);
+        final Reschedulable rescheduleRunnable = runnableBuilder.reschedule(
+                scopedRunnable, 
+                executor, 
+                execTime,
+                context);
+        
+        rescheduleRunnable.scheduleNextExecution();
     }
 }

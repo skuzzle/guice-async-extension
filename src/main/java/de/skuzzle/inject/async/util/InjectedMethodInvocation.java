@@ -13,13 +13,12 @@ import com.google.inject.internal.Annotations;
 import com.google.inject.internal.Errors;
 
 /**
- * Allows to invoke any method without explicitly providing its arguments.
- * Arguments are looked up by creating {@link Key} objects from the method's
- * parameter types and then passing them to an {@link Injector} to retrieve the
- * actual argument.
+ * Allows to invoke any method without explicitly providing its arguments. Arguments are
+ * looked up by creating {@link Key} objects from the method's parameter types and then
+ * passing them to an {@link Injector} to retrieve the actual argument.
  * <p>
- * A {@link BindingAnnotation} may optionally be present on an argument type to
- * refine the Key that is created to look up the parameter's actual value.
+ * A {@link BindingAnnotation} may optionally be present on an argument type to refine the
+ * Key that is created to look up the parameter's actual value.
  * </p>
  *
  * @author Simon Taddiken
@@ -38,15 +37,14 @@ public class InjectedMethodInvocation {
 
     /**
      * Creates an {@linkplain InjectedMethodInvocation} object that is able to invoke the
-     * provided static method. The actual parameters for the invocation will be
-     * looked up using the given injector.
+     * provided static method. The actual parameters for the invocation will be looked up
+     * using the given injector.
      * <p>
      * You can call {@link InjectedMethodInvocation#proceed()} to invoke the method.
      * </p>
      *
      * @param method A static method.
-     * @param injector The injector which is queried for actual method
-     *            arguments.
+     * @param injector The injector which is queried for actual method arguments.
      * @return The MethodInvocation.
      */
     public static InjectedMethodInvocation forStatic(Method method, Injector injector) {
@@ -58,16 +56,15 @@ public class InjectedMethodInvocation {
 
     /**
      * Creates a {@linkplain InjectedMethodInvocation} object that is able to invoke the
-     * provided non-static method. The actual parameters for the invocation will
-     * be looked up using the given injector.
+     * provided non-static method. The actual parameters for the invocation will be looked
+     * up using the given injector.
      * <p>
      * You can call {@link InjectedMethodInvocation#proceed()} to invoke the method.
      * </p>
      *
      * @param method A non-static method.
      * @param self The object on which the method will be called.
-     * @param injector The injector which is queried for actual method
-     *            arguments.
+     * @param injector The injector which is queried for actual method arguments.
      * @return The MethodInvocation.
      */
     public static InjectedMethodInvocation forMethod(Method method, Object self,
@@ -99,6 +96,12 @@ public class InjectedMethodInvocation {
     }
 
     public Object proceed() throws Throwable {
-        return this.method.invoke(this.self, getArguments());
+        final boolean accessible = this.method.isAccessible();
+        try {
+            this.method.setAccessible(true);
+            return this.method.invoke(this.self, getArguments());
+        } finally {
+            this.method.setAccessible(accessible);
+        }
     }
 }

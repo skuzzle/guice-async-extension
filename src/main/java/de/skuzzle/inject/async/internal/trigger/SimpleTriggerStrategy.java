@@ -8,6 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
+import de.skuzzle.inject.async.ExceptionHandler;
 import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.SimpleTrigger;
@@ -36,7 +37,8 @@ public class SimpleTriggerStrategy implements TriggerStrategy {
     }
 
     @Override
-    public void schedule(Method method, Object self, ScheduledExecutorService executor) {
+    public void schedule(Method method, Object self, ScheduledExecutorService executor,
+            ExceptionHandler handler) {
         final SimpleTrigger trigger = method.getAnnotation(getTriggerType());
         checkArgument(trigger != null, "Method '%s' not annotated with @SimpleTrigger",
                 method);
@@ -44,13 +46,13 @@ public class SimpleTriggerStrategy implements TriggerStrategy {
         final InjectedMethodInvocation invocation = InjectedMethodInvocation.forMethod(
                 method, self, this.injector);
 
-        final ScheduledContext context = this.contextFactory.createContext();
-        final Runnable invokeRunnable = this.runnableBuilder.invoke(invocation);
-        final Runnable scopedRunnable = this.runnableBuilder.scope(invokeRunnable, context);
+        final ScheduledContext context = this.contextFactory.createContext(method);
+        final Runnable runnable = this.runnableBuilder.createRunnableStack(invocation,
+                context, handler);
 
         trigger.scheduleType().schedule(
                 executor,
-                scopedRunnable,
+                runnable,
                 trigger.initialDelay(),
                 trigger.value(),
                 trigger.timeUnit());

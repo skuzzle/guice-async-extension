@@ -17,6 +17,7 @@ import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
+import de.skuzzle.inject.async.ExceptionHandler;
 import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.Scheduled;
 import de.skuzzle.inject.async.util.MethodVisitor;
@@ -43,7 +44,8 @@ class SchedulerTypeListener implements TypeListener {
         });
     }
 
-    private static Consumer<Method> getMethodProcessor(Object self, Provider<Injector> injector,
+    private static Consumer<Method> getMethodProcessor(Object self,
+            Provider<Injector> injector,
             Provider<TriggerStrategyRegistry> registry) {
 
         return method -> {
@@ -56,12 +58,17 @@ class SchedulerTypeListener implements TypeListener {
 
             final Key<? extends ScheduledExecutorService> key = Keys.getSchedulerKey(
                     method);
-            LOG.trace("Scheduler key is: {}", key);
+            final Key<? extends ExceptionHandler> handlerKey = Keys
+                    .getExceptionHandler(method);
+
+            LOG.trace("Scheduler key is: {}, ExceptionHandler key is: {}", key,
+                    handlerKey);
             final ScheduledExecutorService scheduler = injector.get().getInstance(key);
-            LOG.trace("Using scheduler '{}'", scheduler);
+            final ExceptionHandler handler = injector.get().getInstance(handlerKey);
+
             final TriggerStrategy strategy = registry.get().getStrategyFor(trigger);
             LOG.trace("Using trigger strategy: {}", strategy);
-            strategy.schedule(method, self, scheduler);
+            strategy.schedule(method, self, scheduler, handler);
         };
     }
 

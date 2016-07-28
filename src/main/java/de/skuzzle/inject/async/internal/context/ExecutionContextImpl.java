@@ -1,5 +1,6 @@
 package de.skuzzle.inject.async.internal.context;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,9 +15,16 @@ class ExecutionContextImpl implements ExecutionContext {
 
     private final Map<String, Object> properties = new HashMap<>();
     private final int executionNr;
+    private final Method method;
 
-    ExecutionContextImpl(int executionNr) {
+    ExecutionContextImpl(Method method, int executionNr) {
+        this.method = method;
         this.executionNr = executionNr;
+    }
+
+    @Override
+    public Method getMethod() {
+        return this.method;
     }
 
     @Override

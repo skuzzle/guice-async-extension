@@ -53,6 +53,7 @@ public class ScheduledIT {
 
             assertEquals("foobar", s);
             simpleLatch.countDown();
+            throw new RuntimeException();
         }
 
         @Scheduled
@@ -88,13 +89,13 @@ public class ScheduledIT {
                 bind(String.class).toInstance("foobar");
                 bind(String.class).annotatedWith(Names.named("xxx")).toInstance("abc");
                 bind(SomeClass.class)
-                .annotatedWith(Names.named("exec"))
-                .to(SomeClass.class)
-                .in(ExecutionScope.class);
+                        .annotatedWith(Names.named("exec"))
+                        .to(SomeClass.class)
+                        .in(ExecutionScope.class);
                 bind(SomeClass.class)
-                .annotatedWith(Names.named("sched"))
-                .to(SomeClass.class)
-                .in(ScheduledScope.class);
+                        .annotatedWith(Names.named("sched"))
+                        .to(SomeClass.class)
+                        .in(ScheduledScope.class);
             }
 
             @Provides

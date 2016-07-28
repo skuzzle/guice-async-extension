@@ -1,5 +1,6 @@
 package de.skuzzle.inject.async.internal.trigger;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -14,11 +15,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
 
+import de.skuzzle.inject.async.ExceptionHandler;
 import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.annotation.Scheduled;
 import de.skuzzle.inject.async.annotation.Scheduler;
@@ -43,19 +44,20 @@ public class SimpleTriggerStrategyTest {
     private ScheduledExecutorService executorService;
     @Mock
     private ScheduledContext context;
+    @Mock
+    private ExceptionHandler exceptionHandler;
 
     @Before
     public void setup() {
-        when(this.contextFactory.createContext()).thenReturn(this.context);
+        when(this.contextFactory.createContext(any())).thenReturn(this.context);
     }
-
 
     @Scheduled
     @Scheduler(ScheduledExecutorService.class)
     @SimpleTrigger(value = 5000,
-    initialDelay = 12,
-    scheduleType = SimpleScheduleType.WITH_FIXED_DELAY,
-    timeUnit = TimeUnit.HOURS)
+            initialDelay = 12,
+            scheduleType = SimpleScheduleType.WITH_FIXED_DELAY,
+            timeUnit = TimeUnit.HOURS)
     public void methodWithSimpleTrigger() {
 
     }
@@ -68,21 +70,20 @@ public class SimpleTriggerStrategyTest {
     @Test(expected = IllegalArgumentException.class)
     public void testNoTrigger() throws Exception {
         final Method method = getClass().getMethod("methodWithoutTrigger");
-        this.subject.schedule(method, this, this.executorService);
+        this.subject.schedule(method, this, this.executorService, this.exceptionHandler);
     }
 
     @Test
     public void testSchedule() throws Exception {
         final Method method = getClass().getMethod("methodWithSimpleTrigger");
 
-        final Runnable invoke = mock(Runnable.class);
-        final Runnable scoped = mock(Runnable.class);
+        final Runnable runnable = mock(Runnable.class);
 
-        when(this.runnableBuilder.invoke(Mockito.any())).thenReturn(invoke);
-        when(this.runnableBuilder.scope(invoke, this.context)).thenReturn(scoped);
+        when(this.runnableBuilder.createRunnableStack(any(), eq(this.context),
+                eq(this.exceptionHandler))).thenReturn(runnable);
 
-        this.subject.schedule(method, this, this.executorService);
+        this.subject.schedule(method, this, this.executorService, this.exceptionHandler);
         verify(this.executorService).scheduleWithFixedDelay(
-                eq(scoped), eq(12L), eq(5000L), eq(TimeUnit.HOURS));
+                eq(runnable), eq(12L), eq(5000L), eq(TimeUnit.HOURS));
     }
 }

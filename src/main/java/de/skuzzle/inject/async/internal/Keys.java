@@ -9,26 +9,46 @@ import com.google.inject.Key;
 import com.google.inject.internal.Annotations;
 import com.google.inject.internal.Errors;
 
+import de.skuzzle.inject.async.ExceptionHandler;
 import de.skuzzle.inject.async.annotation.Executor;
+import de.skuzzle.inject.async.annotation.OnError;
 import de.skuzzle.inject.async.annotation.Scheduler;
 
 final class Keys {
 
-    /** Fall back key if the user did not bind any executor service */
-    private static final Key<? extends ExecutorService> DEFAULT_EXECUTOR_KEY =
-            Key.get(ExecutorService.class, DefaultBinding.class);
+    /** Fall back key if the user did not bind any executor service. */
+    private static final Key<? extends ExecutorService> DEFAULT_EXECUTOR_KEY = Key
+            .get(ExecutorService.class, DefaultBinding.class);
 
-    /** Fall back key if the user did not bind any scheduled executor service */
-    private static final Key<? extends ScheduledExecutorService> DEFAULT_SCHEDULER_KEY =
-            Key.get(ScheduledExecutorService.class, DefaultBinding.class);
+    /** Fall back key if the user did not bind any scheduled executor service. */
+    private static final Key<? extends ScheduledExecutorService> DEFAULT_SCHEDULER_KEY = Key
+            .get(ScheduledExecutorService.class, DefaultBinding.class);
+
+    /** Fall back key if the user did not bind any exception handlder. */
+    private static final Key<? extends ExceptionHandler> DEFAULT_EXCEPTION_HANDLER_KEY = Key
+            .get(ExceptionHandler.class, DefaultBinding.class);
 
     private Keys() {
         // hidden ctor
     }
 
     /**
-     * Finds the key of the {@link ExecutorService} to use to execute the given
-     * method.
+     * Finds the key of the {@link ExceptionHandler} to use for the given method.
+     *
+     * @param method The method to find the key for.
+     * @return The exception handler key.
+     */
+    public static Key<? extends ExceptionHandler> getExceptionHandler(Method method) {
+        // TODO: must support BindingAnnotations
+        final OnError onError = method.getAnnotation(OnError.class);
+        if (onError != null) {
+            return Key.get(onError.value());
+        }
+        return DEFAULT_EXCEPTION_HANDLER_KEY;
+    }
+
+    /**
+     * Finds the key of the {@link ExecutorService} to use to execute the given method.
      *
      * @param method The method to find the key for.
      * @return The ExecutorService key.
@@ -48,8 +68,8 @@ final class Keys {
     }
 
     /**
-     * Finds the key of the {@link ScheduledExecutorService} to use to execute
-     * the given method.
+     * Finds the key of the {@link ScheduledExecutorService} to use to execute the given
+     * method.
      *
      * @param method the method to find the key for.
      * @return The ScheduledExecutorService key.

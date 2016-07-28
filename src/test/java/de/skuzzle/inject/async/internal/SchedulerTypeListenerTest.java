@@ -23,8 +23,10 @@ import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
+import de.skuzzle.inject.async.ExceptionHandler;
 import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.CronTrigger;
+import de.skuzzle.inject.async.annotation.OnError;
 import de.skuzzle.inject.async.annotation.Scheduled;
 import de.skuzzle.inject.async.annotation.Scheduler;
 
@@ -43,6 +45,8 @@ public class SchedulerTypeListenerTest {
     private ScheduledExecutorService scheduler;
     @Mock
     private TriggerStrategy triggerStrategy;
+    @Mock
+    private ExceptionHandler exceptionHandler;
 
     @Before
     public void setUp() throws Exception {
@@ -50,9 +54,12 @@ public class SchedulerTypeListenerTest {
                 .thenReturn(provider(this.injector));
         when(this.encounter.getProvider(TriggerStrategyRegistry.class))
                 .thenReturn(provider(this.registry));
+        when(this.injector.getInstance(Key.get(ExceptionHandler.class)))
+                .thenReturn(this.exceptionHandler);
         when(this.injector.getInstance(Key.get(ScheduledExecutorService.class)))
                 .thenReturn(this.scheduler);
-        when(this.registry.getStrategyFor(Mockito.any())).thenReturn(this.triggerStrategy);
+        when(this.registry.getStrategyFor(Mockito.any()))
+                .thenReturn(this.triggerStrategy);
     }
 
     private static <T> Provider<T> provider(T t) {
@@ -62,22 +69,23 @@ public class SchedulerTypeListenerTest {
     @Scheduled
     @CronTrigger("* * * * * *")
     @Scheduler(ScheduledExecutorService.class)
+    @OnError(ExceptionHandler.class)
     public void methodWithTrigger() {
     }
 
     @Test
     public void testHear() throws Exception {
         final Method expectedMethod = getClass().getMethod("methodWithTrigger");
-        final TypeLiteral<SchedulerTypeListenerTest> type =
-                new TypeLiteral<SchedulerTypeListenerTest>() {};
+        final TypeLiteral<SchedulerTypeListenerTest> type = new TypeLiteral<SchedulerTypeListenerTest>() {};
         final TypeListener subject = new SchedulerTypeListener();
 
         subject.hear(type, this.encounter);
         verify(this.encounter).register(this.captor.capture());
-        final InjectionListener<SchedulerTypeListenerTest> listener =
-                this.captor.getValue();
+        final InjectionListener<SchedulerTypeListenerTest> listener = this.captor
+                .getValue();
 
         listener.afterInjection(this);
-        verify(this.triggerStrategy).schedule(expectedMethod, this, this.scheduler);
+        verify(this.triggerStrategy).schedule(expectedMethod, this, this.scheduler,
+                this.exceptionHandler);
     }
 }

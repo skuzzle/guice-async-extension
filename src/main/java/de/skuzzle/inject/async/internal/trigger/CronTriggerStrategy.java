@@ -16,6 +16,7 @@ import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 import com.google.inject.Injector;
 
+import de.skuzzle.inject.async.ExceptionHandler;
 import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.CronTrigger;
@@ -57,7 +58,8 @@ public class CronTriggerStrategy implements TriggerStrategy {
     }
 
     @Override
-    public void schedule(Method method, Object self, ScheduledExecutorService executor) {
+    public void schedule(Method method, Object self, ScheduledExecutorService executor,
+            ExceptionHandler handler) {
         final CronTrigger trigger = method.getAnnotation(getTriggerType());
         checkArgument(trigger != null, "Method '%s' not annotated with @CronTrigger",
                 method);
@@ -69,11 +71,11 @@ public class CronTriggerStrategy implements TriggerStrategy {
         final InjectedMethodInvocation invocation = InjectedMethodInvocation
                 .forMethod(method, self, this.injector);
 
-        final ScheduledContext context = this.contextFactory.createContext();
-        final Runnable invokeRunnable = this.runnableBuilder.invoke(invocation);
-        final Runnable scopedRunnable = this.runnableBuilder.scope(invokeRunnable, context);
+        final ScheduledContext context = this.contextFactory.createContext(method);
+        final Runnable runnable = this.runnableBuilder.createRunnableStack(invocation,
+                context, handler);
         final Reschedulable rescheduleRunnable = this.runnableBuilder.reschedule(
-                scopedRunnable,
+                runnable,
                 executor,
                 execTime);
 

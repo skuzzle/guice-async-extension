@@ -1,5 +1,6 @@
 package de.skuzzle.inject.async;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import de.skuzzle.inject.async.annotation.ExecutionScope;
@@ -15,8 +16,16 @@ import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
  * @author Simon Taddiken
  * @see ScheduledScope
  * @see RunnableBuilder
+ * @since 0.3.0
  */
 public interface ScheduledContext {
+
+    /**
+     * Gets the scheduled method to which this scope belongs.
+     *
+     * @return The method.
+     */
+    Method getMethod();
 
     /**
      * Records the start of a new execution performed in the current thread. Opens up a

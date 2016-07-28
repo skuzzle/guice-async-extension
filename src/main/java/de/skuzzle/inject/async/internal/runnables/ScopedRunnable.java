@@ -25,8 +25,6 @@ class ScopedRunnable implements Runnable {
         try {
             this.context.beginNewExecution();
             this.wrapped.run();
-        } catch (final Exception e) {
-            e.printStackTrace();
         } finally {
             this.context.finishExecution();
         }

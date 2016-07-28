@@ -8,6 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
+import de.skuzzle.inject.async.ExceptionHandler;
 import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.DelayedTrigger;
@@ -36,7 +37,8 @@ public class DelayedTriggerStrategy implements TriggerStrategy {
     }
 
     @Override
-    public void schedule(Method method, Object self, ScheduledExecutorService executor) {
+    public void schedule(Method method, Object self, ScheduledExecutorService executor,
+            ExceptionHandler handler) {
         final DelayedTrigger trigger = method.getAnnotation(getTriggerType());
         checkArgument(trigger != null, "Method '%s' not annotated with @DelayedTrigger",
                 method);
@@ -44,11 +46,11 @@ public class DelayedTriggerStrategy implements TriggerStrategy {
         final InjectedMethodInvocation invocation = InjectedMethodInvocation
                 .forMethod(method, self, this.injector);
 
-        final ScheduledContext context = this.contextFactory.createContext();
-        final Runnable invokeRunnable = this.runnableBuilder.invoke(invocation);
-        final Runnable scopedRunnable = this.runnableBuilder.scope(invokeRunnable,
-                context);
-        executor.schedule(scopedRunnable, trigger.value(), trigger.timeUnit());
+        final ScheduledContext context = this.contextFactory.createContext(method);
+        final Runnable stack = this.runnableBuilder.createRunnableStack(invocation,
+                context, handler);
+
+        executor.schedule(stack, trigger.value(), trigger.timeUnit());
     }
 
 }

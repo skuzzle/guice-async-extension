@@ -1,6 +1,5 @@
 package de.skuzzle.inject.async;
 
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ServiceLoader;
@@ -10,15 +9,15 @@ import de.skuzzle.inject.async.annotation.Trigger;
 import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 /**
- * Defines how a certain {@link Trigger} annotation is handled in order to
- * extract scheduling meta information and to actually schedule method
- * invocations.
+ * Defines how a certain {@link Trigger} annotation is handled in order to extract
+ * scheduling meta information and to actually schedule method invocations.
  * <p>
  * The framework searches for implementations of this class using the Java's
  * {@link ServiceLoader}. In order to implement your own trigger, just follow these steps:
  * </p>
  * <ol>
  * <li>Create a new Trigger annotation which will hold scheduling meta information:
+ *
  * <pre>
  * &#64;Trigger
  * &#64;Retention(RetentionPolicy.RUNTIME)
@@ -27,8 +26,10 @@ import de.skuzzle.inject.async.util.InjectedMethodInvocation;
  *     // meta information fields
  * }
  * </pre>
+ *
  * </li>
  * <li>Create an implementation of this interface to handle the new annotation:
+ *
  * <pre>
  * public class CustomTriggerStrategy implements TriggerStrategy {
  *
@@ -56,12 +57,14 @@ import de.skuzzle.inject.async.util.InjectedMethodInvocation;
  *     }
  * }
  * </pre>
+ *
  * </li>
  * <li>Register your implementation for the ServiceLoader. Create the folder structure
  * 'META-INF/services'. Within the services folder create a file named
- * 'de.skuzzle.inject.async.TriggerStrategy'. Put a single line which contains the
- * full qualified class name of your CustomTriggerStrategy into that file.</li>
+ * 'de.skuzzle.inject.async.TriggerStrategy'. Put a single line which contains the full
+ * qualified class name of your CustomTriggerStrategy into that file.</li>
  * </ol>
+ *
  * @author Simon Taddiken
  */
 public interface TriggerStrategy {
@@ -74,8 +77,8 @@ public interface TriggerStrategy {
     Class<? extends Annotation> getTriggerType();
 
     /**
-     * Extracts scheduling information from the provided {@link Method} and then
-     * schedules invocations of that method according to the information.
+     * Extracts scheduling information from the provided {@link Method} and then schedules
+     * invocations of that method according to the information.
      *
      * <p>
      * To support invocation of parameterized methods, implementors can refer to
@@ -85,6 +88,8 @@ public interface TriggerStrategy {
      * @param method The method to schedule.
      * @param self The object to invoke the method on.
      * @param executor The executor to use for scheduling.
+     * @param handler The exception handler to be used.
      */
-    void schedule(Method method, Object self, ScheduledExecutorService executor);
+    void schedule(Method method, Object self, ScheduledExecutorService executor,
+            ExceptionHandler handler);
 }

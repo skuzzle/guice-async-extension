@@ -1,5 +1,6 @@
 package de.skuzzle.inject.async;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import de.skuzzle.inject.async.annotation.ExecutionScope;
@@ -9,8 +10,16 @@ import de.skuzzle.inject.async.annotation.ExecutionScope;
  *
  * @author Simon Taddiken
  * @see ExecutionScope
+ * @since 0.3.0
  */
 public interface ExecutionContext {
+
+    /**
+     * Gets the scheduled method to which this scope belongs.
+     *
+     * @return The method.
+     */
+    Method getMethod();
 
     /**
      * Gets the properties that are attached to this context. This map is also used by the

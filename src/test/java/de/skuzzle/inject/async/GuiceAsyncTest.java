@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.google.inject.Binder;
+import com.google.inject.Guice;
 
 import de.skuzzle.inject.async.internal.AsyncModule;
 
@@ -22,5 +23,10 @@ public class GuiceAsyncTest {
     @Test(expected = IllegalArgumentException.class)
     public void testNullBinder() throws Exception {
         GuiceAsync.enableFor(null);
+    }
+
+    @Test
+    public void testCreateModule() throws Exception {
+        Guice.createInjector(GuiceAsync.createModule());
     }
 }

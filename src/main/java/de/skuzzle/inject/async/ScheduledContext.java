@@ -59,6 +59,10 @@ public interface ScheduledContext {
      * {@link ExecutionContext#getExecutionNr()} to figure out the number of the current
      * execution.
      *
+     * <p>
+     * The number denotes the amount of times that the method had finished executing.
+     * </p>
+     *
      * @return The number of times this method has been executed.
      */
     int getExecutionCount();

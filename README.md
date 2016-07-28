@@ -68,6 +68,28 @@ public void methodWithDependencies(@Named("test") SomeService someService) {
 }
 ```
 
+
+*WARNING:* You should only ever schedule methods from within Singleton scoped objects. 
+Otherwise you will run into memory leaks. Please refer to the documentation of the
+ `Scheduled` annotation for more information.
+
+### Error handling
+You can use an `ExceptionHandler` to handle errors that occur during execution of 
+scheduled methods. 
+
+```java
+@Schedule
+@SimpleTrigger
+@OnError(MyErrorHandler.class)
+public void scheduledMethod() {
+}
+```
+
+The exception handler will be obtained from the injector using the provided class as key. 
+Please refer to the `OnError` annotation's documentation for more information on error 
+handling.
+
+
 ## Asynchronous execution
 A method can be marked with `@Async` to have every call to it intercepted and executed in
 a different thread:

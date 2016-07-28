@@ -21,6 +21,7 @@ import de.skuzzle.inject.async.ScheduledContext;
  *
  * @author Simon
  * @see ScheduledContext
+ * @since 0.3.0
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

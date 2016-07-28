@@ -109,6 +109,7 @@ import de.skuzzle.inject.async.TriggerStrategy;
  * <p>
  * As your method is executed asynchronously, special care has to be taken to ensure
  * thread safety of that operation. Beware of the following:
+ * </p>
  * <ul>
  * <li>Do not access attributes of the surrounding class. If you do, use synchronization
  * to ensure visibility of the data that you write and read .</li>
@@ -117,7 +118,7 @@ import de.skuzzle.inject.async.TriggerStrategy;
  * use synchronization and/or volatile declarations to ensure integrity and visibility of
  * the data that is written and read.</li>
  * </ul>
- * </p>
+ *
  *
  * <h2>Exception handling</h2>
  * <p>

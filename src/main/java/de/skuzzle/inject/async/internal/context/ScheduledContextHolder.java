@@ -30,7 +30,7 @@ public final class ScheduledContextHolder {
      * May be used to access the {@link ScheduledContext} which is currently active for
      * the current thread. Will throw an exception if no context is in place.
      *
-     * @return
+     * @return The active context.
      */
     public static ScheduledContext getContext() {
         final ScheduledContext activeContext = STACK.get();

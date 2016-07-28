@@ -73,6 +73,16 @@ public void methodWithDependencies(@Named("test") SomeService someService) {
 Otherwise you will run into memory leaks. Please refer to the documentation of the
  `Scheduled` annotation for more information.
 
+### Scheduled scope
+There are two guice scope implementations referring to scheduled methods. The 
+`ScheduledScope` belongs to a single scheduled method. The `ExecutionScope` is a sub 
+scope of the scheduled scope and pertains for a single scheduled method execution.
+
+* If you want to have distinct instances of an object per scheduled method bind them in 
+  `ScheduledScoped`
+* If you want to have distinct instances of an object per scheduled method _execution_ 
+  bind them in `ExecutionScoped`.
+ 
 ### Error handling
 You can use an `ExceptionHandler` to handle errors that occur during execution of 
 scheduled methods. 

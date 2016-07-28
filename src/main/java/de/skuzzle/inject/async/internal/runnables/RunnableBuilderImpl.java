@@ -15,8 +15,7 @@ class RunnableBuilderImpl implements RunnableBuilder {
             ScheduledContext context, ExceptionHandler handler) {
         final Runnable invokeRunnable = this.invoke(invocation);
         final Runnable errorHandler = handleException(invokeRunnable, handler);
-        final Runnable scopedRunnable = this.scope(errorHandler, context);
-        return scopedRunnable;
+        return this.scope(errorHandler, context);
     }
 
     @Override

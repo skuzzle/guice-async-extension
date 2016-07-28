@@ -95,6 +95,13 @@ public class InjectedMethodInvocation {
         return result;
     }
 
+    /**
+     * Actually executes the method.
+     *
+     * @return The result of the method invocation.
+     * @throws Throwable If method invocation failed or the method itself threw an
+     *             exception.
+     */
     public Object proceed() throws Throwable {
         final boolean accessible = this.method.isAccessible();
         try {

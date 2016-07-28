@@ -56,6 +56,14 @@ public interface RunnableBuilder {
      */
     Runnable invoke(InjectedMethodInvocation invocation);
 
+    /**
+     * Creates a {@link Runnable} that wraps around the given one and which delegates
+     * excptions thrown by the inner runnable to the given handler.
+     *
+     * @param wrapped The wrapped runnable.
+     * @param handler The exception handler.
+     * @return The runnable.
+     */
     Runnable handleException(Runnable wrapped, ExceptionHandler handler);
 
     /**

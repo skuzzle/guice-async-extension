@@ -11,10 +11,11 @@ import de.skuzzle.inject.async.annotation.ScheduledScope;
  *
  * @author Simon Taddiken
  * @see ScheduledScope
+ * @since 0.3.0
  */
-public class ScheduledContextHolder {
+public final class ScheduledContextHolder {
 
-    private static final ThreadLocal<ScheduledContextImpl> STACK = new ThreadLocal<>();
+    private static final ThreadLocal<ScheduledContext> STACK = new ThreadLocal<>();
 
     /**
      * Tests whether the current thread is currently executing a scheduled method.
@@ -31,8 +32,8 @@ public class ScheduledContextHolder {
      *
      * @return
      */
-    public static ScheduledContextImpl getContext() {
-        final ScheduledContextImpl activeContext = STACK.get();
+    public static ScheduledContext getContext() {
+        final ScheduledContext activeContext = STACK.get();
         checkState(activeContext != null, "Scope 'ScheduledScope' is currently not "
                 + "active. Either there is no scheduled method being executed on the "
                 + "current thread or the TriggerStrategy that scheduled the method "
@@ -46,7 +47,7 @@ public class ScheduledContextHolder {
      *
      * @param context The context to record as active.
      */
-    public static void push(ScheduledContextImpl context) {
+    public static void push(ScheduledContext context) {
         checkArgument(context != null, "context may not be null. "
                 + "Use .pop() to disable the currently active context.");
         final ScheduledContext activeContext = STACK.get();
@@ -63,5 +64,9 @@ public class ScheduledContextHolder {
     public static void pop() {
         checkState(STACK.get() != null, "there is no active ScheduledContext");
         STACK.set(null);
+    }
+
+    private ScheduledContextHolder() {
+        // hidden
     }
 }

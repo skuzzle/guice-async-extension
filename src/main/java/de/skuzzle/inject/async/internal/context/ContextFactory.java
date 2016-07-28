@@ -8,6 +8,7 @@ import de.skuzzle.inject.async.ScheduledContext;
  * Used to create {@link ScheduledContext} objects for scheduled methods.
  *
  * @author Simon Taddiken
+ * @since 0.3.0
  */
 public interface ContextFactory {
 

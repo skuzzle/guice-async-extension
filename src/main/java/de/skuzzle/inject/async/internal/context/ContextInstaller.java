@@ -28,6 +28,10 @@ public final class ContextInstaller {
         binder.install(new ContextModule());
     }
 
+    private ContextInstaller() {
+        // hidden
+    }
+
     private static final class ContextModule extends AbstractModule {
 
         @Override

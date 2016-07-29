@@ -1,5 +1,6 @@
-[![Build Status](https://travis-ci.org/skuzzle/guice-async-extension.svg?branch=master)](https://travis-ci.org/skuzzle/guice-async-extension) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.inject/guice-async-extension/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.inject/guice-async-extension)
+[![Build Status](https://travis-ci.org/skuzzle/guice-async-extension.svg?branch=master)](https://travis-ci.org/skuzzle/guice-async-extension) 
 [![Coverage Status](https://coveralls.io/repos/skuzzle/guice-async-extension/badge.svg?branch=master&service=github)](https://coveralls.io/github/skuzzle/guice-async-extension?branch=master)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.inject/guice-async-extension/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.inject/guice-async-extension)
 [![JavaDoc](http://javadoc-badge.appspot.com/de.skuzzle.inject/guice-async-extension.svg?label=JavaDoc)](http://javadoc-badge.appspot.com/de.skuzzle.inject/guice-async-extension)
 
 # Guice Asynchronous Methods

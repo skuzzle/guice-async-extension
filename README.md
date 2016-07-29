@@ -58,6 +58,10 @@ public void scheduleMethod() {
 A method is scheduled according to its trigger annotation by the time an object of its 
 containing type is constructed by the `Injector`.
 
+*WARNING:* You should only ever schedule methods from within Singleton scoped objects. 
+Otherwise you will run into memory leaks. Please refer to the documentation of the
+ `Scheduled` annotation for more information.
+
 ### Parameter injection
 Scheduled methods can have parameters. They will be injected prior to each invocation.
 
@@ -68,11 +72,6 @@ public void methodWithDependencies(@Named("test") SomeService someService) {
     //...
 }
 ```
-
-
-*WARNING:* You should only ever schedule methods from within Singleton scoped objects. 
-Otherwise you will run into memory leaks. Please refer to the documentation of the
- `Scheduled` annotation for more information.
 
 ### Scheduled scope
 There are two guice scope implementations referring to scheduled methods. The 

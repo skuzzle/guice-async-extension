@@ -1,10 +1,12 @@
 package de.skuzzle.inject.async.internal.context;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 import de.skuzzle.inject.async.ExecutionContext;
 import de.skuzzle.inject.async.ScheduledContext;
@@ -16,12 +18,27 @@ class ScheduledContextImpl implements ScheduledContext {
     private final Map<String, Object> beanMap;
     private final ThreadLocal<ExecutionContextImpl> execution;
     private volatile int executionCount;
+    private volatile Future<?> future;
 
     public ScheduledContextImpl(Method method) {
         this.method = method;
         this.mutex = new Object();
         this.beanMap = new HashMap<>();
         this.execution = new ThreadLocal<>();
+    }
+
+    @Override
+    public void setFuture(Future<?> future) {
+        checkArgument(future != null, "future must not be null");
+        this.future = future;
+    }
+
+    @Override
+    public void cancel(boolean mayInterrupt) {
+        checkState(this.future != null, "setFuture has not been called. "
+                + "There might be something wrong with the TriggerStrategy"
+                + " implementation.");
+        this.future.cancel(mayInterrupt);
     }
 
     @Override

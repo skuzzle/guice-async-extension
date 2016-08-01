@@ -79,8 +79,8 @@ public class CronTriggerStrategyTest {
         when(this.runnableBuilder.createRunnableStack(any(), eq(this.scheduledContext),
                 eq(this.exceptionHandler))).thenReturn(runnable);
 
-        when(this.runnableBuilder.reschedule(eq(runnable), eq(this.executor),
-                any())).thenReturn(reschedule);
+        when(this.runnableBuilder.reschedule(eq(this.scheduledContext), eq(runnable),
+                eq(this.executor), any())).thenReturn(reschedule);
 
         this.subject.schedule(method, this, this.executor, this.exceptionHandler);
 

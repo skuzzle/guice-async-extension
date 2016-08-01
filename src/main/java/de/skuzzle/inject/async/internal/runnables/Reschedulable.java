@@ -2,7 +2,7 @@ package de.skuzzle.inject.async.internal.runnables;
 
 /**
  * Runnable extension that allows to reschedule itself.
- * 
+ *
  * @author Simon Taddiken
  */
 public interface Reschedulable extends Runnable {

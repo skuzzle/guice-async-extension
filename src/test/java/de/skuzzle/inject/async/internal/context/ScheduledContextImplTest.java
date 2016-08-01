@@ -3,8 +3,11 @@ package de.skuzzle.inject.async.internal.context;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.Future;
 
 import org.junit.After;
 import org.junit.Before;
@@ -61,6 +64,23 @@ public class ScheduledContextImplTest {
         this.subject.finishExecution();
         assertFalse(ScheduledContextHolder.isContextActive());
         assertEquals(1, this.subject.getExecutionCount());
+    }
 
+    @Test(expected = IllegalStateException.class)
+    public void testCancelNoFuture() throws Exception {
+        this.subject.cancel(false);
+    }
+
+    @Test
+    public void testCancel() throws Exception {
+        final Future<?> future = mock(Future.class);
+        this.subject.setFuture(future);
+        this.subject.cancel(true);
+        verify(future).cancel(true);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetFutureNull() throws Exception {
+        this.subject.setFuture(null);
     }
 }

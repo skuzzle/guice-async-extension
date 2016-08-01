@@ -1,5 +1,7 @@
 package de.skuzzle.inject.async.internal.runnables;
 
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,6 +19,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.cronutils.model.time.ExecutionTime;
 
+import de.skuzzle.inject.async.ScheduledContext;
+
 @RunWith(MockitoJUnitRunner.class)
 public class ReScheduleRunnableTest {
 
@@ -26,6 +30,8 @@ public class ReScheduleRunnableTest {
     private ExecutionTime executionTime;
     @Mock
     private Runnable invocation;
+    @Mock
+    private ScheduledContext context;
     @InjectMocks
     private ReScheduleRunnable subject;
 
@@ -38,6 +44,7 @@ public class ReScheduleRunnableTest {
     @Test
     public void testRun() throws Exception {
         this.subject.run();
-        verify(this.executor).schedule(this.subject, 5000, TimeUnit.MILLISECONDS);
+        verify(this.executor).schedule(isA(LatchLockableRunnable.class), eq(5000L),
+                eq(TimeUnit.MILLISECONDS));
     }
 }

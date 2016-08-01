@@ -19,9 +19,10 @@ import de.skuzzle.inject.async.ExecutionContext;
  * by the framework. If a scheduled method is called manually then this scope does not
  * apply.
  * </p>
- * 
+ *
  * @author Simon
  * @see ExecutionContext
+ * @since 0.3.0
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

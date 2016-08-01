@@ -3,6 +3,7 @@ package de.skuzzle.inject.async.internal.trigger;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
 import com.google.inject.Inject;
@@ -13,6 +14,7 @@ import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.DelayedTrigger;
 import de.skuzzle.inject.async.internal.context.ContextFactory;
+import de.skuzzle.inject.async.internal.runnables.LockableRunnable;
 import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
 import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
@@ -47,10 +49,16 @@ public class DelayedTriggerStrategy implements TriggerStrategy {
                 .forMethod(method, self, this.injector);
 
         final ScheduledContext context = this.contextFactory.createContext(method);
-        final Runnable stack = this.runnableBuilder.createRunnableStack(invocation,
-                context, handler);
+        final LockableRunnable stack = this.runnableBuilder.createLockedRunnableStack(
+                invocation, context, handler);
 
-        executor.schedule(stack, trigger.value(), trigger.timeUnit());
+        try {
+            final Future<?> future = executor.schedule(stack, trigger.value(),
+                    trigger.timeUnit());
+            context.setFuture(future);
+        } finally {
+            stack.release();
+        }
     }
 
 }

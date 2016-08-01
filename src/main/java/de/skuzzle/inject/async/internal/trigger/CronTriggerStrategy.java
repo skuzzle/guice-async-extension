@@ -75,6 +75,7 @@ public class CronTriggerStrategy implements TriggerStrategy {
         final Runnable runnable = this.runnableBuilder.createRunnableStack(invocation,
                 context, handler);
         final Reschedulable rescheduleRunnable = this.runnableBuilder.reschedule(
+                context,
                 runnable,
                 executor,
                 execTime);

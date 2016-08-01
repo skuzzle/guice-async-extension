@@ -19,6 +19,14 @@ class RunnableBuilderImpl implements RunnableBuilder {
     }
 
     @Override
+    public LockableRunnable createLockedRunnableStack(InjectedMethodInvocation invocation,
+            ScheduledContext context, ExceptionHandler handler) {
+
+        final Runnable scoped = createRunnableStack(invocation, context, handler);
+        return new LatchLockableRunnable(scoped);
+    }
+
+    @Override
     public Runnable scope(Runnable unscoped, ScheduledContext context) {
         return ScopedRunnable.of(unscoped, context);
     }
@@ -34,9 +42,9 @@ class RunnableBuilderImpl implements RunnableBuilder {
     }
 
     @Override
-    public Reschedulable reschedule(Runnable wrapped, ScheduledExecutorService scheduler,
-            ExecutionTime executionTime) {
-        return ReScheduleRunnable.of(wrapped, scheduler, executionTime);
+    public Reschedulable reschedule(ScheduledContext context, Runnable wrapped,
+            ScheduledExecutorService scheduler, ExecutionTime executionTime) {
+        return ReScheduleRunnable.of(context, wrapped, scheduler, executionTime);
     }
 
 }

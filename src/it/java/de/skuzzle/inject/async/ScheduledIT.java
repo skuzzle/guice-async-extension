@@ -31,6 +31,8 @@ public class ScheduledIT {
     private static volatile CountDownLatch cronLatch = new CountDownLatch(2);
     private static volatile CountDownLatch simpleLatch = new CountDownLatch(2);
     private static volatile CountDownLatch delayedLatch = new CountDownLatch(1);
+    private static volatile int counterSimpl;
+    private static volatile int counterCron;
 
     public static class TypeWithScheduledMethods {
 
@@ -71,6 +73,20 @@ public class ScheduledIT {
         @Scheduler(ScheduledExecutorService.class)
         public void throwingException() {
             throw new UnsupportedOperationException();
+        }
+
+        @Scheduled
+        @SimpleTrigger(500)
+        public void testCancel(ScheduledContext ctx) {
+            ++counterSimpl;
+            ctx.cancel(true);
+        }
+
+        @Scheduled
+        @CronTrigger("0/5 * * * * ?")
+        public void testCancelCron(ScheduledContext ctx) {
+            ++counterCron;
+            ctx.cancel(false);
         }
     }
 
@@ -117,5 +133,7 @@ public class ScheduledIT {
         cronLatch.await();
         // simpleLatch.await();
         delayedLatch.await();
+        assertEquals("cancel might not have worked if counter > 1", 1, counterSimpl);
+        assertEquals("cancel might not have worked if counter > 1", 1, counterCron);
     }
 }

@@ -37,6 +37,20 @@ public interface RunnableBuilder {
             ScheduledContext context, ExceptionHandler handler);
 
     /**
+     * Like
+     * {@link #createRunnableStack(InjectedMethodInvocation, ScheduledContext, ExceptionHandler)}
+     * but creates a Runnable which <b>must</b> be {@link LockableRunnable#release()
+     * released} before it is able to be executed.
+     *
+     * @param invocation The invocation to execute.
+     * @param context The context of the execution.
+     * @param handler The error handler.
+     * @return The runnable.
+     */
+    LockableRunnable createLockedRunnableStack(InjectedMethodInvocation invocation,
+            ScheduledContext context, ExceptionHandler handler);
+
+    /**
      * Creates a runnable which wraps around another runnable and executes the wrapped
      * instance in the scope of the given {@link ExecutionContext}. That is,
      * {@link ScheduledContext#beginNewExecution()} is called before- and
@@ -70,11 +84,13 @@ public interface RunnableBuilder {
      * Creates a runnable that reschedules itself with the provided scheduler before
      * actually executing the given invocation.
      *
+     * @param context The context.
      * @param wrapped The actual invocation.
      * @param scheduler The scheduler for rescheduling.
      * @param executionTime For figuring out the delay until the next execution.
      * @return The runnable.
      */
-    Reschedulable reschedule(Runnable wrapped, ScheduledExecutorService scheduler,
+    Reschedulable reschedule(ScheduledContext context, Runnable wrapped,
+            ScheduledExecutorService scheduler,
             ExecutionTime executionTime);
 }

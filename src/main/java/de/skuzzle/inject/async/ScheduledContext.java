@@ -2,6 +2,7 @@ package de.skuzzle.inject.async;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 import de.skuzzle.inject.async.annotation.ExecutionScope;
 import de.skuzzle.inject.async.annotation.ScheduledScope;
@@ -74,5 +75,17 @@ public interface ScheduledContext {
      * @return The execution context.
      */
     ExecutionContext getExecution();
+
+    /**
+     * Cancels this scheduled method. The method will never be scheduled again after this
+     * method has been called. Current executions will be interrupted if the flag is
+     * passed.
+     *
+     * @param mayInterrupt Whether running executions may be interrupted.
+     * @since 0.4.0
+     */
+    void cancel(boolean mayInterrupt);
+
+    void setFuture(Future<?> future);
 
 }

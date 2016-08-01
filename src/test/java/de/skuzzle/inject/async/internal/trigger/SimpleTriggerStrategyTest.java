@@ -2,17 +2,19 @@ package de.skuzzle.inject.async.internal.trigger;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -26,6 +28,7 @@ import de.skuzzle.inject.async.annotation.Scheduler;
 import de.skuzzle.inject.async.annotation.SimpleScheduleType;
 import de.skuzzle.inject.async.annotation.SimpleTrigger;
 import de.skuzzle.inject.async.internal.context.ContextFactory;
+import de.skuzzle.inject.async.internal.runnables.LockableRunnable;
 import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -77,13 +80,21 @@ public class SimpleTriggerStrategyTest {
     public void testSchedule() throws Exception {
         final Method method = getClass().getMethod("methodWithSimpleTrigger");
 
-        final Runnable runnable = mock(Runnable.class);
+        final LockableRunnable runnable = mock(LockableRunnable.class);
+        final ScheduledFuture future = mock(ScheduledFuture.class);
 
-        when(this.runnableBuilder.createRunnableStack(any(), eq(this.context),
+        when(this.executorService.scheduleWithFixedDelay(runnable, 12L, 5000L,
+                TimeUnit.HOURS)).thenReturn(future);
+        when(this.runnableBuilder.createLockedRunnableStack(any(),
+                eq(this.context),
                 eq(this.exceptionHandler))).thenReturn(runnable);
 
         this.subject.schedule(method, this, this.executorService, this.exceptionHandler);
-        verify(this.executorService).scheduleWithFixedDelay(
-                eq(runnable), eq(12L), eq(5000L), eq(TimeUnit.HOURS));
+
+        final InOrder order = inOrder(this.executorService, this.context, runnable);
+        order.verify(this.executorService).scheduleWithFixedDelay(runnable, 12L, 5000L,
+                TimeUnit.HOURS);
+        order.verify(this.context).setFuture(future);
+        order.verify(runnable).release();
     }
 }

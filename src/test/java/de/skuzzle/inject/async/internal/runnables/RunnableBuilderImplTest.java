@@ -39,6 +39,20 @@ public class RunnableBuilderImplTest {
     }
 
     @Test
+    public void testCreateLockedRunnable() throws Throwable {
+        final LockableRunnable runnable = this.subject.createLockedRunnableStack(
+                this.invocation, this.context, this.handler);
+
+        runnable.release();
+        runnable.run();
+
+        final InOrder order = inOrder(this.invocation, this.context, this.handler);
+        order.verify(this.context).beginNewExecution();
+        order.verify(this.invocation).proceed();
+        order.verify(this.context).finishExecution();
+    }
+
+    @Test
     public void testCreateRunnableStackException() throws Throwable {
         final RuntimeException ex = new RuntimeException();
 
@@ -55,4 +69,5 @@ public class RunnableBuilderImplTest {
         order.verify(this.handler).onException(ex);
         order.verify(this.context).finishExecution();
     }
+
 }

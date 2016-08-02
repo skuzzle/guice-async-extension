@@ -10,6 +10,10 @@ import com.google.inject.Binder;
  */
 public final class RunnablesInstaller {
 
+    private RunnablesInstaller() {
+        // hidden
+    }
+
     /**
      * Installs some bindings to the given binder.
      *
@@ -17,10 +21,6 @@ public final class RunnablesInstaller {
      */
     public static void install(Binder binder) {
         binder.install(new RunnablesModule());
-    }
-
-    private RunnablesInstaller() {
-        // hidden
     }
 
     private static final class RunnablesModule extends AbstractModule {

@@ -19,6 +19,10 @@ import de.skuzzle.inject.async.util.MapBasedScope;
  */
 public final class ContextInstaller {
 
+    private ContextInstaller() {
+        // hidden
+    }
+
     /**
      * Install context scopes for given binder.
      *
@@ -26,10 +30,6 @@ public final class ContextInstaller {
      */
     public static void install(Binder binder) {
         binder.install(new ContextModule());
-    }
-
-    private ContextInstaller() {
-        // hidden
     }
 
     private static final class ContextModule extends AbstractModule {
@@ -51,6 +51,6 @@ public final class ContextInstaller {
             bind(ExecutionContext.class).toProvider(
                     () -> ScheduledContextHolder.getContext().getExecution());
         }
-
     }
+
 }

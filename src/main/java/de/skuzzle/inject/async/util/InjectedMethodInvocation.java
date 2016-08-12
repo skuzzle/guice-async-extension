@@ -56,21 +56,25 @@ public class InjectedMethodInvocation {
 
     /**
      * Creates a {@linkplain InjectedMethodInvocation} object that is able to invoke the
-     * provided non-static method. The actual parameters for the invocation will be looked
-     * up using the given injector.
+     * provided method. The actual parameters for the invocation will be looked up using
+     * the given injector. This method supports static methods by leaving the self
+     * parameter null.
      * <p>
      * You can call {@link InjectedMethodInvocation#proceed()} to invoke the method.
      * </p>
      *
-     * @param method A non-static method.
-     * @param self The object on which the method will be called.
+     * @param method A method.
+     * @param self The object on which the method will be called. May be null for invoking
+     *            static methods.
      * @param injector The injector which is queried for actual method arguments.
      * @return The MethodInvocation.
      */
     public static InjectedMethodInvocation forMethod(Method method, Object self,
             Injector injector) {
-        checkArgument(method != null);
-        checkArgument(injector != null);
+        checkArgument(method != null, "Method must not be null");
+        checkArgument(self != null ^ Modifier.isStatic(method.getModifiers()),
+                "Method must either be static or a reference object must be passed");
+        checkArgument(injector != null, "Injector must not be null");
         return new InjectedMethodInvocation(injector, self, method);
     }
 

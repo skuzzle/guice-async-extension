@@ -77,6 +77,12 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
+		
+		<dependency>
+		  <groupId>de.skuzzle.inject</groupId>
+		  <artifactId>guice-scoped-proxy-extension</artifactId>
+		  <version>0.1.0</version>
+		</dependency>
 
 		<!-- Guice -->
 		<dependency>

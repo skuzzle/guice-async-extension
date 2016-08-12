@@ -86,10 +86,13 @@ public interface TriggerStrategy {
      * </p>
      *
      * @param method The method to schedule.
-     * @param self The object to invoke the method on.
+     * @param self The object to invoke the method on. This will be null in case that the
+     *            method is static.
      * @param executor The executor to use for scheduling.
      * @param handler The exception handler to be used.
+     * @return The {@link ScheduledContext}.
      */
-    void schedule(Method method, Object self, ScheduledExecutorService executor,
+    ScheduledContext schedule(Method method, Object self,
+            ScheduledExecutorService executor,
             ExceptionHandler handler);
 }

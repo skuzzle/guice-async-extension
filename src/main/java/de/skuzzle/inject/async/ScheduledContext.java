@@ -14,6 +14,12 @@ import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
  * {@link TriggerStrategy} implementations need to take care of supporting the scheduled
  * context theirself.
  *
+ * <p>
+ * An instance of this class is available for injection. It is bound as scoped proxy and
+ * can thus also be injected into singletons. However, calling methods on the proxy'ed
+ * context will only work if the context is active for the current thread.
+ * </p>
+ *
  * @author Simon Taddiken
  * @see ScheduledScope
  * @see RunnableBuilder
@@ -40,7 +46,7 @@ public interface ScheduledContext {
     /**
      * Detaches the {@link ExecutionContext} from the current thread and thus closes the
      * current execution scope. Must be called from within the same thread from which
-     * {@link #beginNewExecution()} has been called in order close the correct context.
+     * {@link #beginNewExecution()} has been called in order to close the correct context.
      *
      * @see ExecutionScope
      */
@@ -77,15 +83,38 @@ public interface ScheduledContext {
     ExecutionContext getExecution();
 
     /**
-     * Cancels this scheduled method. The method will never be scheduled again after this
-     * method has been called. Current executions will be interrupted if the flag is
-     * passed.
+     * Cancels this scheduled method. The method will never be scheduled again on the
+     * current instance after this method has been called. Current executions will be
+     * interrupted if the flag is passed.
+     * <p>
+     * In case the scheduled method is not contained in a singleton scoped object it
+     * <b>will</b> be scheduled again once another instance of the object has been
+     * created. If the scheduled method was a static one, it will never be scheduled
+     * again.
+     * </p>
      *
      * @param mayInterrupt Whether running executions may be interrupted.
      * @since 0.4.0
      */
     void cancel(boolean mayInterrupt);
 
+    /**
+     * Returns true if cancel has been called on this context.
+     *
+     * @return Whether this scheduled method has been cancelled.#
+     * @since 0.4.0
+     */
+    boolean isCancelled();
+
+    /**
+     * Sets the Future object for controlling the scheduled task. Should only be called by
+     * {@link TriggerStrategy} implementations to make the context support the
+     * {@link #cancel(boolean)} method. If no Future object is set by the strategy,
+     * canceling will not be possible.
+     *
+     * @param future The Future object obtained from the scheduler.
+     * @since 0.4.0
+     */
     void setFuture(Future<?> future);
 
 }

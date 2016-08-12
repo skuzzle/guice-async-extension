@@ -58,7 +58,8 @@ public class CronTriggerStrategy implements TriggerStrategy {
     }
 
     @Override
-    public void schedule(Method method, Object self, ScheduledExecutorService executor,
+    public ScheduledContext schedule(Method method, Object self,
+            ScheduledExecutorService executor,
             ExceptionHandler handler) {
         final CronTrigger trigger = method.getAnnotation(getTriggerType());
         checkArgument(trigger != null, "Method '%s' not annotated with @CronTrigger",
@@ -81,5 +82,6 @@ public class CronTriggerStrategy implements TriggerStrategy {
                 execTime);
 
         rescheduleRunnable.scheduleNextExecution();
+        return context;
     }
 }

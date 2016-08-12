@@ -13,11 +13,14 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.matcher.Matchers;
+import com.google.inject.spi.TypeListener;
 
 import de.skuzzle.inject.async.ExceptionHandler;
 import de.skuzzle.inject.async.GuiceAsync;
+import de.skuzzle.inject.async.SchedulingService;
 import de.skuzzle.inject.async.annotation.Async;
 import de.skuzzle.inject.async.internal.context.ContextInstaller;
 import de.skuzzle.inject.async.internal.runnables.RunnablesInstaller;
@@ -56,7 +59,16 @@ public final class AsyncModule extends AbstractModule {
         bind(TriggerStrategyRegistry.class)
                 .to(SpiTriggerStrategyRegistryImpl.class)
                 .in(Singleton.class);
-        bindListener(Matchers.any(), new SchedulerTypeListener());
+
+        final SchedulingService schedulingService = new SchedulingServiceImpl(
+                getProvider(Injector.class),
+                getProvider(TriggerStrategyRegistry.class));
+        final TypeListener scheduleListener = new SchedulerTypeListener(
+                schedulingService);
+
+        bind(SchedulingService.class).toInstance(schedulingService);
+        requestInjection(scheduleListener);
+        bindListener(Matchers.any(), scheduleListener);
         LOG.debug("Guice asynchronous method extension has been installed");
     }
 

@@ -39,7 +39,8 @@ public class SimpleTriggerStrategy implements TriggerStrategy {
     }
 
     @Override
-    public void schedule(Method method, Object self, ScheduledExecutorService executor,
+    public ScheduledContext schedule(Method method, Object self,
+            ScheduledExecutorService executor,
             ExceptionHandler handler) {
         final SimpleTrigger trigger = method.getAnnotation(getTriggerType());
         checkArgument(trigger != null, "Method '%s' not annotated with @SimpleTrigger",
@@ -63,6 +64,7 @@ public class SimpleTriggerStrategy implements TriggerStrategy {
         } finally {
             runnable.release();
         }
+        return context;
     }
 
 }

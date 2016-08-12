@@ -1,6 +1,7 @@
 package de.skuzzle.inject.async.internal;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
@@ -12,27 +13,23 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.google.inject.TypeLiteral;
 import com.google.inject.spi.InjectionListener;
-import com.google.inject.spi.TypeEncounter;
 
 import de.skuzzle.inject.async.ExceptionHandler;
-import de.skuzzle.inject.async.SchedulingService;
+import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.CronTrigger;
 import de.skuzzle.inject.async.annotation.OnError;
 import de.skuzzle.inject.async.annotation.Scheduled;
 import de.skuzzle.inject.async.annotation.Scheduler;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SchedulerTypeListenerTest {
-
-    @Mock
-    private TypeEncounter<SchedulerTypeListenerTest> encounter;
+public class SchedulingServiceImplTest {
     @Mock
     private Injector injector;
     @Mock
@@ -42,20 +39,22 @@ public class SchedulerTypeListenerTest {
     @Mock
     private ScheduledExecutorService scheduler;
     @Mock
-    private ExceptionHandler exceptionHandler;
+    private TriggerStrategy triggerStrategy;
     @Mock
-    private SchedulingService schedulingService;
+    private ExceptionHandler exceptionHandler;
+
+    private SchedulingServiceImpl subject;
 
     @Before
     public void setUp() throws Exception {
-        when(this.encounter.getProvider(Injector.class))
-                .thenReturn(provider(this.injector));
-        when(this.encounter.getProvider(TriggerStrategyRegistry.class))
-                .thenReturn(provider(this.registry));
+        this.subject = new SchedulingServiceImpl(provider(this.injector),
+                provider(this.registry));
         when(this.injector.getInstance(Key.get(ExceptionHandler.class)))
                 .thenReturn(this.exceptionHandler);
         when(this.injector.getInstance(Key.get(ScheduledExecutorService.class)))
                 .thenReturn(this.scheduler);
+        when(this.registry.getStrategyFor(Mockito.any()))
+                .thenReturn(this.triggerStrategy);
     }
 
     private static <T> Provider<T> provider(T t) {
@@ -76,24 +75,36 @@ public class SchedulerTypeListenerTest {
     public static void staticMethodWithTrigger() {
     }
 
+    public void methodWithouTrigger() {
+
+    }
+
     @Test
-    public void testHear() throws Exception {
+    public void testNoTrigger() throws Exception {
+        final Method expectedMethod = getClass().getMethod("methodWithouTrigger");
+
+        this.subject.scheduleMemberMethod(expectedMethod, this);
+
+        verifyNoMoreInteractions(this.triggerStrategy);
+    }
+
+    @Test
+    public void testScheduleMemberMethod() throws Exception {
         final Method expectedMethod = getClass().getMethod("methodWithTrigger");
-        final Method expectedStaticMethod = getClass()
-                .getMethod("staticMethodWithTrigger");
-        final TypeLiteral<SchedulerTypeListenerTest> type = new TypeLiteral<SchedulerTypeListenerTest>() {};
-        final SchedulerTypeListener subject = new SchedulerTypeListener(
-                this.schedulingService);
 
-        subject.hear(type, this.encounter);
-        verify(this.encounter).register(this.captor.capture());
-        final InjectionListener<SchedulerTypeListenerTest> listener = this.captor
-                .getValue();
+        this.subject.scheduleMemberMethod(expectedMethod, this);
 
-        listener.afterInjection(this);
-        verify(this.schedulingService).scheduleMemberMethod(expectedMethod, this);
+        verify(this.triggerStrategy).schedule(expectedMethod, this, this.scheduler,
+                this.exceptionHandler);
+    }
 
-        subject.injectorReady();
-        verify(this.schedulingService).scheduleStaticMethod(expectedStaticMethod);
+    @Test
+    public void testScheduleStaticMethod() throws Exception {
+        final Method expectedMethod = getClass().getMethod("staticMethodWithTrigger");
+
+        this.subject.scheduleStaticMethod(expectedMethod);
+
+        verify(this.triggerStrategy).schedule(expectedMethod, null, this.scheduler,
+                this.exceptionHandler);
     }
 }

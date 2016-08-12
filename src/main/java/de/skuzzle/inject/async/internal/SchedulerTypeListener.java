@@ -1,75 +1,71 @@
 package de.skuzzle.inject.async.internal;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Consumer;
 
-import javax.inject.Provider;
+import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Injector;
-import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
-import de.skuzzle.inject.async.ExceptionHandler;
-import de.skuzzle.inject.async.TriggerStrategy;
-import de.skuzzle.inject.async.annotation.Scheduled;
+import de.skuzzle.inject.async.SchedulingService;
 import de.skuzzle.inject.async.util.MethodVisitor;
 
 class SchedulerTypeListener implements TypeListener {
 
-    private static final Logger LOG = LoggerFactory.getLogger(
-            SchedulerTypeListener.class);
+    // synchronized in case the injector is set up asynchronously
+    private List<Class<?>> scheduleStatics = Collections
+            .synchronizedList(new ArrayList<>());
+    private volatile boolean injectorReady;
+
+    private final SchedulingService schedulingService;
+
+    SchedulerTypeListener(SchedulingService schedulingService) {
+        this.schedulingService = schedulingService;
+    }
+
+    @Inject
+    void injectorReady() {
+        this.injectorReady = true;
+        final Consumer<Method> staticAction = this.schedulingService::scheduleStaticMethod;
+
+        this.scheduleStatics.forEach(type -> {
+            MethodVisitor.forEachStaticMethod(type, staticAction);
+        });
+        this.scheduleStatics.clear();
+        this.scheduleStatics = null;
+    }
 
     @Override
     public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-        final Provider<Injector> injector = encounter.getProvider(Injector.class);
-        final Provider<TriggerStrategyRegistry> registry = encounter.getProvider(
-                TriggerStrategyRegistry.class);
+        // handle static scheduling
 
+        // need to distinguish two states here: the types we encounter while the injector
+        // is not ready and those that are encountered while the injector is already
+        // ready. In the first case, we collect the types for later handling in second
+        // case we can schedule them immediately
+        if (this.injectorReady) {
+            MethodVisitor.forEachStaticMethod(type.getRawType(),
+                    this.schedulingService::scheduleStaticMethod);
+        } else {
+            this.scheduleStatics.add(type.getRawType());
+        }
+
+        // handle member scheduling
         encounter.register(new InjectionListener<I>() {
 
             @Override
             public void afterInjection(I injectee) {
-                final Consumer<Method> action = getMethodProcessor(injectee,
-                        injector, registry);
+                final Consumer<Method> action = method -> SchedulerTypeListener.this.schedulingService
+                        .scheduleMemberMethod(method, injectee);
                 MethodVisitor.forEachMemberMethod(injectee.getClass(), action);
             }
         });
-    }
-
-    private static Consumer<Method> getMethodProcessor(Object self,
-            Provider<Injector> injector,
-            Provider<TriggerStrategyRegistry> registry) {
-
-        return method -> {
-            if (!method.isAnnotationPresent(Scheduled.class)) {
-                return;
-            }
-            final Annotation trigger = Annotations.findTriggerAnnotation(method);
-            LOG.trace("Method '{}' is eligible for scheduling. Trigger is: {}", method,
-                    trigger);
-
-            final Key<? extends ScheduledExecutorService> key = Keys.getSchedulerKey(
-                    method);
-            final Key<? extends ExceptionHandler> handlerKey = Keys
-                    .getExceptionHandler(method);
-
-            LOG.trace("Scheduler key is: {}, ExceptionHandler key is: {}", key,
-                    handlerKey);
-            final ScheduledExecutorService scheduler = injector.get().getInstance(key);
-            final ExceptionHandler handler = injector.get().getInstance(handlerKey);
-
-            final TriggerStrategy strategy = registry.get().getStrategyFor(trigger);
-            LOG.trace("Using trigger strategy: {}", strategy);
-            strategy.schedule(method, self, scheduler, handler);
-        };
     }
 
 }

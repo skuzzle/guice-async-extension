@@ -39,7 +39,8 @@ public class DelayedTriggerStrategy implements TriggerStrategy {
     }
 
     @Override
-    public void schedule(Method method, Object self, ScheduledExecutorService executor,
+    public ScheduledContext schedule(Method method, Object self,
+            ScheduledExecutorService executor,
             ExceptionHandler handler) {
         final DelayedTrigger trigger = method.getAnnotation(getTriggerType());
         checkArgument(trigger != null, "Method '%s' not annotated with @DelayedTrigger",
@@ -59,6 +60,7 @@ public class DelayedTriggerStrategy implements TriggerStrategy {
         } finally {
             stack.release();
         }
+        return context;
     }
 
 }

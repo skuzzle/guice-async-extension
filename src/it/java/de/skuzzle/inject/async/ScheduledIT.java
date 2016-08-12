@@ -30,11 +30,17 @@ public class ScheduledIT {
 
     private static volatile CountDownLatch cronLatch = new CountDownLatch(2);
     private static volatile CountDownLatch simpleLatch = new CountDownLatch(2);
-    private static volatile CountDownLatch delayedLatch = new CountDownLatch(1);
+    private static volatile CountDownLatch delayedLatch = new CountDownLatch(2);
     private static volatile int counterSimpl;
     private static volatile int counterCron;
 
     public static class TypeWithScheduledMethods {
+
+        @Scheduled
+        @DelayedTrigger(5000)
+        public static void scheduledStaticMethod() {
+            delayedLatch.countDown();
+        }
 
         @Scheduled
         @CronTrigger("0/5 * * * * ?")

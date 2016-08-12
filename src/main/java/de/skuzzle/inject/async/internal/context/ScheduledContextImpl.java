@@ -33,12 +33,22 @@ class ScheduledContextImpl implements ScheduledContext {
         this.future = future;
     }
 
-    @Override
-    public void cancel(boolean mayInterrupt) {
+    private void checkFutureSet() {
         checkState(this.future != null, "setFuture has not been called. "
                 + "There might be something wrong with the TriggerStrategy"
                 + " implementation.");
+    }
+
+    @Override
+    public void cancel(boolean mayInterrupt) {
+        checkFutureSet();
         this.future.cancel(mayInterrupt);
+    }
+
+    @Override
+    public boolean isCancelled() {
+        checkFutureSet();
+        return this.future.isCancelled();
     }
 
     @Override

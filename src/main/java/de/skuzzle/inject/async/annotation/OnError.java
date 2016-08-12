@@ -5,22 +5,23 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import javax.inject.Provider;
+
 import de.skuzzle.inject.async.ExceptionHandler;
-import de.skuzzle.inject.async.ExecutionContext;
-import de.skuzzle.inject.async.ScheduledContext;
 
 /**
  * Can be put on a method which is annotated with {@link Scheduled} to additionally
  * specify an exception handler. Please note that the exception handler instance is
- * obtained from the injector in early stages, before scheduling the method. Thus it
- * should either be bound as singleton or as
- * <a href="https://github.com/skuzzle/guice-scoped-proxy-extension">scoped proxy</a> in
- * case you need to inject the current {@link ScheduledContext} or
- * {@link ExecutionContext} into the handler.
+ * obtained from the injector in early stages, <em>before</em> initially scheduling the
+ * method. If you intend to inject {@link ScheduledScope} or {@link ExecutionScope}
+ * objects into the exception handler, you need to bind them as
+ * <a href="https://github.com/skuzzle/guice-scoped-proxy-extension">scoped proxy</a> or
+ * inject a {@link Provider}
  *
  * @author Simon Taddiken
  * @see Scheduled
  * @since 0.3.0
+ * @see ExceptionHandler
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

@@ -47,12 +47,19 @@ public class InjectedMethodInvocationTest {
         invokedStatic = true;
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testForStaticMethodWithSelf() throws Exception {
+        final Method method = getClass().getMethod("staticMethod",
+                Integer.class, String.class);
+        InjectedMethodInvocation.forMethod(method, this, this.injector);
+    }
 
     @Test
     public void testCallNonStaticMethod() throws Throwable {
         final Method method = getClass().getMethod("nonStaticMethod",
                 Integer.class, String.class);
-        final InjectedMethodInvocation invocation = InjectedMethodInvocation.forMethod(method,
+        final InjectedMethodInvocation invocation = InjectedMethodInvocation.forMethod(
+                method,
                 this, this.injector);
         invocation.proceed();
         assertTrue(this.invoked);
@@ -62,8 +69,19 @@ public class InjectedMethodInvocationTest {
     public void testCallStaticMethod() throws Throwable {
         final Method method = getClass().getMethod("staticMethod",
                 Integer.class, String.class);
-        final InjectedMethodInvocation invocation = InjectedMethodInvocation.forStatic(method,
+        final InjectedMethodInvocation invocation = InjectedMethodInvocation.forStatic(
+                method,
                 this.injector);
+        invocation.proceed();
+        assertTrue(invokedStatic);
+    }
+
+    @Test
+    public void testCallStaticMethod2() throws Throwable {
+        final Method method = getClass().getMethod("staticMethod",
+                Integer.class, String.class);
+        final InjectedMethodInvocation invocation = InjectedMethodInvocation.forMethod(
+                method, null, this.injector);
         invocation.proceed();
         assertTrue(invokedStatic);
     }

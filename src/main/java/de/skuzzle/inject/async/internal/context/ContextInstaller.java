@@ -11,6 +11,7 @@ import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.annotation.ExecutionScope;
 import de.skuzzle.inject.async.annotation.ScheduledScope;
 import de.skuzzle.inject.async.util.MapBasedScope;
+import de.skuzzle.inject.proxy.ScopedProxyBinder;
 
 /**
  * Purely used internal to install context related bindings into the main module.
@@ -47,9 +48,14 @@ public final class ContextInstaller {
                     .getContext().getProperties();
             bindScope(ScheduledScope.class, MapBasedScope.withMapSupplier(scheduledMap));
 
-            bind(ScheduledContext.class).toProvider(ScheduledContextHolder::getContext);
-            bind(ExecutionContext.class).toProvider(
-                    () -> ScheduledContextHolder.getContext().getExecution());
+            ScopedProxyBinder.using(binder())
+                    .bind(ScheduledContext.class)
+                    .toProvider(ScheduledContextHolder::getContext);
+
+            ScopedProxyBinder.using(binder())
+                    .bind(ExecutionContext.class)
+                    .toProvider(
+                            () -> ScheduledContextHolder.getContext().getExecution());
         }
     }
 

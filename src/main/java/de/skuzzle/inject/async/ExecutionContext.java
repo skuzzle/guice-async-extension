@@ -8,6 +8,12 @@ import de.skuzzle.inject.async.annotation.ExecutionScope;
 /**
  * Holds contextual information for a single scheduled method execution.
  *
+ * <p>
+ * An instance of this class is available for injection. It is bound as scoped proxy and
+ * can thus also be injected into singletons. However, calling methods on the proxy'ed
+ * context will only work if the context is active for the current thread.
+ * </p>
+ *
  * @author Simon Taddiken
  * @see ExecutionScope
  * @since 0.3.0

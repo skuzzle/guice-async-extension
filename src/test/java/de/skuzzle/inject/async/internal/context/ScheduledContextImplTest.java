@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Future;
@@ -71,6 +72,11 @@ public class ScheduledContextImplTest {
         this.subject.cancel(false);
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void testIsCancelledNoFuture() throws Exception {
+        this.subject.isCancelled();
+    }
+
     @Test
     public void testCancel() throws Exception {
         final Future<?> future = mock(Future.class);
@@ -83,4 +89,13 @@ public class ScheduledContextImplTest {
     public void testSetFutureNull() throws Exception {
         this.subject.setFuture(null);
     }
+
+    @Test
+    public void testIsCancelled() throws Exception {
+        final Future<?> future = mock(Future.class);
+        when(future.isCancelled()).thenReturn(true);
+        this.subject.setFuture(future);
+        assertTrue(this.subject.isCancelled());
+    }
+
 }

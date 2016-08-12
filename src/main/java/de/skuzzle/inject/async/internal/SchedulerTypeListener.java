@@ -34,9 +34,8 @@ class SchedulerTypeListener implements TypeListener {
         this.injectorReady = true;
         final Consumer<Method> staticAction = this.schedulingService::scheduleStaticMethod;
 
-        this.scheduleStatics.forEach(type -> {
-            MethodVisitor.forEachStaticMethod(type, staticAction);
-        });
+        this.scheduleStatics
+                .forEach(type -> MethodVisitor.forEachStaticMethod(type, staticAction));
         this.scheduleStatics.clear();
         this.scheduleStatics = null;
     }

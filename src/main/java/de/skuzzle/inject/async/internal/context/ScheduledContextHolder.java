@@ -17,6 +17,10 @@ public final class ScheduledContextHolder {
 
     private static final ThreadLocal<ScheduledContext> STACK = new ThreadLocal<>();
 
+    private ScheduledContextHolder() {
+        // hidden
+    }
+
     /**
      * Tests whether the current thread is currently executing a scheduled method.
      *
@@ -66,7 +70,4 @@ public final class ScheduledContextHolder {
         STACK.set(null);
     }
 
-    private ScheduledContextHolder() {
-        // hidden
-    }
 }

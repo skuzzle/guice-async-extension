@@ -65,5 +65,4 @@ class SchedulingServiceImpl implements SchedulingService {
         LOG.trace("Using trigger strategy: {}", strategy);
         strategy.schedule(method, self, scheduler, handler);
     }
-
 }

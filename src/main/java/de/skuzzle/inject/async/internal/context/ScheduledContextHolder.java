@@ -57,7 +57,7 @@ public final class ScheduledContextHolder {
         final ScheduledContext activeContext = STACK.get();
         checkState(activeContext == null, "there is currently another ScheduledContext "
                 + "active. There may only be one active context per thread at a time. "
-                + "Currently active contet is: '%s'. Tried to set '%s' as active context",
+                + "Currently active context is: '%s'. Tried to set '%s' as active context",
                 activeContext, context);
         STACK.set(context);
     }

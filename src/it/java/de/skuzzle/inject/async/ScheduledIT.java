@@ -38,13 +38,13 @@ public class ScheduledIT {
 
         @Scheduled
         @DelayedTrigger(5000)
-        public static void scheduledStaticMethod() {
+        private static void scheduledPrivateStaticMethod() {
             delayedLatch.countDown();
         }
 
         @Scheduled
         @CronTrigger("0/5 * * * * ?")
-        public void scheduledSyso(String s, ScheduledContext ctx,
+        private void scheduledSyso(String s, ScheduledContext ctx,
                 ExecutionContext execCtx,
                 @Named("exec") SomeClass executionScoped,
                 @Named("sched") SomeClass scheduledScoped) {
@@ -137,7 +137,7 @@ public class ScheduledIT {
     @Test(timeout = 30000)
     public void testExecuteMultipleTimes() throws Exception {
         cronLatch.await();
-        // simpleLatch.await();
+        simpleLatch.await();
         delayedLatch.await();
         assertEquals("cancel might not have worked if counter > 1", 1, counterSimpl);
         assertEquals("cancel might not have worked if counter > 1", 1, counterCron);

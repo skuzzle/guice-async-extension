@@ -50,7 +50,7 @@ public class CronTriggerStrategyTest {
         when(this.contextFactory.createContext(any())).thenReturn(this.scheduledContext);
     }
 
-    @CronTrigger("0 0 0 * * *")
+    @CronTrigger("0/5 * * * * ?")
     public void scheduledMethod() {
 
     }

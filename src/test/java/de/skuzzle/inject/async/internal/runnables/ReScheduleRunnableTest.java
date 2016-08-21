@@ -5,10 +5,10 @@ import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.Duration;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.joda.time.Duration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +37,7 @@ public class ReScheduleRunnableTest {
 
     @Before
     public void setUp() throws Exception {
-        final Duration toNext = Duration.millis(5000);
+        final Duration toNext = Duration.ofMillis(5000);
         when(this.executionTime.timeToNextExecution(Mockito.any())).thenReturn(toNext);
     }
 

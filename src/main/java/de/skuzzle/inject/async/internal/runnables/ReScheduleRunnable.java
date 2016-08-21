@@ -1,11 +1,10 @@
 package de.skuzzle.inject.async.internal.runnables;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
 
 import com.cronutils.model.time.ExecutionTime;
 
@@ -40,9 +39,9 @@ class ReScheduleRunnable implements Reschedulable {
 
     @Override
     public void scheduleNextExecution() {
-        final DateTime now = DateTime.now();
+        final ZonedDateTime now = ZonedDateTime.now();
         final Duration timeToNext = this.executionTime.timeToNextExecution(now);
-        final long delay = timeToNext.getMillis();
+        final long delay = timeToNext.toMillis();
 
         final LockableRunnable locked = new LatchLockableRunnable(this);
 

@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.junit.Before;
@@ -21,6 +22,7 @@ import com.google.inject.name.Names;
 import de.skuzzle.inject.async.annotation.CronTrigger;
 import de.skuzzle.inject.async.annotation.DelayedTrigger;
 import de.skuzzle.inject.async.annotation.ExecutionScope;
+import de.skuzzle.inject.async.annotation.OnError;
 import de.skuzzle.inject.async.annotation.Scheduled;
 import de.skuzzle.inject.async.annotation.ScheduledScope;
 import de.skuzzle.inject.async.annotation.Scheduler;
@@ -82,6 +84,14 @@ public class ScheduledIT {
         }
 
         @Scheduled
+        @DelayedTrigger(1000)
+        @Scheduler(ScheduledExecutorService.class)
+        @OnError(TestExceptionHandler.class)
+        public void throwingExceptionWithCustomHandler() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Scheduled
         @SimpleTrigger(500)
         public void testCancel(ScheduledContext ctx) {
             ++counterSimpl;
@@ -100,6 +110,24 @@ public class ScheduledIT {
 
     }
 
+    public static class TestExceptionHandler implements ExceptionHandler {
+
+        private volatile int count = 0;
+
+        @Override
+        public void onException(Exception e) {
+            this.count++;
+        }
+
+        public int getCount() {
+            return this.count;
+        }
+
+    }
+
+    @Inject
+    private TestExceptionHandler testExceptionHandler;
+
     @Before
     public void setup() {
         Guice.createInjector(new AbstractModule() {
@@ -107,6 +135,7 @@ public class ScheduledIT {
             @Override
             protected void configure() {
                 GuiceAsync.enableFor(binder());
+                bind(TestExceptionHandler.class).asEagerSingleton();
                 bind(TypeWithScheduledMethods.class).asEagerSingleton();
                 bind(String.class).toInstance("foobar");
                 bind(String.class).annotatedWith(Names.named("xxx")).toInstance("abc");
@@ -131,7 +160,7 @@ public class ScheduledIT {
             public ScheduledExecutorService scheduler(ThreadFactory factory) {
                 return Executors.newScheduledThreadPool(4, factory);
             }
-        });
+        }).injectMembers(this);
     }
 
     @Test(timeout = 30000)
@@ -141,5 +170,6 @@ public class ScheduledIT {
         delayedLatch.await();
         assertEquals("cancel might not have worked if counter > 1", 1, counterSimpl);
         assertEquals("cancel might not have worked if counter > 1", 1, counterCron);
+        assertEquals(1, this.testExceptionHandler.getCount());
     }
 }

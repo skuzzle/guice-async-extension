@@ -20,6 +20,7 @@ import com.google.inject.Provides;
 import com.google.inject.name.Names;
 
 import de.skuzzle.inject.async.annotation.CronTrigger;
+import de.skuzzle.inject.async.annotation.CronType;
 import de.skuzzle.inject.async.annotation.DelayedTrigger;
 import de.skuzzle.inject.async.annotation.ExecutionScope;
 import de.skuzzle.inject.async.annotation.OnError;
@@ -99,7 +100,7 @@ public class ScheduledIT {
         }
 
         @Scheduled
-        @CronTrigger("0/5 * * * * ?")
+        @CronTrigger(value = "0/5 * * * * ?", cronType = CronType.QUARTZ)
         public void testCancelCron(ScheduledContext ctx) {
             ++counterCron;
             ctx.cancel(false);

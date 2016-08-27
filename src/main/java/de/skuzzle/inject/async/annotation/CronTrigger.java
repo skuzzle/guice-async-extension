@@ -17,11 +17,18 @@ import com.cronutils.model.definition.CronDefinition;
 @Target(ElementType.METHOD)
 @Trigger
 public @interface CronTrigger {
-    /**
-     * Specifies the cron pattern to use. The actual format depends on the used
-     * {@link CronDefinition}.
-     *
-     * @return The cron pattern.
-     */
-    String value();
+	/**
+	 * Specifies the cron pattern to use. The actual format depends on the used
+	 * {@link CronDefinition}.
+	 *
+	 * @return The cron pattern.
+	 */
+	String value();
+
+	/**
+	 * Specifies the format of the cron pattern used.
+	 * 
+	 * @return The cron type.
+	 */
+	CronType cronType() default CronType.QUARTZ;
 }

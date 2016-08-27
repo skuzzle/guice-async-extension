@@ -42,20 +42,24 @@ class SchedulerTypeListener implements TypeListener {
 
     @Override
     public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-        // handle static scheduling
-
+        handleStaticScheduling(type.getRawType());
+        handleMemberScheduling(encounter);
+    }
+    
+    private void handleStaticScheduling(Class<?> type) {
         // need to distinguish two states here: the types we encounter while the injector
         // is not ready and those that are encountered while the injector is already
         // ready. In the first case, we collect the types for later handling in second
         // case we can schedule them immediately
         if (this.injectorReady) {
-            MethodVisitor.forEachStaticMethod(type.getRawType(),
+            MethodVisitor.forEachStaticMethod(type,
                     this.schedulingService::scheduleStaticMethod);
         } else {
-            this.scheduleStatics.add(type.getRawType());
+            this.scheduleStatics.add(type);
         }
-
-        // handle member scheduling
+    }
+    
+    private <I> void handleMemberScheduling(TypeEncounter<I> encounter) {
         encounter.register(new InjectionListener<I>() {
 
             @Override

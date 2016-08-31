@@ -3,7 +3,6 @@ package de.skuzzle.inject.async.internal.trigger;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.lang.reflect.Method;
-import java.util.ServiceLoader;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Inject;
@@ -20,7 +19,6 @@ import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.CronTrigger;
 import de.skuzzle.inject.async.annotation.CronType;
-import de.skuzzle.inject.async.internal.TriggerStrategyRegistry;
 import de.skuzzle.inject.async.internal.context.ContextFactory;
 import de.skuzzle.inject.async.internal.runnables.Reschedulable;
 import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
@@ -40,14 +38,6 @@ public class CronTriggerStrategy implements TriggerStrategy {
     @Inject
     private ContextFactory contextFactory;
 
-    /**
-     * Public constructor for being instantiated by the {@link ServiceLoader}. Supports
-     * being used with the default {@link TriggerStrategyRegistry} which performs member
-     * injection on all strategies that are loaded using the ServiceLoader.
-     */
-    public CronTriggerStrategy() {
-    }
-
     @Override
     public Class<CronTrigger> getTriggerType() {
         return CronTrigger.class;
@@ -63,7 +53,7 @@ public class CronTriggerStrategy implements TriggerStrategy {
 
         final CronType cronType = trigger.cronType();
         final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(
-        		cronType.getType());
+                cronType.getType());
         final CronParser parser = new CronParser(cronDefinition);
         final Cron cron = parser.parse(trigger.value());
         final ExecutionTime execTime = ExecutionTime.forCron(cron);

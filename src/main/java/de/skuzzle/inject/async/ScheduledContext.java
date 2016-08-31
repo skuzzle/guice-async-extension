@@ -101,7 +101,7 @@ public interface ScheduledContext {
     /**
      * Returns true if cancel has been called on this context.
      *
-     * @return Whether this scheduled method has been cancelled.#
+     * @return Whether this scheduled method has been cancelled.
      * @since 0.4.0
      */
     boolean isCancelled();

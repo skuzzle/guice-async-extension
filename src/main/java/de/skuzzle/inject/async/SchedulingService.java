@@ -27,7 +27,6 @@ public interface SchedulingService {
      * is not, this method returns without performing any actions.
      *
      * @param method The method to schedule. Must be a static method.
-     * @param self The object to invoke the method on.
      */
     void scheduleStaticMethod(Method method);
 }

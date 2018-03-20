@@ -32,10 +32,10 @@ class SchedulerTypeListener implements TypeListener {
     @Inject
     void injectorReady() {
         this.injectorReady = true;
-        final Consumer<Method> staticAction = this.schedulingService::scheduleStaticMethod;
+        final Consumer<Method> schedule = this.schedulingService::scheduleStaticMethod;
 
         this.scheduleStatics
-                .forEach(type -> MethodVisitor.forEachStaticMethod(type, staticAction));
+                .forEach(type -> MethodVisitor.forEachStaticMethod(type, schedule));
         this.scheduleStatics.clear();
         this.scheduleStatics = null;
     }
@@ -45,7 +45,7 @@ class SchedulerTypeListener implements TypeListener {
         handleStaticScheduling(type.getRawType());
         handleMemberScheduling(encounter);
     }
-    
+
     private void handleStaticScheduling(Class<?> type) {
         // need to distinguish two states here: the types we encounter while the injector
         // is not ready and those that are encountered while the injector is already
@@ -58,7 +58,7 @@ class SchedulerTypeListener implements TypeListener {
             this.scheduleStatics.add(type);
         }
     }
-    
+
     private <I> void handleMemberScheduling(TypeEncounter<I> encounter) {
         encounter.register(new InjectionListener<I>() {
 

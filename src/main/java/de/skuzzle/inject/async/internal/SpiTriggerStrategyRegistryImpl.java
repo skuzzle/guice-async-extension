@@ -46,7 +46,6 @@ class SpiTriggerStrategyRegistryImpl implements TriggerStrategyRegistry {
                 .collect(Collectors.toMap(
                         TriggerStrategy::getTriggerType,
                         Function.identity()));
-
     }
 
     private static <T> Stream<T> asStream(Iterable<T> iterable) {

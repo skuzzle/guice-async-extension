@@ -1,5 +1,7 @@
 package de.skuzzle.inject.async.internal;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,8 +24,6 @@ import de.skuzzle.inject.async.ExceptionHandler;
 import de.skuzzle.inject.async.GuiceAsync;
 import de.skuzzle.inject.async.SchedulingService;
 import de.skuzzle.inject.async.annotation.Async;
-import de.skuzzle.inject.async.internal.context.ContextInstaller;
-import de.skuzzle.inject.async.internal.runnables.RunnablesInstaller;
 
 /**
  * Exposes required bindings. Use {@link GuiceAsync} to install this module for your own
@@ -42,6 +42,9 @@ public final class AsyncModule extends AbstractModule {
      * @param principal The {@link GuiceAsync} instance that is installing this module.
      */
     public AsyncModule(GuiceAsync principal) {
+        checkArgument(principal != null,
+                "instantiating this module is not allowed. Use the class "
+                        + "GuiceAsync to enable asynchronous method support.");
         // do nothing
     }
 
@@ -52,9 +55,6 @@ public final class AsyncModule extends AbstractModule {
         requestInjection(asyncInterceptor);
         bindInterceptor(Matchers.any(), Matchers.annotatedWith(Async.class),
                 asyncInterceptor);
-
-        ContextInstaller.install(binder());
-        RunnablesInstaller.install(binder());
 
         bind(TriggerStrategyRegistry.class)
                 .to(SpiTriggerStrategyRegistryImpl.class)
@@ -77,7 +77,8 @@ public final class AsyncModule extends AbstractModule {
     @DefaultBinding
     ThreadFactory provideThreadFactory() {
         return new ThreadFactoryBuilder()
-                .setNameFormat("guice-async-%d").build();
+                .setNameFormat("guice-async-%d")
+                .build();
     }
 
     @Provides

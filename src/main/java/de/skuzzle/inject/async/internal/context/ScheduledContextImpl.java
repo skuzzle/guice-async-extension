@@ -60,7 +60,8 @@ class ScheduledContextImpl implements ScheduledContext {
     public void beginNewExecution() {
         final ExecutionContextImpl executionContext;
         synchronized (this.mutex) {
-            executionContext = new ExecutionContextImpl(this.method, this.executionCount);
+            executionContext = new ExecutionContextImpl(this.method,
+                    this.executionCount++);
         }
         this.execution.set(executionContext);
         ScheduledContextHolder.push(this);
@@ -72,9 +73,6 @@ class ScheduledContextImpl implements ScheduledContext {
         final ExecutionContext activeContext = this.execution.get();
         checkState(activeContext != null, "there is no active ExecutionContext");
         this.execution.set(null);
-        synchronized (this.mutex) {
-            ++this.executionCount;
-        }
     }
 
     @Override

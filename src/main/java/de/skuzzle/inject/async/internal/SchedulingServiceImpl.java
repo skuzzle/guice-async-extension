@@ -4,7 +4,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.concurrent.ScheduledExecutorService;
 
-import javax.inject.Inject;
 import javax.inject.Provider;
 
 import org.slf4j.Logger;
@@ -26,7 +25,6 @@ class SchedulingServiceImpl implements SchedulingService {
     private final Provider<Injector> injector;
     private final Provider<TriggerStrategyRegistry> registry;
 
-    @Inject
     SchedulingServiceImpl(Provider<Injector> injector,
             Provider<TriggerStrategyRegistry> registry) {
         this.injector = injector;
@@ -48,7 +46,7 @@ class SchedulingServiceImpl implements SchedulingService {
             return;
         }
         final Annotation trigger = Annotations.findTriggerAnnotation(method);
-        LOG.trace("Method '{}' is eligible for scheduling. Trigger is: {}", method,
+        LOG.trace("Method '{}' is elligible for scheduling. Trigger is: {}", method,
                 trigger);
 
         final Key<? extends ScheduledExecutorService> key = Keys.getSchedulerKey(

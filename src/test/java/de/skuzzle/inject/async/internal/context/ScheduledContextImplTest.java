@@ -57,7 +57,7 @@ public class ScheduledContextImplTest {
 
         final ExecutionContext ctx = this.subject.getExecution();
         assertEquals(0, ctx.getExecutionNr());
-        assertEquals(0, this.subject.getExecutionCount());
+        assertEquals(1, this.subject.getExecutionCount());
         assertEquals(ctx.getMethod(), this.subject.getMethod());
         assertTrue(ScheduledContextHolder.isContextActive());
         assertEquals(this.subject, ScheduledContextHolder.getContext());

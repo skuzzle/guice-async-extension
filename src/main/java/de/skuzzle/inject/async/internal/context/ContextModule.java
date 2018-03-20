@@ -1,12 +1,15 @@
 package de.skuzzle.inject.async.internal.context;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.util.Map;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.AbstractModule;
-import com.google.inject.Binder;
 import com.google.inject.Provider;
 
 import de.skuzzle.inject.async.ExecutionContext;
+import de.skuzzle.inject.async.GuiceAsync;
 import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.annotation.ExecutionScope;
 import de.skuzzle.inject.async.annotation.ScheduledScope;
@@ -18,45 +21,39 @@ import de.skuzzle.inject.proxy.ScopedProxyBinder;
  *
  * @author Simon Taddiken
  */
-public final class ContextInstaller {
+public final class ContextModule extends AbstractModule {
 
-    private ContextInstaller() {
-        // hidden
+    public ContextModule(GuiceAsync principal) {
+        checkArgument(principal != null,
+                "instantiating this module is not allowed. Use the class "
+                        + "GuiceAsync to enable asynchronous method support.");
     }
 
-    /**
-     * Install context scopes for given binder.
-     *
-     * @param binder The binder.
-     */
-    public static void install(Binder binder) {
-        binder.install(new ContextModule());
+    @VisibleForTesting
+    ContextModule() {
     }
 
-    private static final class ContextModule extends AbstractModule {
+    @Override
+    protected void configure() {
+        bind(ContextFactory.class).to(ContextFactoryImpl.class).asEagerSingleton();
 
-        @Override
-        protected void configure() {
-            bind(ContextFactory.class).to(ContextFactoryImpl.class).asEagerSingleton();
+        final Provider<Map<String, Object>> executionMap = () -> ScheduledContextHolder
+                .getContext().getExecution().getProperties();
 
-            final Provider<Map<String, Object>> executionMap = () -> ScheduledContextHolder
-                    .getContext().getExecution().getProperties();
+        bindScope(ExecutionScope.class, MapBasedScope.withMapSupplier(executionMap));
 
-            bindScope(ExecutionScope.class, MapBasedScope.withMapSupplier(executionMap));
+        final Provider<Map<String, Object>> scheduledMap = () -> ScheduledContextHolder
+                .getContext().getProperties();
+        bindScope(ScheduledScope.class, MapBasedScope.withMapSupplier(scheduledMap));
 
-            final Provider<Map<String, Object>> scheduledMap = () -> ScheduledContextHolder
-                    .getContext().getProperties();
-            bindScope(ScheduledScope.class, MapBasedScope.withMapSupplier(scheduledMap));
+        ScopedProxyBinder.using(binder())
+                .bind(ScheduledContext.class)
+                .toProvider(ScheduledContextHolder::getContext);
 
-            ScopedProxyBinder.using(binder())
-                    .bind(ScheduledContext.class)
-                    .toProvider(ScheduledContextHolder::getContext);
-
-            ScopedProxyBinder.using(binder())
-                    .bind(ExecutionContext.class)
-                    .toProvider(
-                            () -> ScheduledContextHolder.getContext().getExecution());
-        }
+        ScopedProxyBinder.using(binder())
+                .bind(ExecutionContext.class)
+                .toProvider(
+                        () -> ScheduledContextHolder.getContext().getExecution());
     }
 
 }

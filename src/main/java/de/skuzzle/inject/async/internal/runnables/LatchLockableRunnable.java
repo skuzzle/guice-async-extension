@@ -1,7 +1,5 @@
 package de.skuzzle.inject.async.internal.runnables;
 
-import static com.google.common.base.Preconditions.checkState;
-
 import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
@@ -35,7 +33,6 @@ class LatchLockableRunnable implements LockableRunnable {
 
     @Override
     public void release() {
-        checkState(this.latch.getCount() > 0, "Already released");
         this.latch.countDown();
     }
 

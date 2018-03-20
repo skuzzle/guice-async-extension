@@ -67,10 +67,12 @@ public interface ScheduledContext {
      * execution.
      *
      * <p>
-     * The number denotes the amount of times that the method had finished executing.
+     * Since version 1.1.0 this number no longer denotes the number of times that the
+     * method had <em>finished</em> executing. It now returns the number of times that the
+     * method has been called, disregarding whether all calls have already returned.
      * </p>
      *
-     * @return The number of times this method has been executed.
+     * @return The number of times this method has been called.
      */
     int getExecutionCount();
 

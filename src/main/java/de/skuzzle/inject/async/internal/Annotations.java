@@ -12,9 +12,9 @@ final class Annotations {
     }
 
     /**
-     * Searches the annotations of the provided method for an annotation type
-     * that itself is annotated with {@link Trigger}. An exception is thrown if
-     * the method does not have a unique Trigger annotation.
+     * Searches the annotations of the provided method for an annotation type that itself
+     * is annotated with {@link Trigger}. An exception is thrown if the method does not
+     * have a unique Trigger annotation.
      *
      * @param method The method to search.
      * @return The unique trigger annotation.
@@ -41,9 +41,6 @@ final class Annotations {
 
     private static boolean isTriggerAnnotation(Annotation annotation) {
         final Class<?> type = annotation.annotationType();
-        if (type.isAnnotationPresent(Trigger.class)) {
-            return true;
-        }
-        return false;
+        return type.isAnnotationPresent(Trigger.class);
     }
 }

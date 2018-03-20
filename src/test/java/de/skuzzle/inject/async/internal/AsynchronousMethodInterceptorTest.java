@@ -101,4 +101,5 @@ public class AsynchronousMethodInterceptorTest {
         final Future<String> result = (Future<String>) this.subject.invoke(invocation);
         assertEquals("result", result.get());
     }
+
 }

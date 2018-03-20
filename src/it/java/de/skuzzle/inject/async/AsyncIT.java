@@ -3,6 +3,7 @@ package de.skuzzle.inject.async;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,21 +29,33 @@ public class AsyncIT {
 
         @Async
         @Named("sampleExecutor")
-        public void asyncMethodWithVoidReturnType(String[] arg) throws InterruptedException {
+        public void asyncMethodWithVoidReturnType(String[] arg)
+                throws InterruptedException {
             arg[0] = "result";
             Thread.sleep(2000);
         }
 
         @Async
         @Named("sampleExecutor")
-        public Future<String> asyncMethodWithFutureReturnType() throws InterruptedException {
+        public Future<String> asyncMethodWithFutureReturnType()
+                throws InterruptedException {
             final String result = "result";
             Thread.sleep(2000);
             return Futures.delegate(result);
         }
 
         @Async
-        public void asyncMethodForDefaultExecutor(String[] arg) throws InterruptedException {
+        @Named("sampleExecutor")
+        public CompletableFuture<String> asyncMethodWithCompletableFutureReturnType()
+                throws InterruptedException {
+            final String result = "result";
+            Thread.sleep(2000);
+            return Futures.delegateCompletable(result);
+        }
+
+        @Async
+        public void asyncMethodForDefaultExecutor(String[] arg)
+                throws InterruptedException {
             arg[0] = "result";
             Thread.sleep(2000);
         }
@@ -72,7 +85,8 @@ public class AsyncIT {
 
     @Before
     public void setup() {
-        Guice.createInjector(new TestModule(), GuiceAsync.createModule()).injectMembers(this);
+        Guice.createInjector(new TestModule(), GuiceAsync.createModule())
+                .injectMembers(this);
     }
 
     @Test
@@ -96,6 +110,13 @@ public class AsyncIT {
     @Test
     public void testFuture() throws Exception {
         final Future<String> future = this.injectMe.asyncMethodWithFutureReturnType();
+        assertEquals("result", future.get());
+    }
+
+    @Test
+    public void testCompletableFuture() throws Exception {
+        final CompletableFuture<String> future = this.injectMe
+                .asyncMethodWithCompletableFutureReturnType();
         assertEquals("result", future.get());
     }
 

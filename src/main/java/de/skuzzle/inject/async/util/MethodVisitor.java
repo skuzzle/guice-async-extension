@@ -45,7 +45,7 @@ public final class MethodVisitor {
         if (type == Object.class) {
             return;
         } else {
-            forEachMemberMethod(type.getSuperclass(), action);
+            forEachMethod(type.getSuperclass(), action, filter);
         }
         Arrays.stream(type.getDeclaredMethods())
                 .filter(filter)

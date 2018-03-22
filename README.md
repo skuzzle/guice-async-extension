@@ -25,6 +25,11 @@ public class MyService {
     public Future<Integer> asynchronousWithResult() {
         return Futures.delegate(1337);
     }
+    
+    @Async
+    public CompletableFuture<Integer> asynchronousWithCompletableResult() {
+        return Futures.delegateCompletable(1337);
+    }
 }
 ```
 

@@ -21,26 +21,26 @@ import de.skuzzle.inject.async.GuiceAsync;
 import de.skuzzle.inject.async.util.Futures;
 
 /**
- * Tags a method to be run asynchronously. Annotated methods must return either
- * a {@link Future} or no value (void or {@link Void}). To enable asynchronous
- * method support, use {@link GuiceAsync#enableFor(com.google.inject.Binder)} in
- * any of your modules.
+ * Tags a method to be run asynchronously. Annotated methods must return either a
+ * {@link Future} or no value (void or {@link Void}). To enable asynchronous method
+ * support, use {@link GuiceAsync#enableFor(com.google.inject.Binder)} in any of your
+ * modules.
  * <p>
- * Method calls are intercepted and the call is then executed in a different
- * thread using an {@link ExecutorService}. The ExecutorService instance that
- * will be used is looked up using the {@link Injector}.
+ * Method calls are intercepted and the call is then executed in a different thread using
+ * an {@link ExecutorService}. The ExecutorService instance that will be used is looked up
+ * using the {@link Injector}.
  * </p>
  *
- * <h2>Specifying the Executor</h2> It is possible to customize the look-up
- * {@link Key} that is used to retrieve the actual ExecutorService.
+ * <h2>Specifying the Executor</h2> It is possible to customize the look-up {@link Key}
+ * that is used to retrieve the actual ExecutorService.
  * <ul>
- * <li>You can put any {@link BindingAnnotation} including {@link Named} on the
- * method to specify the annotation part of the Key.</li>
+ * <li>You can put any {@link BindingAnnotation} including {@link Named} on the method to
+ * specify the annotation part of the Key.</li>
  * <li>If you need to reference a certain ExecutorService sub type, you can use
  * {@link Executor} to specify the class part of the Key.</li>
  * </ul>
  *
- * For example, if your method may look like:
+ * For example, your method may look like:
  *
  * <pre>
  * &#64;Async
@@ -55,12 +55,11 @@ import de.skuzzle.inject.async.util.Futures;
  * </p>
  * <p>
  * If you leave out the {@link Executor} part, the class defaults to
- * {@code ExecutorService.class}. If you leave out the binding annotation, the
- * created key will not have an annotation part. If you put neither a binding
- * annotation nor an Executor class on the method, a default ExecutorService is
- * used that is created internally. You should make no assumptions about the
- * actual behavior of that service and it is highly recommended to bind and
- * specify an ExecutorService yourself.
+ * {@code ExecutorService.class}. If you leave out the binding annotation, the created key
+ * will not have an annotation part. If you put neither a binding annotation nor an
+ * Executor class on the method, a default ExecutorService is used that is created
+ * internally. You should make no assumptions about the actual behavior of that service
+ * and it is highly recommended to bind and specify an ExecutorService yourself.
  * </p>
  *
  * <pre>
@@ -78,10 +77,9 @@ import de.skuzzle.inject.async.util.Futures;
  * }
  * </pre>
  *
- * <h2>Returning values</h2> You can return a value from an asynchronous method
- * by returning a {@link Future} object. To implement such a method, you can
- * obtain a Future for an arbitrary value using {@link Futures#delegate(Object)}
- * like in:
+ * <h2>Returning values</h2> You can return a value from an asynchronous method by
+ * returning a {@link Future} object. To implement such a method, you can obtain a Future
+ * for an arbitrary value using {@link Futures#delegate(Object)} like in:
  *
  * <pre>
  * &#64;Async
@@ -91,31 +89,27 @@ import de.skuzzle.inject.async.util.Futures;
  * }
  * </pre>
  *
- * The dummy Future object created here will be replaced with a real Future
- * object that is obtained from the ExecutorService.
+ * The dummy Future object created here will be replaced with a real Future object that is
+ * obtained from the ExecutorService.
  *
- * <h2>Thread safety</h2> As your method is executed asynchronously, special
- * care has to be taken to ensure thread safety of that operation. Beware of the
- * following:
+ * <h2>Thread safety</h2> As your method is executed asynchronously, special care has to
+ * be taken to ensure thread safety of that operation. Beware of the following:
  * <ul>
- * <li>Do not access attributes of the surrounding class. If you do, use
- * synchronization to ensure visibility of the data that you write and read.
- * </li>
- * <li>Parameters that are passed to the asynchronous method are also
- * transferred to the executing thread. Thus, all actual parameters must be
- * thread safe. That is, they must use synchronization and/or volatile
- * declarations to ensure integrity and visibility of the data that is written
- * and read.</li>
+ * <li>Do not access attributes of the surrounding class. If you do, use synchronization
+ * to ensure visibility of the data that you write and read.</li>
+ * <li>Parameters that are passed to the asynchronous method are also transferred to the
+ * executing thread. Thus, all actual parameters must be thread safe. That is, they must
+ * use synchronization and/or volatile declarations to ensure integrity and visibility of
+ * the data that is written and read.</li>
  * </ul>
  *
- * <h2>Exception handling</h2> Asynchronous methods can throw checked
- * exceptions. If they do, the exception will be wrapped in an
- * {@link ExecutionException} which will be thrown by {@link Future#get()}.
+ * <h2>Exception handling</h2> Asynchronous methods can throw checked exceptions. If they
+ * do, the exception will be wrapped in an {@link ExecutionException} which will be thrown
+ * by {@link Future#get()}.
  *
  * <p>
- * This annotation is subject to all limitations that apply to
- * {@link MethodInterceptor MethodInterceptors}. Please see the guice wiki for
- * more information.
+ * This annotation is subject to all limitations that apply to {@link MethodInterceptor
+ * MethodInterceptors}. Please see the guice wiki for more information.
  * </p>
  *
  * @author Simon Taddiken

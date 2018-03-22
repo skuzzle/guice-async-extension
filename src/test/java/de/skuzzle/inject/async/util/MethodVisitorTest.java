@@ -12,8 +12,6 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.skuzzle.inject.async.util.MethodVisitor;
-
 public class MethodVisitorTest {
 
     public static class SuperClass {
@@ -42,7 +40,8 @@ public class MethodVisitorTest {
     }
 
     @Before
-    public void setUp() throws Exception {}
+    public void setUp() throws Exception {
+    }
 
     @Test
     public void testVisitAll() throws Exception {
@@ -60,9 +59,17 @@ public class MethodVisitorTest {
 
     @Test
     public void testPrivateCtor() throws Exception {
-        final Constructor<MethodVisitor> ctor = MethodVisitor.class.getDeclaredConstructor();
+        final Constructor<MethodVisitor> ctor = MethodVisitor.class
+                .getDeclaredConstructor();
         ctor.setAccessible(true);
         ctor.newInstance();
         assertTrue(Modifier.isPrivate(ctor.getModifiers()));
+    }
+
+    @Test
+    public void testVisitStatic() throws Exception {
+        final Set<Method> visited = new HashSet<>();
+        MethodVisitor.forEachStaticMethod(SubClass.class, visited::add);
+        assertEquals(1, visited.size());
     }
 }

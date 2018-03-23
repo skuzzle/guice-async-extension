@@ -47,11 +47,7 @@ public final class GuiceAsync {
      */
     public static void enableFor(Binder binder) {
         checkArgument(binder != null, "binder must not be null");
-
-        final GuiceAsync principal = new GuiceAsync();
-        binder.install(new AsyncModule(principal));
-        binder.install(new ContextModule(principal));
-        binder.install(new RunnablesModule(principal));
+        binder.install(createModule());
     }
 
     /**
@@ -72,5 +68,4 @@ public final class GuiceAsync {
             }
         };
     }
-
 }

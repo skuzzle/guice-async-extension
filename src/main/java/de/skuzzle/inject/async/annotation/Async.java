@@ -5,6 +5,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -91,6 +92,18 @@ import de.skuzzle.inject.async.util.Futures;
  *
  * The dummy Future object created here will be replaced with a real Future object that is
  * obtained from the ExecutorService.
+ * 
+ * <p>
+ * It's also possible to return a {@link CompletableFuture}:
+ * </p>
+ * 
+ * <pre>
+ * &#64;Async
+ * public CompletableFuture&lt;Double&gt; compute() {
+ *     final double result = realComputation();
+ *     return Futures.delegateCompletable(result);
+ * }
+ * </pre>
  *
  * <h2>Thread safety</h2> As your method is executed asynchronously, special care has to
  * be taken to ensure thread safety of that operation. Beware of the following:

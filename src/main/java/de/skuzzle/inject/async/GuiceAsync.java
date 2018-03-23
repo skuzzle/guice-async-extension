@@ -58,14 +58,32 @@ public final class GuiceAsync {
      */
     public static Module createModule() {
         final GuiceAsync principal = new GuiceAsync();
-        return new AbstractModule() {
+        return new GuiceAsyncModule(principal);
+    }
 
-            @Override
-            protected void configure() {
-                install(new AsyncModule(principal));
-                install(new ContextModule(principal));
-                install(new RunnablesModule(principal));
-            }
-        };
+    private static final class GuiceAsyncModule extends AbstractModule {
+
+        private final GuiceAsync principal;
+
+        public GuiceAsyncModule(GuiceAsync principal) {
+            this.principal = principal;
+        }
+
+        @Override
+        protected void configure() {
+            install(new AsyncModule(principal));
+            install(new ContextModule(principal));
+            install(new RunnablesModule(principal));
+        }
+
+        @Override
+        public int hashCode() {
+            return 31;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof GuiceAsyncModule;
+        }
     }
 }

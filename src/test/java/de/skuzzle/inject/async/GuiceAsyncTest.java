@@ -4,12 +4,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.google.inject.Binder;
 import com.google.inject.Guice;
-
-import de.skuzzle.inject.async.internal.AsyncModule;
 
 public class GuiceAsyncTest {
 
@@ -17,7 +14,7 @@ public class GuiceAsyncTest {
     public void testEnable() throws Exception {
         final Binder binder = mock(Binder.class);
         GuiceAsync.enableFor(binder);
-        verify(binder).install(Mockito.isA(AsyncModule.class));
+        verify(binder).install(GuiceAsync.createModule());
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -13,6 +13,11 @@ import java.util.function.Predicate;
  */
 public final class MethodVisitor {
 
+    // HACK: during maven compilation, jacoco agents adds a private static method to all
+    // classes which disturbs the unit tests (that are counting the visited static
+    // methods). Thus we need to filter out that particular method.
+    private static final String JACOCO_INIT = "$jacocoInit";
+
     private MethodVisitor() {
         // hidden ctor
     }
@@ -53,7 +58,8 @@ public final class MethodVisitor {
     }
 
     private static boolean isStatic(Method method) {
-        return Modifier.isStatic(method.getModifiers());
+        return Modifier.isStatic(method.getModifiers())
+                && !JACOCO_INIT.equals(method.getName());
     }
 
     private static boolean notStatic(Method method) {

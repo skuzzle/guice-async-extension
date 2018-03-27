@@ -30,6 +30,11 @@ public class MethodVisitorTest {
     }
 
     public static class SubClass extends SuperClass {
+
+        private static void staticPrivateMethod() {
+
+        }
+
         public void pulicMethod() {
 
         }
@@ -69,7 +74,14 @@ public class MethodVisitorTest {
     @Test
     public void testVisitStatic() throws Exception {
         final Set<Method> visited = new HashSet<>();
-        MethodVisitor.forEachStaticMethod(SubClass.class, visited::add);
+        MethodVisitor.forEachStaticMethod(SuperClass.class, visited::add);
         assertEquals(1, visited.size());
+    }
+
+    @Test
+    public void testVisitStaticAll() throws Exception {
+        final Set<Method> visited = new HashSet<>();
+        MethodVisitor.forEachStaticMethod(SubClass.class, visited::add);
+        assertEquals(2, visited.size());
     }
 }

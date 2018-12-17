@@ -8,11 +8,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -82,11 +84,18 @@ public class AsyncIT {
 
     @Inject
     private InjectMe injectMe;
+    @Inject
+    private GuiceAsyncService guiceAsyncService;
 
     @Before
     public void setup() {
         Guice.createInjector(new TestModule(), GuiceAsync.createModule())
                 .injectMembers(this);
+    }
+
+    @After
+    public void tearDown() {
+        guiceAsyncService.shutdown(500, TimeUnit.MILLISECONDS);
     }
 
     @Test

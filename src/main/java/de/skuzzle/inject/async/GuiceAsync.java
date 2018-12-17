@@ -2,11 +2,8 @@ package de.skuzzle.inject.async;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-import java.util.concurrent.TimeUnit;
-
 import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
-import com.google.inject.Injector;
 import com.google.inject.Module;
 
 import de.skuzzle.inject.async.annotation.Async;
@@ -51,27 +48,6 @@ public final class GuiceAsync {
     public static void enableFor(Binder binder) {
         checkArgument(binder != null, "binder must not be null");
         binder.install(createModule());
-    }
-
-    /**
-     * Performs an orderly shutdown of the internally used thread pools, using a best
-     * effort approach for stopping all active tasks. When supplied a timeout > 0 the
-     * current thread will block until all threads have terminated or the timeout has been
-     * reached. As the framework uses two internal executors, the timeout will be waited
-     * for twice!
-     *
-     * @param injector The injector for which guice-async extension has been
-     *            {@link #enableFor(Binder) enabled for}.
-     * @param timeout The time that the threads are given to terminate.
-     * @param timeUnit The unit of above timeout value.
-     * @return <code>true</code> if all threads terminated within the provided timeout,
-     *         <code>false</code> if not or if the current thread has been interrupted
-     *         while waiting for the timeout.
-     * @since 1.2.0
-     */
-    public static boolean shutdown(Injector injector, long timeout, TimeUnit timeUnit) {
-        checkArgument(injector != null, "injector must not be null");
-        return AsyncModule.shutdownInternal(injector, timeout, timeUnit);
     }
 
     /**

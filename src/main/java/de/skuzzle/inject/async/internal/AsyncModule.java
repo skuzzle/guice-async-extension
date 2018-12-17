@@ -6,7 +6,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
@@ -23,6 +22,7 @@ import com.google.inject.spi.TypeListener;
 
 import de.skuzzle.inject.async.ExceptionHandler;
 import de.skuzzle.inject.async.GuiceAsync;
+import de.skuzzle.inject.async.GuiceAsyncService;
 import de.skuzzle.inject.async.SchedulingService;
 import de.skuzzle.inject.async.annotation.Async;
 
@@ -49,38 +49,6 @@ public final class AsyncModule extends AbstractModule {
         // do nothing
     }
 
-    public static boolean shutdownInternal(Injector injector, long timeout, TimeUnit timeUnit) {
-        final ExecutorService executor = injector.getInstance(Keys.DEFAULT_EXECUTOR_KEY);
-        boolean result = true;
-        if (!shutdownExecutor(executor, timeout, timeUnit)) {
-            LOG.warn("There are still active tasks lingering in default executor after shutdown. Wait time: {} {}",
-                    timeout, timeUnit);
-            result = false;
-        }
-        final ScheduledExecutorService scheduler = injector.getInstance(Keys.DEFAULT_SCHEDULER_KEY);
-        if (!shutdownExecutor(scheduler, timeout, timeUnit)) {
-            LOG.warn("There are still active tasks lingering in default scheduler after shutdown. Wait time: {} {}",
-                    timeout, timeUnit);
-            result = false;
-        }
-        return result;
-    }
-
-    private static boolean shutdownExecutor(ExecutorService executor, long timeout, TimeUnit timeUnit) {
-        LOG.debug("Shutting down guice-async default executor instance {}", executor);
-        executor.shutdownNow();
-
-        try {
-            return executor.awaitTermination(timeout, timeUnit);
-        } catch (final InterruptedException e) {
-            final Thread currentThread = Thread.currentThread();
-            LOG.error("Thread {} interrupted while waiting to shutdown guice-async default executor",
-                    currentThread.getName(), e);
-            Thread.currentThread().interrupt();
-            return false;
-        }
-    }
-
     @Override
     protected void configure() {
         // the interceptor for @Async methods
@@ -92,6 +60,8 @@ public final class AsyncModule extends AbstractModule {
         bind(TriggerStrategyRegistry.class)
                 .to(SpiTriggerStrategyRegistryImpl.class)
                 .in(Singleton.class);
+
+        bind(GuiceAsyncService.class).to(GuiceAsyncServiceImpl.class).in(Singleton.class);
 
         final SchedulingService schedulingService = new SchedulingServiceImpl(
                 getProvider(Injector.class),

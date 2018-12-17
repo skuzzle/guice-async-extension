@@ -12,7 +12,7 @@ public interface GuiceAsyncService {
 
     /**
      * Performs an orderly shutdown of the internally used thread pools, using a best
-     * effort approach for stopping all active tasks. When supplied a timeout > 0 the
+     * effort approach for stopping all active tasks. When supplied a timeout &gt; 0 the
      * current thread will block until all threads have terminated or the timeout has been
      * reached. As the framework uses two internal executors, the timeout will be waited
      * for twice!

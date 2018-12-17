@@ -29,9 +29,8 @@
 		<site.name>guice-async-extension</site.name>
 		<github.name>guice-async-extension</github.name>
 		
-		<maven.compiler.target>9</maven.compiler.target>
-		<maven.compiler.source>9</maven.compiler.source>
-		<maven.compiler.release>9</maven.compiler.release>
+		<maven.compiler.target>8</maven.compiler.target>
+		<maven.compiler.source>8</maven.compiler.source>
 		
 		<skipIT>false</skipIT>
 		<skuzzle.runtime.version>0.9.5</skuzzle.runtime.version>

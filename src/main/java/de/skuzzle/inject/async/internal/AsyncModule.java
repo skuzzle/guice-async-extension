@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
@@ -46,6 +47,38 @@ public final class AsyncModule extends AbstractModule {
                 "instantiating this module is not allowed. Use the class "
                         + "GuiceAsync to enable asynchronous method support.");
         // do nothing
+    }
+
+    public static boolean shutdownInternal(Injector injector, long timeout, TimeUnit timeUnit) {
+        final ExecutorService executor = injector.getInstance(Keys.DEFAULT_EXECUTOR_KEY);
+        boolean result = true;
+        if (!shutdownExecutor(executor, timeout, timeUnit)) {
+            LOG.warn("There are still active tasks lingering in default executor after shutdown. Wait time: {} {}",
+                    timeout, timeUnit);
+            result = false;
+        }
+        final ScheduledExecutorService scheduler = injector.getInstance(Keys.DEFAULT_SCHEDULER_KEY);
+        if (!shutdownExecutor(scheduler, timeout, timeUnit)) {
+            LOG.warn("There are still active tasks lingering in default scheduler after shutdown. Wait time: {} {}",
+                    timeout, timeUnit);
+            result = false;
+        }
+        return result;
+    }
+
+    private static boolean shutdownExecutor(ExecutorService executor, long timeout, TimeUnit timeUnit) {
+        LOG.debug("Shutting down guice-async default executor instance {}", executor);
+        executor.shutdownNow();
+
+        try {
+            return executor.awaitTermination(timeout, timeUnit);
+        } catch (final InterruptedException e) {
+            final Thread currentThread = Thread.currentThread();
+            LOG.error("Thread {} interrupted while waiting to shutdown guice-async default executor",
+                    currentThread.getName(), e);
+            Thread.currentThread().interrupt();
+            return false;
+        }
     }
 
     @Override

@@ -17,11 +17,11 @@ import de.skuzzle.inject.async.annotation.Scheduler;
 final class Keys {
 
     /** Fall back key if the user did not bind any executor service. */
-    private static final Key<? extends ExecutorService> DEFAULT_EXECUTOR_KEY = Key
+    static final Key<? extends ExecutorService> DEFAULT_EXECUTOR_KEY = Key
             .get(ExecutorService.class, DefaultBinding.class);
 
     /** Fall back key if the user did not bind any scheduled executor service. */
-    private static final Key<? extends ScheduledExecutorService> DEFAULT_SCHEDULER_KEY = Key
+    static final Key<? extends ScheduledExecutorService> DEFAULT_SCHEDULER_KEY = Key
             .get(ScheduledExecutorService.class, DefaultBinding.class);
 
     /** Fall back key if the user did not bind any exception handlder. */

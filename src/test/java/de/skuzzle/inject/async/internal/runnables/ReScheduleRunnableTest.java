@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -38,7 +39,7 @@ public class ReScheduleRunnableTest {
     @Before
     public void setUp() throws Exception {
         final Duration toNext = Duration.ofMillis(5000);
-        when(this.executionTime.timeToNextExecution(Mockito.any())).thenReturn(toNext);
+        when(this.executionTime.timeToNextExecution(Mockito.any())).thenReturn(Optional.of(toNext));
     }
 
     @Test

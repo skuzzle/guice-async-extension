@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -28,10 +30,10 @@
 	<properties>
 		<site.name>guice-async-extension</site.name>
 		<github.name>guice-async-extension</github.name>
-		
+
 		<maven.compiler.target>8</maven.compiler.target>
 		<maven.compiler.source>8</maven.compiler.source>
-		
+
 		<skipIT>false</skipIT>
 		<skuzzle.runtime.version>0.9.5</skuzzle.runtime.version>
 	</properties>
@@ -57,7 +59,7 @@
 		<dependency>
 			<groupId>com.cronutils</groupId>
 			<artifactId>cron-utils</artifactId>
-			<version>5.0.0</version>
+			<version>8.0.0</version>
 		</dependency>
 
 		<dependency>
@@ -74,11 +76,11 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
-		
+
 		<dependency>
-		  <groupId>de.skuzzle.inject</groupId>
-		  <artifactId>guice-scoped-proxy-extension</artifactId>
-		  <version>0.1.0</version>
+			<groupId>de.skuzzle.inject</groupId>
+			<artifactId>guice-scoped-proxy-extension</artifactId>
+			<version>0.1.0</version>
 		</dependency>
 
 		<!-- Guice -->
@@ -110,12 +112,12 @@
 
 	<build>
 		<plugins>
-		    <!-- Skip mutation tests. -->
+			<!-- Skip mutation tests. -->
 			<plugin>
 				<groupId>org.pitest</groupId>
 				<artifactId>pitest-maven</artifactId>
 				<configuration>
-				    <skip>true</skip>
+					<skip>true</skip>
 				</configuration>
 			</plugin>
 			<!-- Enable coverally reporting -->

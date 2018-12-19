@@ -40,7 +40,8 @@ class ReScheduleRunnable implements Reschedulable {
     @Override
     public void scheduleNextExecution() {
         final ZonedDateTime now = ZonedDateTime.now();
-        final Duration timeToNext = this.executionTime.timeToNextExecution(now);
+        final Duration timeToNext = this.executionTime.timeToNextExecution(now)
+                .orElseThrow(() -> new IllegalStateException("Could not determine time to next execution"));
         final long delay = timeToNext.toMillis();
 
         final LockableRunnable locked = new LatchLockableRunnable(this);

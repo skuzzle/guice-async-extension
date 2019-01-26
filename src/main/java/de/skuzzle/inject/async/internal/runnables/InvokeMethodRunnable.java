@@ -44,9 +44,11 @@ public class InvokeMethodRunnable implements Runnable {
         try {
             this.invocation.proceed();
         } catch (final InvocationTargetException e) {
-            throw Throwables.propagate(e.getTargetException());
+            Throwables.throwIfUnchecked(e.getTargetException());
+            throw new RuntimeException(e);
         } catch (final Throwable e) {
-            throw Throwables.propagate(e);
+            Throwables.throwIfUnchecked(e);
+            throw new RuntimeException(e);
         }
     }
 }

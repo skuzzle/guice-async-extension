@@ -1,7 +1,6 @@
 package de.skuzzle.inject.async.internal.runnables;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
@@ -45,9 +44,7 @@ public class InvocationCallable<T> implements Callable<T>, Supplier<T> {
             // As by the AsynchronousMethodInterceptor, the return type of the intercepted
             // method is either CompletableFuture, Future or void.
             final Object result = this.invocation.proceed();
-            if (result instanceof CompletableFuture<?>) {
-                return (T) ((CompletableFuture<?>) result).get();
-            } else if (result instanceof Future<?>) {
+            if (result instanceof Future<?>) {
                 return (T) ((Future<?>) result).get();
             } else if (result != null) {
                 throw new IllegalStateException(
@@ -56,8 +53,8 @@ public class InvocationCallable<T> implements Callable<T>, Supplier<T> {
             }
             return null;
         } catch (final Throwable e) {
-            Throwables.propagateIfInstanceOf(e, Exception.class);
-            throw Throwables.propagate(e);
+            Throwables.throwIfInstanceOf(e, Exception.class);
+            throw new RuntimeException(e);
         }
     }
 
@@ -65,8 +62,9 @@ public class InvocationCallable<T> implements Callable<T>, Supplier<T> {
     public T get() {
         try {
             return call();
-        } catch (Exception e) {
-            throw Throwables.propagate(e);
+        } catch (final Exception e) {
+            Throwables.throwIfUnchecked(e);
+            throw new RuntimeException(e);
         }
     }
 

@@ -16,11 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import de.skuzzle.inject.async.annotation.Trigger;
-import de.skuzzle.inject.async.internal.Annotations;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AnnotationsTest {
-
 
     @Retention(RetentionPolicy.RUNTIME)
     @Trigger
@@ -43,7 +41,8 @@ public class AnnotationsTest {
     private Annotations subject;
 
     @Before
-    public void setUp() throws Exception {}
+    public void setUp() throws Exception {
+    }
 
     @SomeAnnotation
     @SampleTrigger
@@ -64,20 +63,20 @@ public class AnnotationsTest {
     @Test
     public void testFindTriggerAnnotation() throws Exception {
         final Method method = getClass().getMethod("withTrigger");
-        final Annotation result = this.subject.findTriggerAnnotation(method);
+        final Annotation result = Annotations.findTriggerAnnotation(method);
         assertTrue(result instanceof SampleTrigger);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testFindTriggerAnnotationDuplicate() throws Exception {
         final Method method = getClass().getMethod("withMultipleTriggers");
-        this.subject.findTriggerAnnotation(method);
+        Annotations.findTriggerAnnotation(method);
     }
 
     @Test(expected = IllegalStateException.class)
     public void testFindTriggerAnnotationNoAnnotation() throws Exception {
         final Method method = getClass().getMethod("withoutTrigger");
-        this.subject.findTriggerAnnotation(method);
+        Annotations.findTriggerAnnotation(method);
     }
 
     @Test

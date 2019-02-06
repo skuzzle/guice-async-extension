@@ -11,6 +11,9 @@ pipeline {
       steps {
         script {
           try {
+            sh 'mvn -version'
+            sh 'java -version'
+            sh 'javac -version'
             sh 'mvn clean integration-test -Dmaven.compiler.release=10'
           } catch (err) {
             currentBuild.result = 'FAILURE'
@@ -28,6 +31,9 @@ pipeline {
       steps {
         script {
           try {
+            sh 'mvn -version'
+            sh 'java -version'
+            sh 'javac -version'
             sh 'mvn clean integration-test -Dmaven.compiler.release=11'
           } catch (err) {
             currentBuild.result = 'FAILURE'
@@ -45,6 +51,9 @@ pipeline {
       steps {
         script {
           try {
+            sh 'mvn -version'
+            sh 'java -version'
+            sh 'javac -version'
             sh 'mvn clean integration-test -Dmaven.compiler.release=12'
           } catch (err) {
             currentBuild.result = 'FAILURE'
@@ -62,6 +71,9 @@ pipeline {
       steps {
         script {
           try {
+            sh 'mvn -version'
+            sh 'java -version'
+            sh 'javac -version'
             sh 'mvn clean integration-test -Dmaven.compiler.release=13'
           } catch (err) {
             currentBuild.result = 'FAILURE'

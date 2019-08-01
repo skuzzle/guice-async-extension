@@ -2,7 +2,7 @@ pipeline {
     agent none
     stages {
         stage("Build for different JDKs") {
-            parallel {
+            //parallel {
                 stage('JDK-10') {
                     agent {
                         docker {
@@ -51,7 +51,7 @@ pipeline {
                         testAgainstJdk("13")
                     }
                 }
-            }
+            //}
         }
     }
 }

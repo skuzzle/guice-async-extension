@@ -5,10 +5,11 @@ import java.util.concurrent.CountDownLatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.MoreObjects;
+
 class LatchLockableRunnable implements LockableRunnable {
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(LatchLockableRunnable.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LatchLockableRunnable.class);
 
     private final Runnable runnable;
     private final CountDownLatch latch;
@@ -21,7 +22,9 @@ class LatchLockableRunnable implements LockableRunnable {
     @Override
     public void run() {
         try {
+            LOG.trace("Waiting for approval");
             this.latch.await();
+            LOG.trace("Executing wrapped runnable: {}", runnable);
             this.runnable.run();
         } catch (final InterruptedException e) {
             LOG.error("Interrupted while waiting to begin execution. "
@@ -34,6 +37,13 @@ class LatchLockableRunnable implements LockableRunnable {
     @Override
     public void release() {
         this.latch.countDown();
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("runnable", runnable)
+                .toString();
     }
 
 }

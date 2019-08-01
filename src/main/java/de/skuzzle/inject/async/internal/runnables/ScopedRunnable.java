@@ -2,6 +2,8 @@ package de.skuzzle.inject.async.internal.runnables;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import com.google.common.base.MoreObjects;
+
 import de.skuzzle.inject.async.ScheduledContext;
 
 class ScopedRunnable implements Runnable {
@@ -30,4 +32,11 @@ class ScopedRunnable implements Runnable {
         }
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("wrapped", wrapped)
+                .add("context", context)
+                .toString();
+    }
 }

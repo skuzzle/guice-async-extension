@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import org.aopalliance.intercept.MethodInvocation;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Throwables;
 
 /**
@@ -68,4 +69,10 @@ public class InvocationCallable<T> implements Callable<T>, Supplier<T> {
         }
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("invocation", invocation)
+                .toString();
+    }
 }

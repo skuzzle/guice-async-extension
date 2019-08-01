@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.MoreObjects;
+
 import de.skuzzle.inject.async.ExecutionContext;
 
 /**
@@ -35,5 +37,14 @@ class ExecutionContextImpl implements ExecutionContext {
     @Override
     public Map<String, Object> getProperties() {
         return this.properties;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("method", method)
+                .add("executionNr", executionNr)
+                .add("properties", properties)
+                .toString();
     }
 }

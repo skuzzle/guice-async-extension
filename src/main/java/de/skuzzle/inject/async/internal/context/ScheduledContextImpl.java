@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import com.google.common.base.MoreObjects;
+
 import de.skuzzle.inject.async.ExecutionContext;
 import de.skuzzle.inject.async.ScheduledContext;
 
@@ -94,6 +96,10 @@ class ScheduledContextImpl implements ScheduledContext {
 
     @Override
     public String toString() {
-        return String.format("ScheduledContext[method: %s]", this.method.getName());
+        return MoreObjects.toStringHelper(this)
+                .add("executionCount", executionCount)
+                .add("method", method)
+                .add("properties", beanMap)
+                .toString();
     }
 }

@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.aopalliance.intercept.MethodInvocation;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Throwables;
 
 import de.skuzzle.inject.async.util.InjectedMethodInvocation;
@@ -50,5 +51,12 @@ public class InvokeMethodRunnable implements Runnable {
             Throwables.throwIfUnchecked(e);
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("invocation", invocation)
+                .toString();
     }
 }

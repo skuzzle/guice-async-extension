@@ -6,6 +6,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import com.google.common.base.MoreObjects;
 import com.google.inject.BindingAnnotation;
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -114,5 +115,13 @@ public class InjectedMethodInvocation {
         } finally {
             this.method.setAccessible(accessible);
         }
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("self", self)
+                .add("method", method)
+                .toString();
     }
 }

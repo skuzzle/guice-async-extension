@@ -7,6 +7,9 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.cronutils.model.Cron;
 import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
@@ -31,6 +34,8 @@ import de.skuzzle.inject.async.util.InjectedMethodInvocation;
  */
 public class CronTriggerStrategy implements TriggerStrategy {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CronTriggerStrategy.class);
+
     @Inject
     private Injector injector;
     @Inject
@@ -51,9 +56,9 @@ public class CronTriggerStrategy implements TriggerStrategy {
         checkArgument(trigger != null, "Method '%s' not annotated with @CronTrigger",
                 method);
 
+        LOG.debug("Initially scheduling method '{}' on '{}' with trigger: {}", method, self, trigger);
         final CronType cronType = trigger.cronType();
-        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(
-                cronType.getType());
+        final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(cronType.getType());
         final CronParser parser = new CronParser(cronDefinition);
         final Cron cron = parser.parse(trigger.value());
         final ExecutionTime execTime = ExecutionTime.forCron(cron);

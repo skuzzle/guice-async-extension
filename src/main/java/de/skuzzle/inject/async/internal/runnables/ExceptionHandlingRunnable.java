@@ -1,5 +1,7 @@
 package de.skuzzle.inject.async.internal.runnables;
 
+import com.google.common.base.MoreObjects;
+
 import de.skuzzle.inject.async.ExceptionHandler;
 
 class ExceptionHandlingRunnable implements Runnable {
@@ -19,6 +21,13 @@ class ExceptionHandlingRunnable implements Runnable {
         } catch (final Exception e) {
             this.handler.onException(e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("wrapped", wrapped)
+                .toString();
     }
 
 }

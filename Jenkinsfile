@@ -1,7 +1,7 @@
 pipeline {
     agent none
     stages {
-        stage("Build for different JDKs") {
+        //stage("Build for different JDKs") {
             //parallel {
                 stage('JDK-10') {
                     agent {
@@ -52,7 +52,7 @@ pipeline {
                     }
                 }
             //}
-        }
+        //}
     }
 }
 

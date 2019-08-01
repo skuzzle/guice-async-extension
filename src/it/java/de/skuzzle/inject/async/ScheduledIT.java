@@ -31,6 +31,10 @@ import de.skuzzle.inject.async.annotation.SimpleTrigger;
 
 public class ScheduledIT {
 
+    static {
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
+    }
+
     private static volatile CountDownLatch cronLatch = new CountDownLatch(2);
     private static volatile CountDownLatch simpleLatch = new CountDownLatch(2);
     private static volatile CountDownLatch delayedLatch = new CountDownLatch(2);

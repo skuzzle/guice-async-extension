@@ -25,6 +25,8 @@ import de.skuzzle.inject.async.GuiceAsync;
 import de.skuzzle.inject.async.GuiceAsyncService;
 import de.skuzzle.inject.async.SchedulingService;
 import de.skuzzle.inject.async.annotation.Async;
+import de.skuzzle.inject.async.internal.context.ContextFactory;
+import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
 
 /**
  * Exposes required bindings. Use {@link GuiceAsync} to install this module for your own
@@ -65,7 +67,9 @@ public final class AsyncModule extends AbstractModule {
 
         final SchedulingService schedulingService = new SchedulingServiceImpl(
                 getProvider(Injector.class),
-                getProvider(TriggerStrategyRegistry.class));
+                getProvider(TriggerStrategyRegistry.class),
+                getProvider(ContextFactory.class),
+                getProvider(RunnableBuilder.class));
         final TypeListener scheduleListener = new SchedulerTypeListener(
                 schedulingService);
 

@@ -26,19 +26,6 @@ public class RunnableBuilderImplTest {
     private final RunnableBuilderImpl subject = new RunnableBuilderImpl();
 
     @Test
-    public void testCreateRunnableStack() throws Throwable {
-        final Runnable runnable = this.subject.createRunnableStack(this.invocation,
-                this.context, this.handler);
-
-        runnable.run();
-
-        final InOrder order = inOrder(this.invocation, this.context, this.handler);
-        order.verify(this.context).beginNewExecution();
-        order.verify(this.invocation).proceed();
-        order.verify(this.context).finishExecution();
-    }
-
-    @Test
     public void testCreateLockedRunnable() throws Throwable {
         final LockableRunnable runnable = this.subject.createLockedRunnableStack(
                 this.invocation, this.context, this.handler);
@@ -58,7 +45,7 @@ public class RunnableBuilderImplTest {
 
         when(this.invocation.proceed()).thenThrow(ex);
 
-        final Runnable runnable = this.subject.createRunnableStack(this.invocation,
+        final Runnable runnable = this.subject.createLockedRunnableStack(this.invocation,
                 this.context, this.handler);
 
         runnable.run();

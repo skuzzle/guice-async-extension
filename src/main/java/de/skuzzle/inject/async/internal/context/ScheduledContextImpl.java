@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.MoreObjects;
 
 import de.skuzzle.inject.async.ExecutionContext;
@@ -15,15 +18,19 @@ import de.skuzzle.inject.async.ScheduledContext;
 
 class ScheduledContextImpl implements ScheduledContext {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ScheduledContextImpl.class);
+
     private final Object mutex;
     private final Method method;
+    private final Object self;
     private final Map<String, Object> beanMap;
     private final ThreadLocal<ExecutionContextImpl> execution;
     private volatile int executionCount;
     private volatile Future<?> future;
 
-    public ScheduledContextImpl(Method method) {
+    public ScheduledContextImpl(Method method, Object self) {
         this.method = method;
+        this.self = self;
         this.mutex = new Object();
         this.beanMap = new HashMap<>();
         this.execution = new ThreadLocal<>();
@@ -44,6 +51,7 @@ class ScheduledContextImpl implements ScheduledContext {
     @Override
     public void cancel(boolean mayInterrupt) {
         checkFutureSet();
+        LOG.debug("Cancel called on ScheduledContext: {}", this);
         this.future.cancel(mayInterrupt);
     }
 
@@ -56,6 +64,11 @@ class ScheduledContextImpl implements ScheduledContext {
     @Override
     public Method getMethod() {
         return this.method;
+    }
+
+    @Override
+    public Object getSelf() {
+        return this.self;
     }
 
     @Override
@@ -99,6 +112,7 @@ class ScheduledContextImpl implements ScheduledContext {
         return MoreObjects.toStringHelper(this)
                 .add("executionCount", executionCount)
                 .add("method", method)
+                .add("self", self)
                 .add("properties", beanMap)
                 .toString();
     }

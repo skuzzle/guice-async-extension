@@ -23,20 +23,6 @@ import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 public interface RunnableBuilder {
 
     /**
-     * Creates a {@link Runnable} for running an execution in the scope of a given
-     * {@link ScheduledContext context} and to handle errors with the given
-     * {@link ExceptionHandler}. The result is a stacked {@link Runnable} made up of
-     * runnables created from the methods from this builder.
-     *
-     * @param invocation The invocation to execute.
-     * @param context The context of the execution.
-     * @param handler The error handler.
-     * @return The runnable.
-     */
-    Runnable createRunnableStack(InjectedMethodInvocation invocation,
-            ScheduledContext context, ExceptionHandler handler);
-
-    /**
      * Like
      * {@link #createRunnableStack(InjectedMethodInvocation, ScheduledContext, ExceptionHandler)}
      * but creates a Runnable which <b>must</b> be {@link LockableRunnable#release()

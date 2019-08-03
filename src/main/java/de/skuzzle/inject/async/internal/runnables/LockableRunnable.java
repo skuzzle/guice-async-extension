@@ -13,7 +13,9 @@ public interface LockableRunnable extends Runnable {
     /**
      * Releases the lock which causes this runnable to block. Note: since 1.1.0 this
      * method may be called multiple times without throwing an exception.
+     *
+     * @return This.
      */
-    void release();
+    LockableRunnable release();
 
 }

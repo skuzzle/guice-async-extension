@@ -31,7 +31,7 @@ public class ScheduledContextImplTest {
         }
 
         final Method method = getClass().getMethod("justAMethod");
-        this.subject = new ScheduledContextImpl(method);
+        this.subject = new ScheduledContextImpl(method, this);
     }
 
     @After

@@ -14,20 +14,20 @@ import com.google.common.base.MoreObjects;
 
 import de.skuzzle.inject.async.ScheduledContext;
 
-class ReScheduleRunnable implements Reschedulable {
+class RescheduleRunnable implements Reschedulable {
 
     // (Hopefully) Temporary fix to circumvent the behavior described in
     // https://github.com/skuzzle/guice-async-extension/issues/6
     private static final long TIMER_INACCURACY_FIX = 100; // ms
 
-    private static final Logger LOG = LoggerFactory.getLogger(ReScheduleRunnable.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RescheduleRunnable.class);
 
     private final Runnable invocation;
     private final ScheduledExecutorService executor;
     private final ExecutionTime executionTime;
     private final ScheduledContext context;
 
-    private ReScheduleRunnable(ScheduledContext context, Runnable invocation,
+    private RescheduleRunnable(ScheduledContext context, Runnable invocation,
             ScheduledExecutorService executor, ExecutionTime executionTime) {
         this.context = context;
         this.invocation = invocation;
@@ -38,7 +38,7 @@ class ReScheduleRunnable implements Reschedulable {
     static Reschedulable of(ScheduledContext context, Runnable invocation,
             ScheduledExecutorService scheduler,
             ExecutionTime executionTime) {
-        return new ReScheduleRunnable(context, invocation, scheduler, executionTime);
+        return new RescheduleRunnable(context, invocation, scheduler, executionTime);
     }
 
     @Override

@@ -13,9 +13,14 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 
 import de.skuzzle.inject.async.ExceptionHandler;
+import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.SchedulingService;
 import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.Scheduled;
+import de.skuzzle.inject.async.internal.context.ContextFactory;
+import de.skuzzle.inject.async.internal.runnables.LockableRunnable;
+import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
+import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 class SchedulingServiceImpl implements SchedulingService {
 
@@ -24,11 +29,17 @@ class SchedulingServiceImpl implements SchedulingService {
 
     private final Provider<Injector> injector;
     private final Provider<TriggerStrategyRegistry> registry;
+    private final Provider<ContextFactory> contextFactory;
+    private final Provider<RunnableBuilder> runnableBuilder;
 
     SchedulingServiceImpl(Provider<Injector> injector,
-            Provider<TriggerStrategyRegistry> registry) {
+            Provider<TriggerStrategyRegistry> registry,
+            Provider<ContextFactory> contextFactory,
+            Provider<RunnableBuilder> runnableBuilder) {
         this.injector = injector;
         this.registry = registry;
+        this.contextFactory = contextFactory;
+        this.runnableBuilder = runnableBuilder;
     }
 
     @Override
@@ -61,6 +72,10 @@ class SchedulingServiceImpl implements SchedulingService {
 
         final TriggerStrategy strategy = this.registry.get().getStrategyFor(trigger);
         LOG.trace("Using trigger strategy: {}", strategy);
-        strategy.schedule(method, self, scheduler, handler);
+
+        final ScheduledContext context = contextFactory.get().createContext(method, self);
+        final InjectedMethodInvocation invocation = InjectedMethodInvocation.forMethod(method, self, injector.get());
+        final LockableRunnable runnable = runnableBuilder.get().createLockedRunnableStack(invocation, context, handler);
+        strategy.schedule(context, scheduler, handler, runnable);
     }
 }

@@ -35,6 +35,14 @@ public interface ScheduledContext {
     Method getMethod();
 
     /**
+     * Returns the object on which this method will be invoked. Returns null in case this
+     * context belongs to a static method.
+     *
+     * @return The object.
+     */
+    Object getSelf();
+
+    /**
      * Records the start of a new execution performed in the current thread. Opens up a
      * new {@link ExecutionContext} which will be attached to the current thread until
      * {@link #finishExecution()} is called.

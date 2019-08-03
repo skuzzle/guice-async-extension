@@ -6,6 +6,7 @@ import java.util.ServiceLoader;
 import java.util.concurrent.ScheduledExecutorService;
 
 import de.skuzzle.inject.async.annotation.Trigger;
+import de.skuzzle.inject.async.internal.runnables.LockableRunnable;
 import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 /**
@@ -85,14 +86,12 @@ public interface TriggerStrategy {
      * {@link InjectedMethodInvocation} to inject actual parameters of a method.
      * </p>
      *
-     * @param method The method to schedule.
-     * @param self The object to invoke the method on. This will be null in case that the
-     *            method is static.
+     * @param context The schedule context for the annotated method.
      * @param executor The executor to use for scheduling.
      * @param handler The exception handler to be used.
-     * @return The {@link ScheduledContext}.
+     * @param runnable A runnable that, when scheduled, will execute the annotated method.
      */
-    ScheduledContext schedule(Method method, Object self,
+    void schedule(ScheduledContext context,
             ScheduledExecutorService executor,
-            ExceptionHandler handler);
+            ExceptionHandler handler, LockableRunnable runnable);
 }

@@ -15,17 +15,15 @@ import com.cronutils.model.definition.CronDefinition;
 import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
-import com.google.inject.Injector;
 
 import de.skuzzle.inject.async.ExceptionHandler;
 import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.CronTrigger;
 import de.skuzzle.inject.async.annotation.CronType;
-import de.skuzzle.inject.async.internal.context.ContextFactory;
+import de.skuzzle.inject.async.internal.runnables.LockableRunnable;
 import de.skuzzle.inject.async.internal.runnables.Reschedulable;
 import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
-import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 /**
  * TriggerStrategy that handles the {@link CronTrigger} annotation.
@@ -37,11 +35,7 @@ public class CronTriggerStrategy implements TriggerStrategy {
     private static final Logger LOG = LoggerFactory.getLogger(CronTriggerStrategy.class);
 
     @Inject
-    private Injector injector;
-    @Inject
     private RunnableBuilder runnableBuilder;
-    @Inject
-    private ContextFactory contextFactory;
 
     @Override
     public Class<CronTrigger> getTriggerType() {
@@ -49,33 +43,28 @@ public class CronTriggerStrategy implements TriggerStrategy {
     }
 
     @Override
-    public ScheduledContext schedule(Method method, Object self,
+    public void schedule(ScheduledContext context,
             ScheduledExecutorService executor,
-            ExceptionHandler handler) {
+            ExceptionHandler handler, LockableRunnable runnable) {
+
+        final Method method = context.getMethod();
         final CronTrigger trigger = method.getAnnotation(getTriggerType());
         checkArgument(trigger != null, "Method '%s' not annotated with @CronTrigger",
                 method);
 
-        LOG.debug("Initially scheduling method '{}' on '{}' with trigger: {}", method, self, trigger);
+        LOG.debug("Initially scheduling method '{}' on '{}' with trigger: {}", method, context.getSelf(), trigger);
         final CronType cronType = trigger.cronType();
         final CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(cronType.getType());
         final CronParser parser = new CronParser(cronDefinition);
         final Cron cron = parser.parse(trigger.value());
         final ExecutionTime execTime = ExecutionTime.forCron(cron);
 
-        final InjectedMethodInvocation invocation = InjectedMethodInvocation
-                .forMethod(method, self, this.injector);
-
-        final ScheduledContext context = this.contextFactory.createContext(method);
-        final Runnable runnable = this.runnableBuilder.createRunnableStack(invocation,
-                context, handler);
         final Reschedulable rescheduleRunnable = this.runnableBuilder.reschedule(
                 context,
-                runnable,
+                runnable.release(),
                 executor,
                 execTime);
 
         rescheduleRunnable.scheduleNextExecution();
-        return context;
     }
 }

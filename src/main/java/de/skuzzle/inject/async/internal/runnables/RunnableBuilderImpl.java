@@ -11,18 +11,11 @@ import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 class RunnableBuilderImpl implements RunnableBuilder {
 
     @Override
-    public Runnable createRunnableStack(InjectedMethodInvocation invocation,
+    public LockableRunnable createLockedRunnableStack(InjectedMethodInvocation invocation,
             ScheduledContext context, ExceptionHandler handler) {
         final Runnable invokeRunnable = this.invoke(invocation);
         final Runnable errorHandler = handleException(invokeRunnable, handler);
-        return this.scope(errorHandler, context);
-    }
-
-    @Override
-    public LockableRunnable createLockedRunnableStack(InjectedMethodInvocation invocation,
-            ScheduledContext context, ExceptionHandler handler) {
-
-        final Runnable scoped = createRunnableStack(invocation, context, handler);
+        final Runnable scoped = this.scope(errorHandler, context);
         return new LatchLockableRunnable(scoped);
     }
 
@@ -44,7 +37,7 @@ class RunnableBuilderImpl implements RunnableBuilder {
     @Override
     public Reschedulable reschedule(ScheduledContext context, Runnable wrapped,
             ScheduledExecutorService scheduler, ExecutionTime executionTime) {
-        return ReScheduleRunnable.of(context, wrapped, scheduler, executionTime);
+        return RescheduleRunnable.of(context, wrapped, scheduler, executionTime);
     }
 
 }

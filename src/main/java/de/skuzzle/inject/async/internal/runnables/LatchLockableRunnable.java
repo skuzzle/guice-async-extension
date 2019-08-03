@@ -27,16 +27,16 @@ class LatchLockableRunnable implements LockableRunnable {
             LOG.trace("Executing wrapped runnable: {}", runnable);
             this.runnable.run();
         } catch (final InterruptedException e) {
-            LOG.error("Interrupted while waiting to begin execution. "
-                    + "Execution of {} has been skipped.", this.runnable, e);
+            LOG.error("Interrupted while waiting to begin execution. Execution of {} has been skipped.",
+                    this.runnable, e);
             Thread.currentThread().interrupt();
         }
-
     }
 
     @Override
-    public void release() {
+    public LockableRunnable release() {
         this.latch.countDown();
+        return this;
     }
 
     @Override

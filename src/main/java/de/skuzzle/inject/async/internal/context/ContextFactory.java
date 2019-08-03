@@ -17,7 +17,8 @@ public interface ContextFactory {
      * single scheduled method.
      *
      * @param method the method being scheduled for execution.
+     * @param self The object on which the method shall be executed.
      * @return The context.
      */
-    ScheduledContext createContext(Method method);
+    ScheduledContext createContext(Method method, Object self);
 }

@@ -45,7 +45,7 @@ public class ReScheduleRunnableTest {
     @Test
     public void testRun() throws Exception {
         this.subject.run();
-        verify(this.executor).schedule(isA(LatchLockableRunnable.class), eq(5000L),
+        verify(this.executor).schedule(isA(LatchLockableRunnable.class), eq(5100L),
                 eq(TimeUnit.MILLISECONDS));
     }
 }

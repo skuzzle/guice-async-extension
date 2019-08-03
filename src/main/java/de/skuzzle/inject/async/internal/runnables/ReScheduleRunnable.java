@@ -16,6 +16,10 @@ import de.skuzzle.inject.async.ScheduledContext;
 
 class ReScheduleRunnable implements Reschedulable {
 
+    // (Hopefully) Temporary fix to circumvent the behavior described in
+    // https://github.com/skuzzle/guice-async-extension/issues/6
+    private static final long TIMER_INACCURACY_FIX = 100; // ms
+
     private static final Logger LOG = LoggerFactory.getLogger(ReScheduleRunnable.class);
 
     private final Runnable invocation;
@@ -51,15 +55,15 @@ class ReScheduleRunnable implements Reschedulable {
         final ZonedDateTime now = ZonedDateTime.now();
         final Duration timeToNext = this.executionTime.timeToNextExecution(now)
                 .orElseThrow(() -> new IllegalStateException("Could not determine time to next execution"));
-        final long delay = timeToNext.toMillis();
-        LOG.trace("Calculated ms from now {} until next execution: {}", now, delay);
+        final long dealyUntilNextExecution = timeToNext.toMillis() + TIMER_INACCURACY_FIX;
+        LOG.trace("Calculated ms from now {} until next execution: {}", now, dealyUntilNextExecution);
 
         // This construct makes sure that the 'Future' that is obtained from scheduling
         // the task is published to the 'ScheduledContext' before the task is actually
         // executed.
         final LockableRunnable locked = new LatchLockableRunnable(this);
         try {
-            final Future<?> future = this.executor.schedule(locked, delay, TimeUnit.MILLISECONDS);
+            final Future<?> future = this.executor.schedule(locked, dealyUntilNextExecution, TimeUnit.MILLISECONDS);
             this.context.setFuture(future);
         } finally {
             locked.release();

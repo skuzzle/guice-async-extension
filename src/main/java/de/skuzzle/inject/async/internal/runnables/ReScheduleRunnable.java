@@ -1,7 +1,7 @@
 package de.skuzzle.inject.async.internal.runnables;
 
-import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,16 +16,18 @@ import de.skuzzle.inject.async.ScheduledContext;
 
 class ReScheduleRunnable implements Reschedulable {
 
-    // (Hopefully) Temporary fix to circumvent the behavior described in
-    // https://github.com/skuzzle/guice-async-extension/issues/6
-    private static final long TIMER_INACCURACY_FIX = 100; // ms
-
     private static final Logger LOG = LoggerFactory.getLogger(ReScheduleRunnable.class);
 
     private final Runnable invocation;
     private final ScheduledExecutorService executor;
     private final ExecutionTime executionTime;
     private final ScheduledContext context;
+
+    // The time at which this Runnable will be called again by the Scheduler. This
+    // reference is only null until the first call to #scheduleNextExecution. This
+    // reference is guarded by the monitor of this instance to guarantee thread safe
+    // updates
+    private ZonedDateTime expectedNextExecution = null;
 
     private ReScheduleRunnable(ScheduledContext context, Runnable invocation,
             ScheduledExecutorService executor, ExecutionTime executionTime) {
@@ -52,22 +54,46 @@ class ReScheduleRunnable implements Reschedulable {
     public void scheduleNextExecution() {
         LOG.debug("Scheduling next invocation of {}", invocation);
 
-        final ZonedDateTime now = ZonedDateTime.now();
-        final Duration timeToNext = this.executionTime.timeToNextExecution(now)
-                .orElseThrow(() -> new IllegalStateException("Could not determine time to next execution"));
-        final long dealyUntilNextExecution = timeToNext.toMillis() + TIMER_INACCURACY_FIX;
-        LOG.trace("Calculated ms from now {} until next execution: {}", now, dealyUntilNextExecution);
+        final long delayUntilNextExecution = millisUntilNextExecution();
 
         // This construct makes sure that the 'Future' that is obtained from scheduling
         // the task is published to the 'ScheduledContext' before the task is actually
         // executed.
         final LockableRunnable locked = new LatchLockableRunnable(this);
         try {
-            final Future<?> future = this.executor.schedule(locked, dealyUntilNextExecution, TimeUnit.MILLISECONDS);
+            final Future<?> future = this.executor.schedule(locked, delayUntilNextExecution, TimeUnit.MILLISECONDS);
             this.context.setFuture(future);
         } finally {
             locked.release();
         }
+    }
+
+    private synchronized long millisUntilNextExecution() {
+        // The base date from which the delay until the next execution will be calculated.
+        final ZonedDateTime currentExecution = currentExecutionTime();
+        final ZonedDateTime now = ZonedDateTime.now();
+
+        final long inaccuracy = ChronoUnit.MILLIS.between(currentExecution, now);
+        LOG.trace("cron scheduler inaccuracy: {} ms", inaccuracy);
+
+        final ZonedDateTime nextExecution = this.executionTime.nextExecution(currentExecution)
+                .orElseThrow(() -> new IllegalStateException("Could not determine next execution time"));
+        final long dealyUntilNextExecution = ChronoUnit.MILLIS.between(currentExecution, nextExecution);
+
+        expectNextExecutionAt(nextExecution);
+        LOG.trace("delay until next execution: {} ms (from '{}' to '{}')", dealyUntilNextExecution, currentExecution,
+                nextExecution);
+        return dealyUntilNextExecution;
+    }
+
+    private ZonedDateTime currentExecutionTime() {
+        return this.expectedNextExecution == null
+                ? ZonedDateTime.now()
+                : this.expectedNextExecution;
+    }
+
+    private void expectNextExecutionAt(ZonedDateTime date) {
+        this.expectedNextExecution = date;
     }
 
     @Override
@@ -75,6 +101,7 @@ class ReScheduleRunnable implements Reschedulable {
         return MoreObjects.toStringHelper(this)
                 .add("invocation", invocation)
                 .add("context", context)
+                .add("expectedNextExecution", this.expectedNextExecution)
                 .toString();
     }
 }

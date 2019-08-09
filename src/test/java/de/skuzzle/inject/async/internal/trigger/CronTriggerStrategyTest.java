@@ -23,7 +23,6 @@ import de.skuzzle.inject.async.ExceptionHandler;
 import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.annotation.CronTrigger;
 import de.skuzzle.inject.async.internal.context.ContextFactory;
-import de.skuzzle.inject.async.internal.runnables.Reschedulable;
 import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
 
 @RunWith(MockitoJUnitRunner.class)

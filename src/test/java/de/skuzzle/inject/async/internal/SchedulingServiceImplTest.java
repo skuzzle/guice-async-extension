@@ -1,5 +1,8 @@
 package de.skuzzle.inject.async.internal;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -13,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
@@ -22,11 +24,15 @@ import com.google.inject.Provider;
 import com.google.inject.spi.InjectionListener;
 
 import de.skuzzle.inject.async.ExceptionHandler;
+import de.skuzzle.inject.async.ScheduledContext;
 import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.CronTrigger;
 import de.skuzzle.inject.async.annotation.OnError;
 import de.skuzzle.inject.async.annotation.Scheduled;
 import de.skuzzle.inject.async.annotation.Scheduler;
+import de.skuzzle.inject.async.internal.context.ContextFactory;
+import de.skuzzle.inject.async.internal.runnables.LockableRunnable;
+import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SchedulingServiceImplTest {
@@ -42,18 +48,25 @@ public class SchedulingServiceImplTest {
     private TriggerStrategy triggerStrategy;
     @Mock
     private ExceptionHandler exceptionHandler;
+    @Mock
+    private RunnableBuilder runnableBuilder;
+    @Mock
+    private ContextFactory contextFactory;
 
     private SchedulingServiceImpl subject;
 
     @Before
     public void setUp() throws Exception {
-        this.subject = new SchedulingServiceImpl(provider(this.injector),
-                provider(this.registry));
+        this.subject = new SchedulingServiceImpl(
+                provider(this.injector),
+                provider(this.registry),
+                provider(this.contextFactory),
+                provider(this.runnableBuilder));
         when(this.injector.getInstance(Key.get(ExceptionHandler.class)))
                 .thenReturn(this.exceptionHandler);
         when(this.injector.getInstance(Key.get(ScheduledExecutorService.class)))
                 .thenReturn(this.scheduler);
-        when(this.registry.getStrategyFor(Mockito.any()))
+        when(this.registry.getStrategyFor(any()))
                 .thenReturn(this.triggerStrategy);
     }
 
@@ -91,20 +104,26 @@ public class SchedulingServiceImplTest {
     @Test
     public void testScheduleMemberMethod() throws Exception {
         final Method expectedMethod = getClass().getMethod("methodWithTrigger");
+        final LockableRunnable runnable = mock(LockableRunnable.class);
+        final ScheduledContext ctx = mock(ScheduledContext.class);
+        when(contextFactory.createContext(expectedMethod, this)).thenReturn(ctx);
+        when(runnableBuilder.createLockedRunnableStack(any(), eq(ctx), eq(exceptionHandler))).thenReturn(runnable);
 
         this.subject.scheduleMemberMethod(expectedMethod, this);
 
-        verify(this.triggerStrategy).schedule(expectedMethod, this, this.scheduler,
-                this.exceptionHandler);
+        verify(this.triggerStrategy).schedule(ctx, scheduler, exceptionHandler, runnable);
     }
 
     @Test
     public void testScheduleStaticMethod() throws Exception {
         final Method expectedMethod = getClass().getMethod("staticMethodWithTrigger");
+        final LockableRunnable runnable = mock(LockableRunnable.class);
+        final ScheduledContext ctx = mock(ScheduledContext.class);
+        when(contextFactory.createContext(expectedMethod, null)).thenReturn(ctx);
+        when(runnableBuilder.createLockedRunnableStack(any(), eq(ctx), eq(exceptionHandler))).thenReturn(runnable);
 
         this.subject.scheduleStaticMethod(expectedMethod);
 
-        verify(this.triggerStrategy).schedule(expectedMethod, null, this.scheduler,
-                this.exceptionHandler);
+        verify(this.triggerStrategy).schedule(ctx, scheduler, exceptionHandler, runnable);
     }
 }

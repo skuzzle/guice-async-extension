@@ -5,8 +5,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.lang.reflect.Method;
 import java.util.concurrent.ScheduledExecutorService;
 
-import javax.inject.Inject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,8 +20,6 @@ import de.skuzzle.inject.async.TriggerStrategy;
 import de.skuzzle.inject.async.annotation.CronTrigger;
 import de.skuzzle.inject.async.annotation.CronType;
 import de.skuzzle.inject.async.internal.runnables.LockableRunnable;
-import de.skuzzle.inject.async.internal.runnables.Reschedulable;
-import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
 
 /**
  * TriggerStrategy that handles the {@link CronTrigger} annotation.
@@ -33,9 +29,6 @@ import de.skuzzle.inject.async.internal.runnables.RunnableBuilder;
 public class CronTriggerStrategy implements TriggerStrategy {
 
     private static final Logger LOG = LoggerFactory.getLogger(CronTriggerStrategy.class);
-
-    @Inject
-    private RunnableBuilder runnableBuilder;
 
     @Override
     public Class<CronTrigger> getTriggerType() {
@@ -59,12 +52,7 @@ public class CronTriggerStrategy implements TriggerStrategy {
         final Cron cron = parser.parse(trigger.value());
         final ExecutionTime execTime = ExecutionTime.forCron(cron);
 
-        final Reschedulable rescheduleRunnable = this.runnableBuilder.reschedule(
-                context,
-                runnable.release(),
-                executor,
-                execTime);
-
-        rescheduleRunnable.scheduleNextExecution();
+        RescheduleRunnable.of(context, runnable.release(), executor, execTime)
+                .scheduleNextExecution();
     }
 }

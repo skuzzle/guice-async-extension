@@ -1,9 +1,5 @@
 package de.skuzzle.inject.async.internal.runnables;
 
-import java.util.concurrent.ScheduledExecutorService;
-
-import com.cronutils.model.time.ExecutionTime;
-
 import de.skuzzle.inject.async.ExceptionHandler;
 import de.skuzzle.inject.async.ExecutionContext;
 import de.skuzzle.inject.async.ScheduledContext;
@@ -65,18 +61,4 @@ public interface RunnableBuilder {
      * @return The runnable.
      */
     Runnable handleException(Runnable wrapped, ExceptionHandler handler);
-
-    /**
-     * Creates a runnable that reschedules itself with the provided scheduler before
-     * actually executing the given invocation.
-     *
-     * @param context The context.
-     * @param wrapped The actual invocation.
-     * @param scheduler The scheduler for rescheduling.
-     * @param executionTime For figuring out the delay until the next execution.
-     * @return The runnable.
-     */
-    Reschedulable reschedule(ScheduledContext context, Runnable wrapped,
-            ScheduledExecutorService scheduler,
-            ExecutionTime executionTime);
 }

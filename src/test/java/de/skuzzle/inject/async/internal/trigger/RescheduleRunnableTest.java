@@ -1,4 +1,4 @@
-package de.skuzzle.inject.async.internal.runnables;
+package de.skuzzle.inject.async.internal.trigger;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -21,8 +21,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.cronutils.model.time.ExecutionTime;
 
 import de.skuzzle.inject.async.ScheduledContext;
-import de.skuzzle.inject.async.internal.runnables.LatchLockableRunnable;
-import de.skuzzle.inject.async.internal.runnables.RescheduleRunnable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RescheduleRunnableTest {

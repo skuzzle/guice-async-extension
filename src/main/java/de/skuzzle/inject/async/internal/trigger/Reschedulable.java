@@ -1,4 +1,4 @@
-package de.skuzzle.inject.async.internal.runnables;
+package de.skuzzle.inject.async.internal.trigger;
 
 /**
  * Runnable extension that allows to reschedule itself.

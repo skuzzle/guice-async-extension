@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 import javax.inject.Provider;
 
-import de.skuzzle.inject.async.ExceptionHandler;
+import de.skuzzle.inject.async.schedule.ExceptionHandler;
 
 /**
  * Can be put on a method which is annotated with {@link Scheduled} to additionally

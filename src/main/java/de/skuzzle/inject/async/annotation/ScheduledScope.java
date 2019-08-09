@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 import com.google.inject.ScopeAnnotation;
 
-import de.skuzzle.inject.async.ScheduledContext;
+import de.skuzzle.inject.async.schedule.ScheduledContext;
 
 /**
  * A guice scope that pertains for one method annotated with {@link Scheduled}. Thus each

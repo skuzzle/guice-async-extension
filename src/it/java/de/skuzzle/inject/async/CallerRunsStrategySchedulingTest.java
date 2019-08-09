@@ -23,6 +23,7 @@ import com.google.inject.Provides;
 import de.skuzzle.inject.async.annotation.DelayedTrigger;
 import de.skuzzle.inject.async.annotation.Scheduled;
 import de.skuzzle.inject.async.annotation.Scheduler;
+import de.skuzzle.inject.async.guice.GuiceAsync;
 
 public class CallerRunsStrategySchedulingTest {
 

@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import de.skuzzle.inject.async.TriggerStrategy;
+import de.skuzzle.inject.async.schedule.TriggerStrategy;
 
 /**
  * Marks another annotation type to be a <em>trigger annotation</em>. A single trigger

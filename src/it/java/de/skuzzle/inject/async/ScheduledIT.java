@@ -28,6 +28,10 @@ import de.skuzzle.inject.async.annotation.Scheduled;
 import de.skuzzle.inject.async.annotation.ScheduledScope;
 import de.skuzzle.inject.async.annotation.Scheduler;
 import de.skuzzle.inject.async.annotation.SimpleTrigger;
+import de.skuzzle.inject.async.guice.GuiceAsync;
+import de.skuzzle.inject.async.schedule.ExceptionHandler;
+import de.skuzzle.inject.async.schedule.ExecutionContext;
+import de.skuzzle.inject.async.schedule.ScheduledContext;
 
 public class ScheduledIT {
 

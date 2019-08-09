@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 import com.google.inject.ScopeAnnotation;
 
-import de.skuzzle.inject.async.ExecutionContext;
+import de.skuzzle.inject.async.schedule.ExecutionContext;
 
 /**
  * A guice scope that pertains for a single execution of a scheduled method. You can use

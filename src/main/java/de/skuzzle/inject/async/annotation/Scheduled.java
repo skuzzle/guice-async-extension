@@ -12,8 +12,8 @@ import com.google.inject.BindingAnnotation;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
-import de.skuzzle.inject.async.ExceptionHandler;
-import de.skuzzle.inject.async.TriggerStrategy;
+import de.skuzzle.inject.async.schedule.ExceptionHandler;
+import de.skuzzle.inject.async.schedule.TriggerStrategy;
 
 /**
  * Marks a method to be executed periodically. In order for a method to be eligible for

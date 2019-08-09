@@ -2,6 +2,9 @@ package de.skuzzle.inject.async.guice;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.concurrent.ThreadFactory;
 
 import javax.inject.Singleton;
@@ -51,33 +54,67 @@ public final class GuiceAsync {
      * @param binder The binder to register with.
      */
     public static void enableFor(Binder binder) {
-        checkArgument(binder != null, "binder must not be null");
-        binder.install(createModule());
+        enableFeaturesFor(binder, Feature.ASYNC, Feature.SCHEDULE);
     }
 
     /**
-     * Creates a module that can be used to enable asynchronous method support.
+     * Enable support for the given {@link Feature features}. Allows to separately enable
+     * support for async or scheduled.
+     *
+     * @param binder The binder to register with.
+     * @param features The features to enable.
+     */
+    public static void enableFeaturesFor(Binder binder, Feature... features) {
+        checkArgument(binder != null, "binder must not be null");
+        binder.install(createModuleWithFeatures(features));
+    }
+
+    /**
+     * Creates a module that can be used to enable asynchronous method and scheduling
+     * support.
      *
      * @return A module that exposes all bindings needed for asynchronous method support.
      * @since 0.2.0
      */
     public static Module createModule() {
+        return createModuleWithFeatures(Feature.ASYNC, Feature.SCHEDULE);
+    }
+
+    /**
+     * Creates a module taht can be used to enable the given features.
+     *
+     * @param features The features to enable.
+     * @return The module.
+     */
+    public static Module createModuleWithFeatures(Feature... features) {
         final GuiceAsync principal = new GuiceAsync();
-        return new GuiceAsyncModule(principal);
+        final EnumSet<Feature> featureSet = EnumSet.copyOf(Arrays.asList(features));
+        return new GuiceAsyncModule(principal, featureSet);
     }
 
     private static final class GuiceAsyncModule extends AbstractModule {
 
         private final GuiceAsync principal;
+        private final Set<Feature> features;
 
-        public GuiceAsyncModule(GuiceAsync principal) {
+        public GuiceAsyncModule(GuiceAsync principal, Set<Feature> features) {
+            checkArgument(!features.isEmpty(), "Set of features must not be empty");
             this.principal = principal;
+            this.features = features;
+        }
+
+        private boolean hasFeature(Feature feature) {
+            return features.contains(feature);
         }
 
         @Override
         protected void configure() {
-            install(new AsyncModule(principal));
-            install(new ScheduleModule(principal));
+            if (hasFeature(Feature.ASYNC)) {
+                install(new AsyncModule(principal));
+            }
+            if (hasFeature(Feature.SCHEDULE)) {
+                install(new ScheduleModule(principal));
+            }
             bind(GuiceAsyncService.class).to(GuiceAsyncServiceImpl.class).in(Singleton.class);
         }
 

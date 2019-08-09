@@ -27,11 +27,6 @@ import de.skuzzle.inject.async.annotation.CronTrigger;
 import de.skuzzle.inject.async.annotation.OnError;
 import de.skuzzle.inject.async.annotation.Scheduled;
 import de.skuzzle.inject.async.annotation.Scheduler;
-import de.skuzzle.inject.async.schedule.ExceptionHandler;
-import de.skuzzle.inject.async.schedule.ScheduledContext;
-import de.skuzzle.inject.async.schedule.SchedulerTypeListenerTest;
-import de.skuzzle.inject.async.schedule.SchedulingServiceImpl;
-import de.skuzzle.inject.async.schedule.TriggerStrategy;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SchedulingServiceImplTest {
@@ -47,10 +42,6 @@ public class SchedulingServiceImplTest {
     private TriggerStrategy triggerStrategy;
     @Mock
     private ExceptionHandler exceptionHandler;
-    @Mock
-    private RunnableBuilder runnableBuilder;
-    @Mock
-    private ContextFactory contextFactory;
 
     private SchedulingServiceImpl subject;
 
@@ -58,9 +49,7 @@ public class SchedulingServiceImplTest {
     public void setUp() throws Exception {
         this.subject = new SchedulingServiceImpl(
                 provider(this.injector),
-                provider(this.registry),
-                provider(this.contextFactory),
-                provider(this.runnableBuilder));
+                provider(this.registry));
         when(this.injector.getInstance(Key.get(ExceptionHandler.class)))
                 .thenReturn(this.exceptionHandler);
         when(this.injector.getInstance(Key.get(ScheduledExecutorService.class)))
@@ -118,8 +107,6 @@ public class SchedulingServiceImplTest {
         final Method expectedMethod = getClass().getMethod("staticMethodWithTrigger");
         final LockableRunnable runnable = mock(LockableRunnable.class);
         final ScheduledContext ctx = mock(ScheduledContext.class);
-        when(contextFactory.createContext(expectedMethod, null)).thenReturn(ctx);
-        when(runnableBuilder.createLockedRunnableStack(any(), eq(ctx), eq(exceptionHandler))).thenReturn(runnable);
 
         this.subject.scheduleStaticMethod(expectedMethod);
 

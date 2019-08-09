@@ -1,0 +1,3 @@
+de.skuzzle.inject.async.schedule.trigger.CronTriggerStrategy
+de.skuzzle.inject.async.schedule.trigger.SimpleTriggerStrategy
+de.skuzzle.inject.async.schedule.trigger.DelayedTriggerStrategy

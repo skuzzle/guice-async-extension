@@ -10,16 +10,13 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import de.skuzzle.inject.async.schedule.ScheduledContext;
-import de.skuzzle.inject.async.schedule.ScopedRunnable;
-
 @RunWith(MockitoJUnitRunner.class)
 public class ScopedRunnableTest {
 
     @Mock
     private Runnable wrapped;
     @Mock
-    ScheduledContext context;
+    ScheduledContextImpl context;
 
     private Runnable subject;
 

@@ -26,15 +26,13 @@ final class Annotations {
                 if (result == null) {
                     result = annotation;
                 } else {
-                    throw new IllegalStateException(String.format(
-                            "Multiple @Trigger annotations found on '%s': %s, %s",
+                    throw new IllegalStateException(String.format("Multiple @Trigger annotations found on '%s': %s, %s",
                             method, result, annotation));
                 }
             }
         }
         if (result == null) {
-            throw new IllegalStateException(String.format(
-                    "No @Trigger annotation found on '%s'", method));
+            throw new IllegalStateException(String.format("No @Trigger annotation found on '%s'", method));
         }
         return result;
     }

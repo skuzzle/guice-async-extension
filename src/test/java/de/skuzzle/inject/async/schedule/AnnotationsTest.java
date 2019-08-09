@@ -15,9 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import de.skuzzle.inject.async.annotation.Annotati
 import de.skuzzle.inject.async.annotation.Trigger;
-import de.skuzzle.inject.async.schedule.Annotations;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AnnotationsTest {

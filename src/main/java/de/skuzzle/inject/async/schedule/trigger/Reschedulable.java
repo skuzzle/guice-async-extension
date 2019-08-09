@@ -15,9 +15,9 @@ import com.google.common.base.MoreObjects;
 import de.skuzzle.inject.async.schedule.LockableRunnable;
 import de.skuzzle.inject.async.schedule.ScheduledContext;
 
-class RescheduleRunnable {
+class Reschedulable {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RescheduleRunnable.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Reschedulable.class);
 
     private final Runnable invocation;
     private final ScheduledExecutorService executor;
@@ -30,7 +30,7 @@ class RescheduleRunnable {
     // updates
     private ZonedDateTime expectedNextExecution = null;
 
-    private RescheduleRunnable(ScheduledContext context, Runnable invocation,
+    private Reschedulable(ScheduledContext context, Runnable invocation,
             ScheduledExecutorService executor, ExecutionTime executionTime) {
         this.context = context;
         this.invocation = invocation;
@@ -38,10 +38,10 @@ class RescheduleRunnable {
         this.executionTime = executionTime;
     }
 
-    static RescheduleRunnable of(ScheduledContext context, Runnable invocation,
+    static Reschedulable of(ScheduledContext context, Runnable invocation,
             ScheduledExecutorService scheduler,
             ExecutionTime executionTime) {
-        return new RescheduleRunnable(context, invocation, scheduler, executionTime);
+        return new Reschedulable(context, invocation, scheduler, executionTime);
     }
 
     public void scheduleNextExecution() {

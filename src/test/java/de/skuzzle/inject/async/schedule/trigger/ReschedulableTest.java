@@ -21,10 +21,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.cronutils.model.time.ExecutionTime;
 
 import de.skuzzle.inject.async.schedule.ScheduledContext;
-import de.skuzzle.inject.async.schedule.trigger.RescheduleRunnable;
+import de.skuzzle.inject.async.schedule.trigger.Reschedulable;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RescheduleRunnableTest {
+public class ReschedulableTest {
 
     @Mock
     private ScheduledExecutorService executor;
@@ -35,7 +35,7 @@ public class RescheduleRunnableTest {
     @Mock
     private ScheduledContext context;
     @InjectMocks
-    private RescheduleRunnable subject;
+    private Reschedulable subject;
 
     @Before
     public void setUp() throws Exception {

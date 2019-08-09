@@ -52,7 +52,7 @@ public class CronTriggerStrategy implements TriggerStrategy {
         final Cron cron = parser.parse(trigger.value());
         final ExecutionTime execTime = ExecutionTime.forCron(cron);
 
-        RescheduleRunnable.of(context, runnable.release(), executor, execTime)
+        Reschedulable.of(context, runnable.release(), executor, execTime)
                 .scheduleNextExecution();
     }
 }

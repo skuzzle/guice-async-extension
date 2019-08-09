@@ -11,18 +11,13 @@ package de.skuzzle.inject.async.schedule;
 public interface LockableRunnable extends Runnable {
 
     /**
-     * Wraps the given Runnable into a {@link LockableRunnable}. If given runnable is
-     * already an instance of {@link LockableRunnable}, then the passed object will be
-     * returned without wrapping it again.
+     * Wraps the given Runnable into a {@link LockableRunnable}.
      *
      * @param runnable The runnable to wrap.
      * @return The {@link LockableRunnable}.
      */
-    public static LockableRunnable wrap(Runnable runnable) {
-        if (runnable instanceof LockableRunnable) {
-            return (LockableRunnable) runnable;
-        }
-        return new LatchLockableRunnable(runnable);
+    public static LockableRunnable locked(Runnable runnable) {
+        return Runnables.LatchLockableRunnable.locked(runnable);
     }
 
     /**

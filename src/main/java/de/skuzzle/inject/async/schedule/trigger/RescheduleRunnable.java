@@ -15,7 +15,7 @@ import com.google.common.base.MoreObjects;
 import de.skuzzle.inject.async.schedule.LockableRunnable;
 import de.skuzzle.inject.async.schedule.ScheduledContext;
 
-class RescheduleRunnable implements Reschedulable {
+class RescheduleRunnable {
 
     private static final Logger LOG = LoggerFactory.getLogger(RescheduleRunnable.class);
 
@@ -38,20 +38,12 @@ class RescheduleRunnable implements Reschedulable {
         this.executionTime = executionTime;
     }
 
-    static Reschedulable of(ScheduledContext context, Runnable invocation,
+    static RescheduleRunnable of(ScheduledContext context, Runnable invocation,
             ScheduledExecutorService scheduler,
             ExecutionTime executionTime) {
         return new RescheduleRunnable(context, invocation, scheduler, executionTime);
     }
 
-    @Override
-    public void run() {
-        scheduleNextExecution();
-        LOG.debug("Executing actual invocation: {}", invocation);
-        this.invocation.run();
-    }
-
-    @Override
     public void scheduleNextExecution() {
         LOG.debug("Scheduling next invocation of {}", invocation);
 
@@ -60,7 +52,12 @@ class RescheduleRunnable implements Reschedulable {
         // This construct makes sure that the 'Future' that is obtained from scheduling
         // the task is published to the 'ScheduledContext' before the task is actually
         // executed.
-        final LockableRunnable locked = LockableRunnable.wrap(this);
+        final LockableRunnable locked = LockableRunnable.locked(() -> {
+            scheduleNextExecution();
+            LOG.debug("Executing actual invocation: {}", invocation);
+            this.invocation.run();
+        });
+
         try {
             final Future<?> future = this.executor.schedule(locked, delayUntilNextExecution, TimeUnit.MILLISECONDS);
             this.context.setFuture(future);

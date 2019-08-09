@@ -63,15 +63,8 @@ class SchedulingServiceImpl implements SchedulingService {
 
         final ScheduledContextImpl context = new ScheduledContextImpl(method, self);
         final InjectedMethodInvocation invocation = InjectedMethodInvocation.forMethod(method, self, injector.get());
-        final LockableRunnable runnable = createLockedRunnableStack(invocation, context, handler);
+        final LockableRunnable runnable = Runnables.createLockedRunnableStack(invocation, context, handler);
         strategy.schedule(context, scheduler, handler, runnable);
     }
 
-    private LockableRunnable createLockedRunnableStack(InjectedMethodInvocation invocation,
-            ScheduledContextImpl context, ExceptionHandler handler) {
-        final Runnable invokeRunnable = InvokeMethodRunnable.of(invocation);
-        final Runnable errorHandler = ExceptionHandlingRunnable.of(invokeRunnable, handler);
-        final Runnable scoped = ScopedRunnable.of(errorHandler, context);
-        return new LatchLockableRunnable(scoped);
-    }
 }

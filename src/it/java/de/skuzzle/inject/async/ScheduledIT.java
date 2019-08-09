@@ -144,6 +144,7 @@ public class ScheduledIT {
             @Override
             protected void configure() {
                 GuiceAsync.enableFor(binder());
+
                 bind(TestExceptionHandler.class).asEagerSingleton();
                 bind(TypeWithScheduledMethods.class).asEagerSingleton();
                 bind(String.class).toInstance("foobar");

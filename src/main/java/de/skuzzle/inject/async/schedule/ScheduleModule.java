@@ -9,7 +9,6 @@ import java.util.concurrent.ThreadFactory;
 
 import javax.inject.Singleton;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
@@ -31,14 +30,16 @@ import de.skuzzle.inject.proxy.ScopedProxyBinder;
  */
 public final class ScheduleModule extends AbstractModule {
 
+    /**
+     * This constructor is only allowed to be called from within the {@link GuiceAsync}
+     * class.
+     *
+     * @param principal Restricts construction, not allowed to be null.
+     */
     public ScheduleModule(GuiceAsync principal) {
         checkArgument(principal != null,
                 "instantiating this module is not allowed. Use the class "
                         + "GuiceAsync to enable asynchronous method support.");
-    }
-
-    @VisibleForTesting
-    ScheduleModule() {
     }
 
     @Override

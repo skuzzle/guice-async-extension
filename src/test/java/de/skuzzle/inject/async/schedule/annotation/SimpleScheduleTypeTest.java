@@ -1,4 +1,4 @@
-package de.skuzzle.inject.async.annotation;
+package de.skuzzle.inject.async.schedule.annotation;
 
 import static org.mockito.Mockito.verify;
 
@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import de.skuzzle.inject.async.schedule.annotation.SimpleScheduleType;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SimpleScheduleTypeTest {

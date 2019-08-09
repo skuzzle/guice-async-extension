@@ -3,7 +3,7 @@ package de.skuzzle.inject.async.schedule;
 import java.lang.reflect.Method;
 import java.util.Map;
 
-import de.skuzzle.inject.async.annotation.ExecutionScope;
+import de.skuzzle.inject.async.schedule.annotation.ExecutionScope;
 
 /**
  * Holds contextual information for a single scheduled method execution.

@@ -18,6 +18,7 @@ import com.google.inject.matcher.Matchers;
 
 import de.skuzzle.inject.async.guice.DefaultBinding;
 import de.skuzzle.inject.async.guice.GuiceAsync;
+import de.skuzzle.inject.async.methods.annotation.Async;
 
 /**
  * Exposes required bindings. Use {@link GuiceAsync} to install this module for your own

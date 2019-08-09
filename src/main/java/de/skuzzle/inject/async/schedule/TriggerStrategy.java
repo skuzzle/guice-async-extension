@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ServiceLoader;
 import java.util.concurrent.ScheduledExecutorService;
 
-import de.skuzzle.inject.async.annotation.Trigger;
+import de.skuzzle.inject.async.schedule.annotation.Trigger;
 import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 /**

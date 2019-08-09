@@ -24,8 +24,8 @@ import com.google.inject.Provides;
 
 import de.skuzzle.inject.async.guice.GuiceAsync;
 import de.skuzzle.inject.async.guice.GuiceAsyncService;
-import de.skuzzle.inject.async.methods.Async;
 import de.skuzzle.inject.async.methods.Futures;
+import de.skuzzle.inject.async.methods.annotation.Async;
 
 public class AsyncIT {
 

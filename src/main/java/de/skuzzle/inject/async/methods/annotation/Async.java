@@ -1,4 +1,4 @@
-package de.skuzzle.inject.async.methods;
+package de.skuzzle.inject.async.methods.annotation;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -19,6 +19,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 
 import de.skuzzle.inject.async.guice.GuiceAsync;
+import de.skuzzle.inject.async.methods.Futures;
 
 /**
  * Tags a method to be run asynchronously. Annotated methods must return either a

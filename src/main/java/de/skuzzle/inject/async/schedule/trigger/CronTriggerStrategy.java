@@ -14,12 +14,12 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 
-import de.skuzzle.inject.async.annotation.CronTrigger;
-import de.skuzzle.inject.async.annotation.CronType;
 import de.skuzzle.inject.async.schedule.ExceptionHandler;
 import de.skuzzle.inject.async.schedule.LockableRunnable;
 import de.skuzzle.inject.async.schedule.ScheduledContext;
 import de.skuzzle.inject.async.schedule.TriggerStrategy;
+import de.skuzzle.inject.async.schedule.annotation.CronTrigger;
+import de.skuzzle.inject.async.schedule.annotation.CronType;
 
 /**
  * TriggerStrategy that handles the {@link CronTrigger} annotation.

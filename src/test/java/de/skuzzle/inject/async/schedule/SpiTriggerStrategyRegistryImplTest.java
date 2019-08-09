@@ -16,10 +16,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
 
-import de.skuzzle.inject.async.annotation.CronTrigger;
-import de.skuzzle.inject.async.annotation.Scheduled;
 import de.skuzzle.inject.async.schedule.SpiTriggerStrategyRegistryImpl;
 import de.skuzzle.inject.async.schedule.TriggerStrategy;
+import de.skuzzle.inject.async.schedule.annotation.CronTrigger;
+import de.skuzzle.inject.async.schedule.annotation.Scheduled;
 import de.skuzzle.inject.async.schedule.trigger.CronTriggerStrategy;
 
 @RunWith(MockitoJUnitRunner.class)

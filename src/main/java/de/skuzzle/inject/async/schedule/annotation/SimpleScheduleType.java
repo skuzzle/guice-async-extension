@@ -1,4 +1,4 @@
-package de.skuzzle.inject.async.annotation;
+package de.skuzzle.inject.async.schedule.annotation;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;

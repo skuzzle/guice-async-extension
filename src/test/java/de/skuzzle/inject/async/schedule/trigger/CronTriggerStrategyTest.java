@@ -19,11 +19,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
 
-import de.skuzzle.inject.async.annotation.CronTrigger;
 import de.skuzzle.inject.async.schedule.ContextFactory;
 import de.skuzzle.inject.async.schedule.ExceptionHandler;
 import de.skuzzle.inject.async.schedule.RunnableBuilder;
 import de.skuzzle.inject.async.schedule.ScheduledContext;
+import de.skuzzle.inject.async.schedule.annotation.CronTrigger;
 import de.skuzzle.inject.async.schedule.trigger.CronTriggerStrategy;
 import de.skuzzle.inject.async.schedule.trigger.Reschedulable;
 

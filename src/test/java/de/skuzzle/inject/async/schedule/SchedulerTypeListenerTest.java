@@ -21,13 +21,13 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 
-import de.skuzzle.inject.async.annotation.CronTrigger;
-import de.skuzzle.inject.async.annotation.OnError;
-import de.skuzzle.inject.async.annotation.Scheduled;
-import de.skuzzle.inject.async.annotation.Scheduler;
 import de.skuzzle.inject.async.schedule.ExceptionHandler;
 import de.skuzzle.inject.async.schedule.SchedulerTypeListener;
 import de.skuzzle.inject.async.schedule.SchedulingService;
+import de.skuzzle.inject.async.schedule.annotation.CronTrigger;
+import de.skuzzle.inject.async.schedule.annotation.OnError;
+import de.skuzzle.inject.async.schedule.annotation.Scheduled;
+import de.skuzzle.inject.async.schedule.annotation.Scheduler;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SchedulerTypeListenerTest {

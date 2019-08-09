@@ -1,7 +1,6 @@
 package de.skuzzle.inject.async.schedule;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -23,10 +22,10 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.spi.InjectionListener;
 
-import de.skuzzle.inject.async.annotation.CronTrigger;
-import de.skuzzle.inject.async.annotation.OnError;
-import de.skuzzle.inject.async.annotation.Scheduled;
-import de.skuzzle.inject.async.annotation.Scheduler;
+import de.skuzzle.inject.async.schedule.annotation.CronTrigger;
+import de.skuzzle.inject.async.schedule.annotation.OnError;
+import de.skuzzle.inject.async.schedule.annotation.Scheduled;
+import de.skuzzle.inject.async.schedule.annotation.Scheduler;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SchedulingServiceImplTest {
@@ -94,8 +93,6 @@ public class SchedulingServiceImplTest {
         final Method expectedMethod = getClass().getMethod("methodWithTrigger");
         final LockableRunnable runnable = mock(LockableRunnable.class);
         final ScheduledContext ctx = mock(ScheduledContext.class);
-        when(contextFactory.createContext(expectedMethod, this)).thenReturn(ctx);
-        when(runnableBuilder.createLockedRunnableStack(any(), eq(ctx), eq(exceptionHandler))).thenReturn(runnable);
 
         this.subject.scheduleMemberMethod(expectedMethod, this);
 

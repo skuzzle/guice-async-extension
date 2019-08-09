@@ -16,9 +16,9 @@ import org.junit.Test;
 
 import com.google.inject.Key;
 
-import de.skuzzle.inject.async.annotation.Scheduler;
 import de.skuzzle.inject.async.guice.Keys;
-import de.skuzzle.inject.async.methods.Executor;
+import de.skuzzle.inject.async.methods.annotation.Executor;
+import de.skuzzle.inject.async.schedule.annotation.Scheduler;
 
 public class KeysTest {
 

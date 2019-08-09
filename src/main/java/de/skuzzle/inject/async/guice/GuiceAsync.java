@@ -12,10 +12,10 @@ import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 
-import de.skuzzle.inject.async.annotation.Scheduled;
-import de.skuzzle.inject.async.methods.Async;
 import de.skuzzle.inject.async.methods.AsyncModule;
+import de.skuzzle.inject.async.methods.annotation.Async;
 import de.skuzzle.inject.async.schedule.ScheduleModule;
+import de.skuzzle.inject.async.schedule.annotation.Scheduled;
 
 /**
  * Entry point for enabling asynchronous method support within your guice application.

@@ -3,7 +3,7 @@ package de.skuzzle.inject.async.schedule;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
 
-import de.skuzzle.inject.async.annotation.ScheduledScope;
+import de.skuzzle.inject.async.schedule.annotation.ScheduledScope;
 
 /**
  * Provides thread-local access to currently active {@link ScheduledContextImpl}.

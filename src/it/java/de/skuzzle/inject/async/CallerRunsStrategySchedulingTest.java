@@ -20,10 +20,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Provides;
 
-import de.skuzzle.inject.async.annotation.DelayedTrigger;
-import de.skuzzle.inject.async.annotation.Scheduled;
-import de.skuzzle.inject.async.annotation.Scheduler;
 import de.skuzzle.inject.async.guice.GuiceAsync;
+import de.skuzzle.inject.async.schedule.annotation.DelayedTrigger;
+import de.skuzzle.inject.async.schedule.annotation.Scheduled;
+import de.skuzzle.inject.async.schedule.annotation.Scheduler;
 
 public class CallerRunsStrategySchedulingTest {
 

@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.MoreObjects;
 
-import de.skuzzle.inject.async.annotation.ExecutionScope;
+import de.skuzzle.inject.async.schedule.annotation.ExecutionScope;
 
 class ScheduledContextImpl implements ScheduledContext {
 

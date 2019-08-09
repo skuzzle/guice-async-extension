@@ -3,4 +3,4 @@
  *
  * @author Simon Taddiken
  */
-package de.skuzzle.inject.async.annotation;
+package de.skuzzle.inject.async.schedule.annotation;

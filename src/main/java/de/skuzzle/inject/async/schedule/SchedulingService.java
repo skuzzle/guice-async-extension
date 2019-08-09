@@ -2,7 +2,7 @@ package de.skuzzle.inject.async.schedule;
 
 import java.lang.reflect.Method;
 
-import de.skuzzle.inject.async.annotation.Scheduled;
+import de.skuzzle.inject.async.schedule.annotation.Scheduled;
 
 /**
  * Allows to manually schedule methods in the way they would normally automatically be

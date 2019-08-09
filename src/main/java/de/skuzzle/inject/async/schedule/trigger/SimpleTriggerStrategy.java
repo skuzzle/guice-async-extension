@@ -6,11 +6,11 @@ import java.lang.reflect.Method;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
-import de.skuzzle.inject.async.annotation.SimpleTrigger;
 import de.skuzzle.inject.async.schedule.ExceptionHandler;
 import de.skuzzle.inject.async.schedule.LockableRunnable;
 import de.skuzzle.inject.async.schedule.ScheduledContext;
 import de.skuzzle.inject.async.schedule.TriggerStrategy;
+import de.skuzzle.inject.async.schedule.annotation.SimpleTrigger;
 
 /**
  * TriggerStrategy that handles the {@link SimpleTrigger} annotation for defining simple

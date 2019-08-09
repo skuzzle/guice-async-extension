@@ -21,15 +21,15 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.inject.Injector;
 
-import de.skuzzle.inject.async.annotation.Scheduled;
-import de.skuzzle.inject.async.annotation.Scheduler;
-import de.skuzzle.inject.async.annotation.SimpleScheduleType;
-import de.skuzzle.inject.async.annotation.SimpleTrigger;
 import de.skuzzle.inject.async.schedule.ContextFactory;
 import de.skuzzle.inject.async.schedule.ExceptionHandler;
 import de.skuzzle.inject.async.schedule.LockableRunnable;
 import de.skuzzle.inject.async.schedule.RunnableBuilder;
 import de.skuzzle.inject.async.schedule.ScheduledContext;
+import de.skuzzle.inject.async.schedule.annotation.Scheduled;
+import de.skuzzle.inject.async.schedule.annotation.Scheduler;
+import de.skuzzle.inject.async.schedule.annotation.SimpleScheduleType;
+import de.skuzzle.inject.async.schedule.annotation.SimpleTrigger;
 import de.skuzzle.inject.async.schedule.trigger.SimpleTriggerStrategy;
 
 @RunWith(MockitoJUnitRunner.class)

@@ -9,10 +9,10 @@ import com.google.inject.Key;
 import com.google.inject.internal.Annotations;
 import com.google.inject.internal.Errors;
 
-import de.skuzzle.inject.async.annotation.OnError;
-import de.skuzzle.inject.async.annotation.Scheduler;
-import de.skuzzle.inject.async.methods.Executor;
+import de.skuzzle.inject.async.methods.annotation.Executor;
 import de.skuzzle.inject.async.schedule.ExceptionHandler;
+import de.skuzzle.inject.async.schedule.annotation.OnError;
+import de.skuzzle.inject.async.schedule.annotation.Scheduler;
 
 public final class Keys {
 

@@ -1,7 +1,7 @@
 package de.skuzzle.inject.async.schedule;
 
-import de.skuzzle.inject.async.annotation.OnError;
-import de.skuzzle.inject.async.annotation.Scheduled;
+import de.skuzzle.inject.async.schedule.annotation.OnError;
+import de.skuzzle.inject.async.schedule.annotation.Scheduled;
 
 /**
  * May be used to react to errors thrown from {@link Scheduled scheduled} methods. You can

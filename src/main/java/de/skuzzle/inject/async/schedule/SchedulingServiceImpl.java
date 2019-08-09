@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
-import de.skuzzle.inject.async.annotation.Scheduled;
 import de.skuzzle.inject.async.guice.Keys;
+import de.skuzzle.inject.async.schedule.annotation.Scheduled;
 import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 class SchedulingServiceImpl implements SchedulingService {

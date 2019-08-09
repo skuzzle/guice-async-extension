@@ -3,7 +3,7 @@ package de.skuzzle.inject.async.schedule;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
-import de.skuzzle.inject.async.annotation.Trigger;
+import de.skuzzle.inject.async.schedule.annotation.Trigger;
 
 final class Annotations {
 

@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import de.skuzzle.inject.async.annotation.ScheduledScope;
+import de.skuzzle.inject.async.schedule.annotation.ScheduledScope;
 
 /**
  * Holds contextual information about a scheduled method. Any behavior is undefined when

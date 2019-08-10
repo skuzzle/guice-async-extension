@@ -20,7 +20,6 @@ import de.skuzzle.inject.async.schedule.annotation.ScheduledScope;
  *
  * @author Simon Taddiken
  * @see ScheduledScope
- * @see RunnableBuilder
  * @since 0.3.0
  */
 public interface ScheduledContext {

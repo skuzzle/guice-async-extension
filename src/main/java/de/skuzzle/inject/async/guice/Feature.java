@@ -4,7 +4,8 @@ import de.skuzzle.inject.async.methods.annotation.Async;
 import de.skuzzle.inject.async.schedule.annotation.Scheduled;
 
 /**
- * Supported features.
+ * Supported features that can be passed when initializing the async/scheduling subsystem.
+ * Each feature is self contained and has no dependence to other features being present.
  *
  * @author Simon Taddiken
  */

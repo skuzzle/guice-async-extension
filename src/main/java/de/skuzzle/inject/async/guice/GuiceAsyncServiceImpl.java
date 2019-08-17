@@ -1,5 +1,6 @@
 package de.skuzzle.inject.async.guice;
 
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,26 +17,33 @@ class GuiceAsyncServiceImpl implements GuiceAsyncService {
     private static final Logger LOG = LoggerFactory.getLogger(GuiceAsyncServiceImpl.class);
 
     private final Injector injector;
+    private final Set<Feature> features;
 
     @Inject
-    public GuiceAsyncServiceImpl(Injector injector) {
+    public GuiceAsyncServiceImpl(Injector injector, @DefaultBinding Set<Feature> features) {
         this.injector = injector;
+        this.features = features;
     }
 
     @Override
     public boolean shutdown(long timeout, TimeUnit timeUnit) {
-        final ExecutorService executor = injector.getInstance(Keys.DEFAULT_EXECUTOR_KEY);
         boolean result = true;
-        if (!shutdownExecutor(executor, timeout, timeUnit)) {
-            LOG.warn("There are still active tasks lingering in default executor after shutdown. Wait time: {} {}",
-                    timeout, timeUnit);
-            result = false;
+
+        if (features.contains(Feature.ASYNC)) {
+            final ExecutorService executor = injector.getInstance(Keys.DEFAULT_EXECUTOR_KEY);
+            if (!shutdownExecutor(executor, timeout, timeUnit)) {
+                LOG.warn("There are still active tasks lingering in default executor after shutdown. Wait time: {} {}",
+                        timeout, timeUnit);
+                result = false;
+            }
         }
-        final ScheduledExecutorService scheduler = injector.getInstance(Keys.DEFAULT_SCHEDULER_KEY);
-        if (!shutdownExecutor(scheduler, timeout, timeUnit)) {
-            LOG.warn("There are still active tasks lingering in default scheduler after shutdown. Wait time: {} {}",
-                    timeout, timeUnit);
-            result = false;
+        if (features.contains(Feature.SCHEDULE)) {
+            final ScheduledExecutorService scheduler = injector.getInstance(Keys.DEFAULT_SCHEDULER_KEY);
+            if (!shutdownExecutor(scheduler, timeout, timeUnit)) {
+                LOG.warn("There are still active tasks lingering in default scheduler after shutdown. Wait time: {} {}",
+                        timeout, timeUnit);
+                result = false;
+            }
         }
         return result;
     }

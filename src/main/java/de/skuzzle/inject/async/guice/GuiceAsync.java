@@ -33,7 +33,11 @@ import de.skuzzle.inject.async.schedule.annotation.Scheduled;
  *     }
  * }
  * </pre>
- *
+ * <p>
+ * You may choose to only enable scheduling OR async methods in case you do not need both.
+ * See {@link #enableFeaturesFor(Binder, Feature...)} and
+ * {@link #createModuleWithFeatures(Feature...)}.
+ * <p>
  * Please see the JavaDoc of the {@link Async} and {@link Scheduled} annotation for
  * further usage information.
  *
@@ -116,6 +120,13 @@ public final class GuiceAsync {
                 install(new ScheduleModule(principal));
             }
             bind(GuiceAsyncService.class).to(GuiceAsyncServiceImpl.class).in(Singleton.class);
+        }
+
+        @Provides
+        @Singleton
+        @DefaultBinding
+        Set<Feature> provideFeatures() {
+            return features;
         }
 
         @Provides

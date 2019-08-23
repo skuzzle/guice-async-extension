@@ -75,7 +75,7 @@ class ReScheduleRunnable implements Reschedulable {
         final ZonedDateTime currentExecution = currentExecutionTime();
 
         final long inaccuracy = ChronoUnit.MILLIS.between(currentExecution, now);
-        LOG.debug("cron scheduler inaccuracy: {} ms", inaccuracy);
+        LOG.trace("cron scheduler inaccuracy: {} ms", inaccuracy);
 
         final ZonedDateTime nextExecution = this.executionTime.nextExecution(currentExecution)
                 .orElseThrow(() -> new IllegalStateException("Could not determine next execution time"));
@@ -83,7 +83,7 @@ class ReScheduleRunnable implements Reschedulable {
         final long accurateDelay = inaccuratDelayUntilNextExecution - inaccuracy;
 
         expectNextExecutionAt(nextExecution);
-        LOG.debug("accurate/inaccurate delay until next execution: {}/{} ms (from '{}' to '{}')",
+        LOG.trace("accurate/inaccurate delay until next execution: {}/{} ms (from '{}' to '{}')",
                 accurateDelay, inaccuratDelayUntilNextExecution, currentExecution, nextExecution);
         return accurateDelay;
     }

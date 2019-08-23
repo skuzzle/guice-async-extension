@@ -76,10 +76,10 @@ class Reschedulable {
 
         final ZonedDateTime nextExecution = this.executionTime.nextExecution(currentExecution)
                 .orElseThrow(() -> new IllegalStateException("Could not determine next execution time"));
-        final long delayUntilNextExecution = ChronoUnit.MILLIS.between(currentExecution, nextExecution);
+        final long delayUntilNextExecution = ChronoUnit.MILLIS.between(currentExecution, nextExecution) - inaccuracy;
 
         expectNextExecutionAt(nextExecution);
-        LOG.trace("delay until next execution: {} ms (from '{}' to '{}')", delayUntilNextExecution, currentExecution,
+        LOG.info("delay until next execution: {} ms (from '{}' to '{}')", delayUntilNextExecution, currentExecution,
                 nextExecution);
         return delayUntilNextExecution;
     }

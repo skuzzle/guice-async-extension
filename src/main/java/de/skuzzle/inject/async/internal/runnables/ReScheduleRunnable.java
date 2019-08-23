@@ -69,21 +69,23 @@ class ReScheduleRunnable implements Reschedulable {
     }
 
     private synchronized long millisUntilNextExecution() {
-        // The base date from which the delay until the next execution will be calculated.
-        final ZonedDateTime currentExecution = currentExecutionTime();
         final ZonedDateTime now = ZonedDateTime.now();
 
+        // The base date from which the delay until the next execution will be calculated.
+        final ZonedDateTime currentExecution = currentExecutionTime();
+
         final long inaccuracy = ChronoUnit.MILLIS.between(currentExecution, now);
-        LOG.trace("cron scheduler inaccuracy: {} ms", inaccuracy);
+        LOG.info("cron scheduler inaccuracy: {} ms", inaccuracy);
 
         final ZonedDateTime nextExecution = this.executionTime.nextExecution(currentExecution)
                 .orElseThrow(() -> new IllegalStateException("Could not determine next execution time"));
-        final long delayUntilNextExecution = ChronoUnit.MILLIS.between(currentExecution, nextExecution);
+        final long inaccuratDelayUntilNextExecution = ChronoUnit.MILLIS.between(currentExecution, nextExecution);
+        final long accurateDelay = inaccuratDelayUntilNextExecution - inaccuracy;
 
         expectNextExecutionAt(nextExecution);
-        LOG.trace("delay until next execution: {} ms (from '{}' to '{}')", delayUntilNextExecution, currentExecution,
-                nextExecution);
-        return delayUntilNextExecution;
+        LOG.info("accurate/inaccurate delay until next execution: {}/{} ms (from '{}' to '{}')",
+                accurateDelay, inaccuratDelayUntilNextExecution, currentExecution, nextExecution);
+        return accurateDelay;
     }
 
     private ZonedDateTime currentExecutionTime() {

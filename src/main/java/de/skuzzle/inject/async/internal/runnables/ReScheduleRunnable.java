@@ -83,8 +83,8 @@ class ReScheduleRunnable implements Reschedulable {
         final long accurateDelay = inaccuratDelayUntilNextExecution - inaccuracy;
 
         expectNextExecutionAt(nextExecution);
-        LOG.trace("accurate/inaccurate delay until next execution: {}/{} ms (from '{}' to '{}')",
-                accurateDelay, inaccuratDelayUntilNextExecution, currentExecution, nextExecution);
+        LOG.trace("accurate delay until next execution: {} ms (from '{}' to '{}')",
+                accurateDelay, currentExecution, nextExecution);
         return accurateDelay;
     }
 

@@ -46,42 +46,47 @@ class Reschedulable {
 
     public void scheduleNextExecution() {
         LOG.debug("Scheduling next invocation of {}", invocation);
-
         final long delayUntilNextExecution = millisUntilNextExecution();
+        final LockableRunnable lockedRunnable = createRunnableForNextExecution();
 
         // This construct makes sure that the 'Future' that is obtained from scheduling
         // the task is published to the 'ScheduledContext' before the task is actually
         // executed.
-        final LockableRunnable locked = LockableRunnable.locked(() -> {
+        try {
+            final Future<?> future = this.executor.schedule(lockedRunnable, delayUntilNextExecution,
+                    TimeUnit.MILLISECONDS);
+            this.context.setFuture(future);
+        } finally {
+            lockedRunnable.release();
+        }
+    }
+
+    private LockableRunnable createRunnableForNextExecution() {
+        return LockableRunnable.locked(() -> {
             scheduleNextExecution();
             LOG.debug("Executing actual invocation: {}", invocation);
             this.invocation.run();
         });
-
-        try {
-            final Future<?> future = this.executor.schedule(locked, delayUntilNextExecution, TimeUnit.MILLISECONDS);
-            this.context.setFuture(future);
-        } finally {
-            locked.release();
-        }
     }
 
     private synchronized long millisUntilNextExecution() {
+        final ZonedDateTime now = ZonedDateTime.now();
+
         // The base date from which the delay until the next execution will be calculated.
         final ZonedDateTime currentExecution = currentExecutionTime();
-        final ZonedDateTime now = ZonedDateTime.now();
 
         final long inaccuracy = ChronoUnit.MILLIS.between(currentExecution, now);
         LOG.trace("cron scheduler inaccuracy: {} ms", inaccuracy);
 
         final ZonedDateTime nextExecution = this.executionTime.nextExecution(currentExecution)
                 .orElseThrow(() -> new IllegalStateException("Could not determine next execution time"));
-        final long delayUntilNextExecution = ChronoUnit.MILLIS.between(currentExecution, nextExecution) - inaccuracy;
+        final long inaccuratDelayUntilNextExecution = ChronoUnit.MILLIS.between(currentExecution, nextExecution);
+        final long accurateDelay = inaccuratDelayUntilNextExecution - inaccuracy;
 
         expectNextExecutionAt(nextExecution);
-        LOG.info("delay until next execution: {} ms (from '{}' to '{}')", delayUntilNextExecution, currentExecution,
-                nextExecution);
-        return delayUntilNextExecution;
+        LOG.trace("accurate delay until next execution: {} ms (from '{}' to '{}')",
+                accurateDelay, currentExecution, nextExecution);
+        return accurateDelay;
     }
 
     private ZonedDateTime currentExecutionTime() {

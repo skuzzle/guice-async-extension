@@ -87,10 +87,8 @@ public interface TriggerStrategy {
      *
      * @param context The schedule context for the annotated method.
      * @param executor The executor to use for scheduling.
-     * @param handler The exception handler to be used.
      * @param runnable A runnable that, when scheduled, will execute the annotated method.
      */
     void schedule(ScheduledContext context,
-            ScheduledExecutorService executor,
-            ExceptionHandler handler, LockableRunnable runnable);
+            ScheduledExecutorService executor, LockableRunnable runnable);
 }

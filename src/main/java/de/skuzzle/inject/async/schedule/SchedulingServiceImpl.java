@@ -64,7 +64,7 @@ class SchedulingServiceImpl implements SchedulingService {
         final ScheduledContextImpl context = new ScheduledContextImpl(method, self);
         final InjectedMethodInvocation invocation = InjectedMethodInvocation.forMethod(method, self, injector.get());
         final LockableRunnable runnable = Runnables.createLockedRunnableStack(invocation, context, handler);
-        strategy.schedule(context, scheduler, handler, runnable);
+        strategy.schedule(context, scheduler, runnable);
     }
 
 }

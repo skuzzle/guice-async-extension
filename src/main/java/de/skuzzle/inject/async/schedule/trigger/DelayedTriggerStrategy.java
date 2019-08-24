@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
-import de.skuzzle.inject.async.schedule.ExceptionHandler;
 import de.skuzzle.inject.async.schedule.LockableRunnable;
 import de.skuzzle.inject.async.schedule.ScheduledContext;
 import de.skuzzle.inject.async.schedule.TriggerStrategy;
@@ -26,8 +25,7 @@ public class DelayedTriggerStrategy implements TriggerStrategy {
     }
 
     @Override
-    public void schedule(ScheduledContext context, ScheduledExecutorService executor,
-            ExceptionHandler handler, LockableRunnable runnable) {
+    public void schedule(ScheduledContext context, ScheduledExecutorService executor, LockableRunnable runnable) {
         final Method method = context.getMethod();
 
         final DelayedTrigger trigger = method.getAnnotation(getTriggerType());

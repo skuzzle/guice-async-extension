@@ -6,7 +6,6 @@ import java.lang.reflect.Method;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
-import de.skuzzle.inject.async.schedule.ExceptionHandler;
 import de.skuzzle.inject.async.schedule.LockableRunnable;
 import de.skuzzle.inject.async.schedule.ScheduledContext;
 import de.skuzzle.inject.async.schedule.TriggerStrategy;
@@ -26,9 +25,7 @@ public class SimpleTriggerStrategy implements TriggerStrategy {
     }
 
     @Override
-    public void schedule(ScheduledContext context, ScheduledExecutorService executor,
-            ExceptionHandler handler, LockableRunnable runnable) {
-
+    public void schedule(ScheduledContext context, ScheduledExecutorService executor, LockableRunnable runnable) {
         final Method method = context.getMethod();
         final SimpleTrigger trigger = method.getAnnotation(getTriggerType());
         checkArgument(trigger != null, "Method '%s' not annotated with @SimpleTrigger",

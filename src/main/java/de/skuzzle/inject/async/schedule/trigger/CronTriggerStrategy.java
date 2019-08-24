@@ -14,7 +14,6 @@ import com.cronutils.model.definition.CronDefinitionBuilder;
 import com.cronutils.model.time.ExecutionTime;
 import com.cronutils.parser.CronParser;
 
-import de.skuzzle.inject.async.schedule.ExceptionHandler;
 import de.skuzzle.inject.async.schedule.LockableRunnable;
 import de.skuzzle.inject.async.schedule.ScheduledContext;
 import de.skuzzle.inject.async.schedule.TriggerStrategy;
@@ -36,10 +35,7 @@ public class CronTriggerStrategy implements TriggerStrategy {
     }
 
     @Override
-    public void schedule(ScheduledContext context,
-            ScheduledExecutorService executor,
-            ExceptionHandler handler, LockableRunnable runnable) {
-
+    public void schedule(ScheduledContext context, ScheduledExecutorService executor, LockableRunnable runnable) {
         final Method method = context.getMethod();
         final CronTrigger trigger = method.getAnnotation(getTriggerType());
         checkArgument(trigger != null, "Method '%s' not annotated with @CronTrigger",

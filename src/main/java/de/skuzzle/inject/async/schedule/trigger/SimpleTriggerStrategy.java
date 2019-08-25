@@ -3,7 +3,6 @@ package de.skuzzle.inject.async.schedule.trigger;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.lang.reflect.Method;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
 import de.skuzzle.inject.async.schedule.LockableRunnable;
@@ -32,13 +31,12 @@ public class SimpleTriggerStrategy implements TriggerStrategy {
                 method);
 
         try {
-            final Future<?> future = trigger.scheduleType().schedule(
+            context.updateFuture(() -> trigger.scheduleType().schedule(
                     executor,
                     runnable,
                     trigger.initialDelay(),
                     trigger.value(),
-                    trigger.timeUnit());
-            context.setFuture(future);
+                    trigger.timeUnit()));
         } finally {
             runnable.release();
         }

@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,33 +20,60 @@ class ScheduledContextImpl implements ScheduledContext {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScheduledContextImpl.class);
 
-    private final Object mutex;
+    // guards the creation of a new ExecutionContext
+    private final Object executionContextLock;
     private final Method method;
     private final Object self;
     private final Map<String, Object> beanMap;
     private final ThreadLocal<ExecutionContextImpl> execution;
     private volatile int executionCount;
+
+    private final Object futureLock;
     private volatile Future<?> future;
 
     public ScheduledContextImpl(Method method, Object self) {
         this.method = method;
         this.self = self;
-        this.mutex = new Object();
+        this.executionContextLock = new Object();
+        this.futureLock = new Object();
         this.beanMap = new HashMap<>();
         this.execution = new ThreadLocal<>();
     }
 
     @Override
     public void cancel(boolean mayInterrupt) {
-        checkFutureSet();
-        LOG.debug("Cancel called on ScheduledContext: {}", this);
-        this.future.cancel(mayInterrupt);
+        synchronized (futureLock) {
+            checkFutureSet();
+            LOG.debug("Cancel called on ScheduledContext: {}", this);
+            this.future.cancel(mayInterrupt);
+        }
     }
 
     @Override
     public boolean isCancelled() {
-        checkFutureSet();
-        return this.future.isCancelled();
+        synchronized (futureLock) {
+            checkFutureSet();
+            return this.future.isCancelled();
+        }
+    }
+
+    private void setFuture(Future<?> future) {
+        checkArgument(future != null, "future must not be null");
+        this.future = future;
+    }
+
+    @Override
+    public void updateFuture(Supplier<Future<?>> futureSupplier) {
+        checkArgument(futureSupplier != null, "futureSupplier must not be null");
+        synchronized (futureLock) {
+            setFuture(futureSupplier.get());
+        }
+    }
+
+    private void checkFutureSet() {
+        checkState(this.future != null, "setFuture has not been called. "
+                + "There might be something wrong with the TriggerStrategy"
+                + " implementation.");
     }
 
     @Override
@@ -58,18 +86,6 @@ class ScheduledContextImpl implements ScheduledContext {
         return this.self;
     }
 
-    @Override
-    public void setFuture(Future<?> future) {
-        checkArgument(future != null, "future must not be null");
-        this.future = future;
-    }
-
-    private void checkFutureSet() {
-        checkState(this.future != null, "setFuture has not been called. "
-                + "There might be something wrong with the TriggerStrategy"
-                + " implementation.");
-    }
-
     /**
      * Records the start of a new execution performed in the current thread. Opens up a
      * new {@link ExecutionContext} which will be attached to the current thread until
@@ -77,9 +93,9 @@ class ScheduledContextImpl implements ScheduledContext {
      *
      * @see ExecutionScope
      */
-    public void beginNewExecution() {
+    void beginNewExecution() {
         final ExecutionContextImpl executionContext;
-        synchronized (this.mutex) {
+        synchronized (this.executionContextLock) {
             executionContext = new ExecutionContextImpl(this.method,
                     this.executionCount++);
         }
@@ -94,7 +110,7 @@ class ScheduledContextImpl implements ScheduledContext {
      *
      * @see ExecutionScope
      */
-    public void finishExecution() {
+    void finishExecution() {
         ScheduledContextHolder.pop();
         final ExecutionContext activeContext = this.execution.get();
         checkState(activeContext != null, "there is no active ExecutionContext");

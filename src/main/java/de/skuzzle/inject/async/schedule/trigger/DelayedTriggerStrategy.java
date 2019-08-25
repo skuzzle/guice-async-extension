@@ -3,7 +3,6 @@ package de.skuzzle.inject.async.schedule.trigger;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.lang.reflect.Method;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 
 import de.skuzzle.inject.async.schedule.LockableRunnable;
@@ -33,9 +32,8 @@ public class DelayedTriggerStrategy implements TriggerStrategy {
                 method);
 
         try {
-            final Future<?> future = executor.schedule(runnable, trigger.value(),
-                    trigger.timeUnit());
-            context.setFuture(future);
+            context.updateFuture(() -> executor.schedule(runnable, trigger.value(),
+                    trigger.timeUnit()));
         } finally {
             runnable.release();
         }

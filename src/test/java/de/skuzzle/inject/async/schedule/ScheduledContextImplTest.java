@@ -14,10 +14,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.skuzzle.inject.async.schedule.ExecutionContext;
-import de.skuzzle.inject.async.schedule.ScheduledContextHolder;
-import de.skuzzle.inject.async.schedule.ScheduledContextImpl;
-
 public class ScheduledContextImplTest {
 
     private ScheduledContextImpl subject;
@@ -82,21 +78,16 @@ public class ScheduledContextImplTest {
     @Test
     public void testCancel() throws Exception {
         final Future<?> future = mock(Future.class);
-        this.subject.setFuture(future);
+        this.subject.updateFuture(() -> future);
         this.subject.cancel(true);
         verify(future).cancel(true);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testSetFutureNull() throws Exception {
-        this.subject.setFuture(null);
     }
 
     @Test
     public void testIsCancelled() throws Exception {
         final Future<?> future = mock(Future.class);
         when(future.isCancelled()).thenReturn(true);
-        this.subject.setFuture(future);
+        this.subject.updateFuture(() -> future);
         assertTrue(this.subject.isCancelled());
     }
 

@@ -3,6 +3,7 @@ package de.skuzzle.inject.async.schedule;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 import de.skuzzle.inject.async.schedule.annotation.ScheduledScope;
 
@@ -88,15 +89,15 @@ public interface ScheduledContext {
     void cancel(boolean mayInterrupt);
 
     /**
-     * Sets the Future object for controlling the scheduled task. Should only be called by
-     * {@link TriggerStrategy} implementations to make the context support the
+     * Atomically updates the Future object that represents the current scheduling. The
+     * future will be obtained by invoking the given supplier. This method should only be
+     * called by {@link TriggerStrategy} implementations to make the context support the
      * {@link #cancel(boolean)} method. If no Future object is set by the strategy,
      * canceling will not be possible.
      *
-     * @param future The Future object obtained from the scheduler.
-     * @since 0.4.0
+     * @param futureSupplier
      */
-    public void setFuture(Future<?> future);
+    void updateFuture(Supplier<Future<?>> futureSupplier);
 
     /**
      * Returns true if cancel has been called on this context.

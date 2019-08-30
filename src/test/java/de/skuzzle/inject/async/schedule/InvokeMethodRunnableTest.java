@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import de.skuzzle.inject.async.schedule.InvokeMethodRunnable;
-import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InvokeMethodRunnableTest {

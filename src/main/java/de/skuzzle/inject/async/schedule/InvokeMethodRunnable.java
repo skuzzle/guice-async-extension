@@ -10,8 +10,6 @@ import org.aopalliance.intercept.MethodInvocation;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Throwables;
 
-import de.skuzzle.inject.async.util.InjectedMethodInvocation;
-
 /**
  * Wraps a {@link MethodInvocation} in a {@link Runnable} to allow it to be scheduled with
  * a {@link ScheduledExecutorService}. When the resulting runnable is executed, it will

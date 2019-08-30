@@ -1,4 +1,4 @@
-package de.skuzzle.inject.async.util;
+package de.skuzzle.inject.async.schedule;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

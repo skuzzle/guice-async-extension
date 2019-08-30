@@ -14,12 +14,10 @@ import com.google.inject.Key;
 
 import de.skuzzle.inject.async.guice.Keys;
 import de.skuzzle.inject.async.schedule.annotation.Scheduled;
-import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 class SchedulingServiceImpl implements SchedulingService {
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(SchedulingServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SchedulingServiceImpl.class);
 
     private final Provider<Injector> injector;
     private final Provider<TriggerStrategyRegistry> registry;

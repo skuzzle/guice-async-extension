@@ -6,7 +6,6 @@ import java.util.ServiceLoader;
 import java.util.concurrent.ScheduledExecutorService;
 
 import de.skuzzle.inject.async.schedule.annotation.Trigger;
-import de.skuzzle.inject.async.util.InjectedMethodInvocation;
 
 /**
  * Defines how a certain {@link Trigger} annotation is handled in order to extract

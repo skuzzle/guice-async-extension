@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.MoreObjects;
 
-import de.skuzzle.inject.async.util.InjectedMethodInvocation;
-
 final class Runnables {
 
     /**

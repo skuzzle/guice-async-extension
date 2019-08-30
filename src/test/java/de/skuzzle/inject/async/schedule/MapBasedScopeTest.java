@@ -1,4 +1,4 @@
-package de.skuzzle.inject.async.util;
+package de.skuzzle.inject.async.schedule;
 
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -17,6 +17,8 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.internal.CircularDependencyProxy;
+
+import de.skuzzle.inject.async.schedule.MapBasedScope;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MapBasedScopeTest {

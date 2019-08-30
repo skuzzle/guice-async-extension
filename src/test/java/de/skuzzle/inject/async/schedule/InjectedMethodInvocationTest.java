@@ -1,4 +1,4 @@
-package de.skuzzle.inject.async.util;
+package de.skuzzle.inject.async.schedule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -13,6 +13,8 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
+
+import de.skuzzle.inject.async.schedule.InjectedMethodInvocation;
 
 public class InjectedMethodInvocationTest {
 

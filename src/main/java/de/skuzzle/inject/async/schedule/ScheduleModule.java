@@ -20,7 +20,6 @@ import de.skuzzle.inject.async.guice.DefaultBinding;
 import de.skuzzle.inject.async.guice.GuiceAsync;
 import de.skuzzle.inject.async.schedule.annotation.ExecutionScope;
 import de.skuzzle.inject.async.schedule.annotation.ScheduledScope;
-import de.skuzzle.inject.async.util.MapBasedScope;
 import de.skuzzle.inject.proxy.ScopedProxyBinder;
 
 /**

@@ -1,4 +1,4 @@
-package de.skuzzle.inject.async.util;
+package de.skuzzle.inject.async.schedule;
 
 import static com.google.common.base.Preconditions.checkArgument;
 

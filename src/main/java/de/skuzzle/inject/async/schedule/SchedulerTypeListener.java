@@ -13,8 +13,6 @@ import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
-import de.skuzzle.inject.async.util.MethodVisitor;
-
 class SchedulerTypeListener implements TypeListener {
 
     // synchronized in case the injector is set up asynchronously
@@ -51,8 +49,7 @@ class SchedulerTypeListener implements TypeListener {
         // ready. In the first case, we collect the types for later handling in second
         // case we can schedule them immediately
         if (this.injectorReady) {
-            MethodVisitor.forEachStaticMethod(type,
-                    this.schedulingService::scheduleStaticMethod);
+            MethodVisitor.forEachStaticMethod(type, this.schedulingService::scheduleStaticMethod);
         } else {
             this.scheduleStatics.add(type);
         }

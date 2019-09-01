@@ -38,8 +38,7 @@ public class CronTriggerStrategy implements TriggerStrategy {
     public void schedule(ScheduledContext context, ScheduledExecutorService executor, LockableRunnable runnable) {
         final Method method = context.getMethod();
         final CronTrigger trigger = method.getAnnotation(getTriggerType());
-        checkArgument(trigger != null, "Method '%s' not annotated with @CronTrigger",
-                method);
+        checkArgument(trigger != null, "Method '%s' not annotated with @CronTrigger", method);
 
         LOG.debug("Initially scheduling method '{}' on '{}' with trigger: {}", method, context.getSelf(), trigger);
         final CronType cronType = trigger.cronType();
@@ -48,7 +47,8 @@ public class CronTriggerStrategy implements TriggerStrategy {
         final Cron cron = parser.parse(trigger.value());
         final ExecutionTime execTime = ExecutionTime.forCron(cron);
 
-        CronScheduler.of(context, runnable.release(), executor, execTime)
+        CronScheduler
+                .createWith(context, runnable.release(), executor, execTime)
                 .start();
     }
 }

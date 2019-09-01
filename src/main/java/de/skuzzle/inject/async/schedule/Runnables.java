@@ -16,7 +16,7 @@ final class Runnables {
      * Creates a runnable that executes the given invocation in the scope of given context
      * and handles exceptions using the given handler.
      *
-     * The returned {@link LockableRunnable} will be locked by default AND MUST BU
+     * The returned {@link LockableRunnable} will be locked by default AND MUST BE
      * manually {@link LockableRunnable#release() unlocked} after scheduling it with the
      * {@link ScheduledExecutorService}.
      *
@@ -29,8 +29,7 @@ final class Runnables {
             ScheduledContextImpl context, ExceptionHandler handler) {
         return LatchLockableRunnable.locked(ScopedRunnable.of(
                 ExceptionHandlingRunnable.of(
-                        InvokeMethodRunnable.of(
-                                invocation),
+                        InvokeMethodRunnable.of(invocation),
                         handler),
                 context));
     }

@@ -47,7 +47,7 @@ class CronScheduler {
         this.executionTime = executionTime;
     }
 
-    static CronScheduler of(ScheduledContext context, Runnable invocation,
+    static CronScheduler createWith(ScheduledContext context, Runnable invocation,
             ScheduledExecutorService scheduler,
             ExecutionTime executionTime) {
         return new CronScheduler(context, invocation, scheduler, executionTime);

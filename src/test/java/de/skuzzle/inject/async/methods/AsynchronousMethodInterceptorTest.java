@@ -23,8 +23,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 
-import de.skuzzle.inject.async.methods.AsynchronousMethodInterceptor;
-
 @RunWith(MockitoJUnitRunner.class)
 public class AsynchronousMethodInterceptorTest {
 
@@ -42,10 +40,8 @@ public class AsynchronousMethodInterceptorTest {
 
     @Before
     public void setUp() throws Exception {
-        when(this.injector.getInstance(Mockito.any(Key.class)))
-                .thenReturn(this.executorService);
-        when(this.executorService.submit(Mockito.any(Callable.class)))
-                .thenReturn(this.future);
+        when(this.injector.getInstance(Mockito.any(Key.class))).thenReturn(this.executorService);
+        when(this.executorService.submit(Mockito.any(Callable.class))).thenReturn(this.future);
 
         when(this.future.get()).thenReturn("result");
     }

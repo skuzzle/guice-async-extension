@@ -43,16 +43,12 @@ class SchedulingServiceImpl implements SchedulingService {
             return;
         }
         final Annotation trigger = Annotations.findTriggerAnnotation(method);
-        LOG.trace("Method '{}' is elligible for scheduling. Trigger is: {}", method,
-                trigger);
+        LOG.trace("Method '{}' is elligible for scheduling. Trigger is: {}", method, trigger);
 
-        final Key<? extends ScheduledExecutorService> key = Keys.getSchedulerKey(
-                method);
-        final Key<? extends ExceptionHandler> handlerKey = Keys
-                .getExceptionHandler(method);
+        final Key<? extends ScheduledExecutorService> key = Keys.getSchedulerKey(method);
+        final Key<? extends ExceptionHandler> handlerKey = Keys.getExceptionHandler(method);
 
-        LOG.trace("Scheduler key is: {}, ExceptionHandler key is: {}", key,
-                handlerKey);
+        LOG.trace("Scheduler key is: {}, ExceptionHandler key is: {}", key, handlerKey);
         final ScheduledExecutorService scheduler = this.injector.get().getInstance(key);
         final ExceptionHandler handler = this.injector.get().getInstance(handlerKey);
 

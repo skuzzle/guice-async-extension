@@ -19,20 +19,24 @@ import com.google.inject.Guice;
 import com.google.inject.Provides;
 import com.google.inject.name.Names;
 
-import de.skuzzle.inject.async.annotation.CronTrigger;
-import de.skuzzle.inject.async.annotation.CronType;
-import de.skuzzle.inject.async.annotation.DelayedTrigger;
-import de.skuzzle.inject.async.annotation.ExecutionScope;
-import de.skuzzle.inject.async.annotation.OnError;
-import de.skuzzle.inject.async.annotation.Scheduled;
-import de.skuzzle.inject.async.annotation.ScheduledScope;
-import de.skuzzle.inject.async.annotation.Scheduler;
-import de.skuzzle.inject.async.annotation.SimpleTrigger;
+import de.skuzzle.inject.async.guice.GuiceAsync;
+import de.skuzzle.inject.async.schedule.ExceptionHandler;
+import de.skuzzle.inject.async.schedule.ExecutionContext;
+import de.skuzzle.inject.async.schedule.ScheduledContext;
+import de.skuzzle.inject.async.schedule.annotation.CronTrigger;
+import de.skuzzle.inject.async.schedule.annotation.CronType;
+import de.skuzzle.inject.async.schedule.annotation.DelayedTrigger;
+import de.skuzzle.inject.async.schedule.annotation.ExecutionScope;
+import de.skuzzle.inject.async.schedule.annotation.OnError;
+import de.skuzzle.inject.async.schedule.annotation.Scheduled;
+import de.skuzzle.inject.async.schedule.annotation.ScheduledScope;
+import de.skuzzle.inject.async.schedule.annotation.Scheduler;
+import de.skuzzle.inject.async.schedule.annotation.SimpleTrigger;
 
 public class ScheduledIT {
 
     static {
-        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
+        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "debug");
     }
 
     private static volatile CountDownLatch cronLatch = new CountDownLatch(2);
@@ -140,6 +144,7 @@ public class ScheduledIT {
             @Override
             protected void configure() {
                 GuiceAsync.enableFor(binder());
+
                 bind(TestExceptionHandler.class).asEagerSingleton();
                 bind(TypeWithScheduledMethods.class).asEagerSingleton();
                 bind(String.class).toInstance("foobar");

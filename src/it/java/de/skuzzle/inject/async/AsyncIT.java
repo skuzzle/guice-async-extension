@@ -22,8 +22,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Provides;
 
-import de.skuzzle.inject.async.annotation.Async;
-import de.skuzzle.inject.async.util.Futures;
+import de.skuzzle.inject.async.guice.GuiceAsync;
+import de.skuzzle.inject.async.guice.GuiceAsyncService;
+import de.skuzzle.inject.async.methods.Futures;
+import de.skuzzle.inject.async.methods.annotation.Async;
 
 public class AsyncIT {
 

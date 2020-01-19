@@ -8,6 +8,9 @@ import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
@@ -15,9 +18,10 @@ import com.google.inject.spi.TypeListener;
 
 class SchedulerTypeListener implements TypeListener {
 
+    private static final Logger LOG = LoggerFactory.getLogger(SchedulerTypeListener.class);
+
     // synchronized in case the injector is set up asynchronously
-    private List<Class<?>> scheduleStatics = Collections
-            .synchronizedList(new ArrayList<>());
+    private List<Class<?>> scheduleStatics = Collections.synchronizedList(new ArrayList<>());
     private volatile boolean injectorReady;
 
     private final SchedulingService schedulingService;
@@ -48,8 +52,10 @@ class SchedulerTypeListener implements TypeListener {
         // ready. In the first case, we collect the types for later handling in second
         // case we can schedule them immediately
         if (this.injectorReady) {
+            LOG.trace("Encountered type {} while Injector was ready", type);
             MethodVisitor.forEachStaticMethod(type, this.schedulingService::scheduleStaticMethod);
         } else {
+            LOG.trace("Encountered type {} while Injector was NOT ready", type);
             this.scheduleStatics.add(type);
         }
     }
@@ -59,9 +65,9 @@ class SchedulerTypeListener implements TypeListener {
 
             @Override
             public void afterInjection(I injectee) {
-                final Consumer<Method> action = method -> SchedulerTypeListener.this.schedulingService
-                        .scheduleMemberMethod(method, injectee);
-                MethodVisitor.forEachMemberMethod(injectee.getClass(), action);
+                final Consumer<Method> scheduleMemberMethod = method -> schedulingService.scheduleMemberMethod(method,
+                        injectee);
+                MethodVisitor.forEachMemberMethod(injectee.getClass(), scheduleMemberMethod);
             }
         });
     }

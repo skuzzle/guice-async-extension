@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import com.google.inject.Guice;
 
-import de.skuzzle.inject.async.guice.Feature;
+import de.skuzzle.inject.async.guice.DefaultFeatures;
 import de.skuzzle.inject.async.guice.GuiceAsync;
 import de.skuzzle.inject.async.schedule.ScheduledContext;
 import de.skuzzle.inject.async.schedule.annotation.CronTrigger;
@@ -29,7 +29,7 @@ public class CronTriggerTest {
             }
         };
 
-        Guice.createInjector(GuiceAsync.createModuleWithFeatures(Feature.SCHEDULE), methods);
+        Guice.createInjector(GuiceAsync.createModuleWithFeatures(DefaultFeatures.SCHEDULE), methods);
         methods.waitFor(methods.throwingException);
         methods.exceptionHandler.assertExceptionThrown(RuntimeException.class);
     }
@@ -45,7 +45,7 @@ public class CronTriggerTest {
             }
         };
 
-        Guice.createInjector(GuiceAsync.createModuleWithFeatures(Feature.SCHEDULE), methods);
+        Guice.createInjector(GuiceAsync.createModuleWithFeatures(DefaultFeatures.SCHEDULE), methods);
         methods.waitFor(methods.threeTimes);
     }
 
@@ -60,7 +60,7 @@ public class CronTriggerTest {
             }
         };
 
-        Guice.createInjector(GuiceAsync.createModuleWithFeatures(Feature.SCHEDULE), methods);
+        Guice.createInjector(GuiceAsync.createModuleWithFeatures(DefaultFeatures.SCHEDULE), methods);
         // because the second count down should never happen
         methods.expectTimeoutFor(methods.cancel);
     }

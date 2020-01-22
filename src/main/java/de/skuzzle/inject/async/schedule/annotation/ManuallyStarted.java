@@ -18,6 +18,4 @@ import de.skuzzle.inject.async.schedule.SchedulingService;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface ManuallyStarted {
-
-}
+public @interface ManuallyStarted {}

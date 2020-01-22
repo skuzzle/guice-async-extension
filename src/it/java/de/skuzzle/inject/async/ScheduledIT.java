@@ -20,6 +20,7 @@ import com.google.inject.Guice;
 import com.google.inject.Provides;
 import com.google.inject.name.Names;
 
+import de.skuzzle.inject.async.guice.DefaultFeatures;
 import de.skuzzle.inject.async.guice.GuiceAsync;
 import de.skuzzle.inject.async.schedule.ExceptionHandler;
 import de.skuzzle.inject.async.schedule.ExecutionContext;
@@ -158,7 +159,7 @@ public class ScheduledIT {
 
             @Override
             protected void configure() {
-                GuiceAsync.enableFor(binder());
+                GuiceAsync.enableFeaturesFor(binder(), DefaultFeatures.SCHEDULE);
 
                 bind(TestExceptionHandler.class).asEagerSingleton();
                 bind(TypeWithScheduledMethods.class).asEagerSingleton();

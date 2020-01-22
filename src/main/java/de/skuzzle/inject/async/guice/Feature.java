@@ -1,17 +1,37 @@
 package de.skuzzle.inject.async.guice;
 
-import de.skuzzle.inject.async.methods.annotation.Async;
-import de.skuzzle.inject.async.schedule.annotation.Scheduled;
+import java.util.concurrent.TimeUnit;
+
+import com.google.inject.Binder;
+import com.google.inject.Injector;
 
 /**
- * Supported features that can be passed when initializing the async/scheduling subsystem.
- * Each feature is self contained and has no dependence to other features being present.
+ * A stand alone feature that can be passed to {@link GuiceAsync}. Use
+ * {@link DefaultFeatures} or the dedicated {@link ScheduleFeature} which allows
+ * customization.
  *
  * @author Simon Taddiken
+ * @since 2.0.0
  */
-public enum Feature {
-    /** This feature enables handling of the {@link Async} annotation. */
-    ASYNC,
-    /** This feature enables handling of the {@link Scheduled} annotation. */
-    SCHEDULE
+public interface Feature {
+
+    /**
+     * Installs the modules relevant to this feature to the given {@link Binder}.
+     *
+     * @param binder The binder to install any required modules to.
+     * @param principal The {@link GuiceAsync} instance guarding the modules from
+     *            unintended instantiation.
+     */
+    void installModuleTo(Binder binder, GuiceAsync principal);
+
+    /**
+     * Makes sure to shutdown this feature's executor when
+     * {@link GuiceAsyncService#shutdown(long, TimeUnit)} is being called.
+     *
+     * @param injector The injector.
+     * @param timeout The time to wait for an orderly shutdown.
+     * @param timeUnit Unit for the timeout parameter.
+     * @return Whether the executor orderly shutdown within given time.
+     */
+    boolean cleanupExecutor(Injector injector, long timeout, TimeUnit timeUnit);
 }

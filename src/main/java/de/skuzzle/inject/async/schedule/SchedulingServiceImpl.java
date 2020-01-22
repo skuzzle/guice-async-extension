@@ -21,12 +21,14 @@ class SchedulingServiceImpl implements SchedulingService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SchedulingServiceImpl.class);
 
+    private final ScheduleProperties scheduleProperties;
     private final Provider<Injector> injector;
     private final Provider<TriggerStrategyRegistry> registry;
     private final Collection<ManuallyStarted> manuallyStarted;
 
-    SchedulingServiceImpl(Provider<Injector> injector,
+    SchedulingServiceImpl(ScheduleProperties scheduleProperties, Provider<Injector> injector,
             Provider<TriggerStrategyRegistry> registry) {
+        this.scheduleProperties = scheduleProperties;
         this.injector = injector;
         this.registry = registry;
         this.manuallyStarted = new ArrayList<>();
@@ -78,7 +80,8 @@ class SchedulingServiceImpl implements SchedulingService {
     }
 
     private boolean mustStartManually(Method method) {
-        return method.isAnnotationPresent(de.skuzzle.inject.async.schedule.annotation.ManuallyStarted.class);
+        return !this.scheduleProperties.isAutoSchedulingEnabled() ||
+                method.isAnnotationPresent(de.skuzzle.inject.async.schedule.annotation.ManuallyStarted.class);
     }
 
     private static class ManuallyStarted {

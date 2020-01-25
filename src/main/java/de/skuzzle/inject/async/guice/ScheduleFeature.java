@@ -26,6 +26,10 @@ public class ScheduleFeature implements Feature {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScheduleFeature.class);
 
+    /**
+     * The default instance. Enables the same behavior as
+     * {@link DefaultFeatures#SCHEDULE}.
+     */
     public static final ScheduleFeature DEFAULT = ScheduleFeature
             .withProperties(ScheduleProperties.defaultProperties());
 

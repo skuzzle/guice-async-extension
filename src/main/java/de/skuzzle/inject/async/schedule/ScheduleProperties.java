@@ -23,11 +23,6 @@ public final class ScheduleProperties {
         return new ScheduleProperties();
     }
 
-    public ScheduleProperties enableAutoScheduling() {
-        this.enableAutoScheduling = true;
-        return this;
-    }
-
     /**
      * Disables the behavior of automatic method scheduling. If automatic scheduling is
      * disabled, methods are only actually be scheduled with their

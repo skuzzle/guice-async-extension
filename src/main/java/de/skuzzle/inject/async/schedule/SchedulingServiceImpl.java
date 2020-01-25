@@ -46,8 +46,10 @@ class SchedulingServiceImpl implements SchedulingService {
 
     @Override
     public void startManualScheduling() {
-        manuallyStarted.forEach(ManuallyStarted::scheduleNow);
-        manuallyStarted.clear();
+        synchronized (manuallyStarted) {
+            manuallyStarted.forEach(ManuallyStarted::scheduleNow);
+            manuallyStarted.clear();
+        }
     }
 
     private void scheduleMethod(Method method, Object self) {

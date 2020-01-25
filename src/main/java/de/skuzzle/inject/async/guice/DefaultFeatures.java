@@ -1,7 +1,6 @@
 package de.skuzzle.inject.async.guice;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -12,8 +11,6 @@ import com.google.inject.Injector;
 
 import de.skuzzle.inject.async.methods.AsyncModule;
 import de.skuzzle.inject.async.methods.annotation.Async;
-import de.skuzzle.inject.async.schedule.ScheduleModule;
-import de.skuzzle.inject.async.schedule.ScheduleProperties;
 import de.skuzzle.inject.async.schedule.annotation.Scheduled;
 
 /**
@@ -26,6 +23,7 @@ import de.skuzzle.inject.async.schedule.annotation.Scheduled;
 public enum DefaultFeatures implements Feature {
     /** This feature enables handling of the {@link Async} annotation. */
     ASYNC {
+
         @Override
         public void installModuleTo(Binder binder, GuiceAsync principal) {
             binder.install(new AsyncModule(principal));
@@ -50,20 +48,12 @@ public enum DefaultFeatures implements Feature {
     SCHEDULE {
         @Override
         public void installModuleTo(Binder binder, GuiceAsync principal) {
-            binder.install(new ScheduleModule(
-                    principal,
-                    ScheduleProperties.defaultProperties()));
+            ScheduleFeature.DEFAULT.installModuleTo(binder, principal);
         }
 
         @Override
         public boolean cleanupExecutor(Injector injector, long timeout, TimeUnit timeUnit) {
-            final ScheduledExecutorService scheduler = injector.getInstance(Keys.DEFAULT_SCHEDULER_KEY);
-            if (!Shutdown.executor(scheduler, timeout, timeUnit)) {
-                LOG.warn("There are still active tasks lingering in default scheduler after shutdown. Wait time: {} {}",
-                        timeout, timeUnit);
-                return false;
-            }
-            return true;
+            return ScheduleFeature.DEFAULT.cleanupExecutor(injector, timeout, timeUnit);
         }
     };
 

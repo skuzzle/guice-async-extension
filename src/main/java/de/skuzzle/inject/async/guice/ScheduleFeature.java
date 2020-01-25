@@ -26,6 +26,9 @@ public class ScheduleFeature implements Feature {
 
     private static final Logger LOG = LoggerFactory.getLogger(ScheduleFeature.class);
 
+    public static final ScheduleFeature DEFAULT = ScheduleFeature
+            .withProperties(ScheduleProperties.defaultProperties());
+
     private final ScheduleProperties scheduleProperties;
 
     private ScheduleFeature(ScheduleProperties scheduleProperties) {

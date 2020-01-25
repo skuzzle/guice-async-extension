@@ -11,7 +11,7 @@
 
 	<groupId>de.skuzzle.inject</groupId>
 	<artifactId>guice-async-extension</artifactId>
-	<version>2.0.0-beta</version>
+	<version>2.0.1-beta-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Guice async extension</name>
@@ -34,7 +34,7 @@
 
 	<scm>
 		<developerConnection>scm:git:https://github.com/skuzzle/${github.name}.git</developerConnection>
-		<tag>v2.0.0-beta</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<dependencies>

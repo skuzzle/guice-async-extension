@@ -9,6 +9,14 @@
 Execute arbitrary methods asynchronously or periodically by marking them with an 
 annotation. Quickstart sample:
 
+Set up the `Injector`:
+
+```java
+    Injector injector = Guice.createInjector(GuiceAsync.createModule());
+```
+
+Use the Annotations:
+
 ```java
 public class MyService {
 

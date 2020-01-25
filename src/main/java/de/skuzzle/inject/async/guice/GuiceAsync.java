@@ -32,8 +32,8 @@ import de.skuzzle.inject.async.schedule.annotation.Scheduled;
  * </pre>
  * <p>
  * You may choose to only enable scheduling OR async methods in case you do not need both.
- * See {@link #enableFeaturesFor(Binder, DefaultFeatures...)} and
- * {@link #createModuleWithFeatures(DefaultFeatures...)}.
+ * See {@link #enableFeaturesFor(Binder, Feature...)} and
+ * {@link #createModuleWithFeatures(Feature...)}.
  * <p>
  * Please see the JavaDoc of the {@link Async} and {@link Scheduled} annotation for
  * further usage information.

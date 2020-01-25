@@ -36,6 +36,8 @@ public final class ScheduleModule extends AbstractModule {
      * class.
      *
      * @param principal Restricts construction, not allowed to be null.
+     * @param scheduleProperties Additional settings to be passed to the scheduling
+     *            features.
      */
     public ScheduleModule(GuiceAsync principal, ScheduleProperties scheduleProperties) {
         checkArgument(principal != null,

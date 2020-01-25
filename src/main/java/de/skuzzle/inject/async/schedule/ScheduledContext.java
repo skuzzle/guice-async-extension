@@ -95,7 +95,7 @@ public interface ScheduledContext {
      * {@link #cancel(boolean)} method. If no Future object is set by the strategy,
      * canceling will not be possible.
      *
-     * @param futureSupplier
+     * @param futureSupplier Supplies the future instance.
      */
     void updateFuture(Supplier<Future<?>> futureSupplier);
 

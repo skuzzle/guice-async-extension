@@ -2,6 +2,9 @@ package de.skuzzle.inject.async.schedule;
 
 import java.lang.reflect.Method;
 
+import com.google.inject.Injector;
+
+import de.skuzzle.inject.async.schedule.annotation.ManuallyStarted;
 import de.skuzzle.inject.async.schedule.annotation.Scheduled;
 
 /**
@@ -29,4 +32,13 @@ public interface SchedulingService {
      * @param method The method to schedule. Must be a static method.
      */
     void scheduleStaticMethod(Method method);
+
+    /**
+     * Schedules all encountered methods that are annotated with {@link ManuallyStarted}.
+     * This method should only be called once during the lifetime of your Guice
+     * {@link Injector}. Calling it multiple times will have no effect.
+     *
+     * @since 2.0.0
+     */
+    void startManualScheduling();
 }

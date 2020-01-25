@@ -95,8 +95,7 @@ public final class Keys {
             boolean typeGiven) {
 
         final Errors errors = new Errors(method);
-        final Annotation bindingAnnotation = Annotations.findBindingAnnotation(errors,
-                method, method.getAnnotations());
+        final Annotation bindingAnnotation = Annotations.findBindingAnnotation(errors, method, method.getAnnotations());
         errors.throwConfigurationExceptionIfErrorsExist();
         final Key<?> key;
         if (bindingAnnotation == null && typeGiven) {

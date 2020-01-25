@@ -2,6 +2,8 @@ package de.skuzzle.inject.async.schedule;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.inject.Provider;
@@ -19,13 +21,17 @@ class SchedulingServiceImpl implements SchedulingService {
 
     private static final Logger LOG = LoggerFactory.getLogger(SchedulingServiceImpl.class);
 
+    private final ScheduleProperties scheduleProperties;
     private final Provider<Injector> injector;
     private final Provider<TriggerStrategyRegistry> registry;
+    private final Collection<ManuallyStarted> manuallyStarted;
 
-    SchedulingServiceImpl(Provider<Injector> injector,
+    SchedulingServiceImpl(ScheduleProperties scheduleProperties, Provider<Injector> injector,
             Provider<TriggerStrategyRegistry> registry) {
+        this.scheduleProperties = scheduleProperties;
         this.injector = injector;
         this.registry = registry;
+        this.manuallyStarted = new ArrayList<>();
     }
 
     @Override
@@ -36,6 +42,14 @@ class SchedulingServiceImpl implements SchedulingService {
     @Override
     public void scheduleStaticMethod(Method method) {
         scheduleMethod(method, null);
+    }
+
+    @Override
+    public void startManualScheduling() {
+        synchronized (manuallyStarted) {
+            manuallyStarted.forEach(ManuallyStarted::scheduleNow);
+            manuallyStarted.clear();
+        }
     }
 
     private void scheduleMethod(Method method, Object self) {
@@ -58,7 +72,38 @@ class SchedulingServiceImpl implements SchedulingService {
         final ScheduledContextImpl context = new ScheduledContextImpl(method, self);
         final InjectedMethodInvocation invocation = InjectedMethodInvocation.forMethod(method, self, injector.get());
         final LockableRunnable runnable = Runnables.createLockedRunnableStack(invocation, context, handler);
-        strategy.schedule(context, scheduler, runnable);
+
+        if (mustStartManually(method)) {
+            LOG.debug("Method '{}' is marked to be scheduled manually", method);
+            this.manuallyStarted.add(new ManuallyStarted(context, scheduler, runnable, strategy));
+        } else {
+            strategy.schedule(context, scheduler, runnable);
+        }
+    }
+
+    private boolean mustStartManually(Method method) {
+        return !this.scheduleProperties.isAutoSchedulingEnabled() ||
+                method.isAnnotationPresent(de.skuzzle.inject.async.schedule.annotation.ManuallyStarted.class);
+    }
+
+    private static class ManuallyStarted {
+        private final ScheduledContext context;
+        private final ScheduledExecutorService scheduler;
+        private final LockableRunnable runnable;
+        private final TriggerStrategy strategy;
+
+        ManuallyStarted(ScheduledContext context, ScheduledExecutorService scheduler, LockableRunnable runnable,
+                TriggerStrategy strategy) {
+            this.context = context;
+            this.scheduler = scheduler;
+            this.runnable = runnable;
+            this.strategy = strategy;
+        }
+
+        public void scheduleNow() {
+            this.strategy.schedule(context, scheduler, runnable);
+        }
+
     }
 
 }

@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import com.google.inject.Guice;
 
-import de.skuzzle.inject.async.guice.Feature;
+import de.skuzzle.inject.async.guice.DefaultFeatures;
 import de.skuzzle.inject.async.guice.GuiceAsync;
 import de.skuzzle.inject.async.schedule.annotation.DelayedTrigger;
 import de.skuzzle.inject.async.schedule.annotation.OnError;
@@ -28,7 +28,7 @@ public class DelayTriggerTest {
             }
         };
 
-        Guice.createInjector(GuiceAsync.createModuleWithFeatures(Feature.SCHEDULE), methods);
+        Guice.createInjector(GuiceAsync.createModuleWithFeatures(DefaultFeatures.SCHEDULE), methods);
         methods.waitFor(methods.throwingException);
         methods.exceptionHandler.assertExceptionThrown(RuntimeException.class);
     }
@@ -44,7 +44,7 @@ public class DelayTriggerTest {
             }
         };
 
-        Guice.createInjector(GuiceAsync.createModuleWithFeatures(Feature.SCHEDULE), methods);
+        Guice.createInjector(GuiceAsync.createModuleWithFeatures(DefaultFeatures.SCHEDULE), methods);
         methods.expectTimeoutFor(methods.threeTimes);
     }
 

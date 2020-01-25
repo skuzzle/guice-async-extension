@@ -11,7 +11,7 @@ public class GuiceAsyncServiceImplTest {
 
     @Test
     public void testShutdownNotAllFeaturesEnabled() throws Exception {
-        final Injector injector = Guice.createInjector(GuiceAsync.createModuleWithFeatures(Feature.ASYNC));
+        final Injector injector = Guice.createInjector(GuiceAsync.createModuleWithFeatures(DefaultFeatures.ASYNC));
         final GuiceAsyncService asyncService = injector.getInstance(GuiceAsyncService.class);
         asyncService.shutdown(1, TimeUnit.SECONDS);
     }

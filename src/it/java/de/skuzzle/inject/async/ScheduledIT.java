@@ -1,6 +1,7 @@
 package de.skuzzle.inject.async;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -19,14 +20,17 @@ import com.google.inject.Guice;
 import com.google.inject.Provides;
 import com.google.inject.name.Names;
 
+import de.skuzzle.inject.async.guice.DefaultFeatures;
 import de.skuzzle.inject.async.guice.GuiceAsync;
 import de.skuzzle.inject.async.schedule.ExceptionHandler;
 import de.skuzzle.inject.async.schedule.ExecutionContext;
 import de.skuzzle.inject.async.schedule.ScheduledContext;
+import de.skuzzle.inject.async.schedule.SchedulingService;
 import de.skuzzle.inject.async.schedule.annotation.CronTrigger;
 import de.skuzzle.inject.async.schedule.annotation.CronType;
 import de.skuzzle.inject.async.schedule.annotation.DelayedTrigger;
 import de.skuzzle.inject.async.schedule.annotation.ExecutionScope;
+import de.skuzzle.inject.async.schedule.annotation.ManuallyStarted;
 import de.skuzzle.inject.async.schedule.annotation.OnError;
 import de.skuzzle.inject.async.schedule.annotation.Scheduled;
 import de.skuzzle.inject.async.schedule.annotation.ScheduledScope;
@@ -42,8 +46,10 @@ public class ScheduledIT {
     private static volatile CountDownLatch cronLatch = new CountDownLatch(2);
     private static volatile CountDownLatch simpleLatch = new CountDownLatch(2);
     private static volatile CountDownLatch delayedLatch = new CountDownLatch(2);
+    private static volatile CountDownLatch manualLatch = new CountDownLatch(2);
     private static volatile int counterSimpl;
     private static volatile int counterCron;
+    private static volatile int counterManual;
 
     public static class TypeWithScheduledMethods {
 
@@ -113,6 +119,14 @@ public class ScheduledIT {
             ++counterCron;
             ctx.cancel(false);
         }
+
+        @Scheduled
+        @SimpleTrigger(500)
+        @ManuallyStarted
+        public void testManual() {
+            ++counterManual;
+            manualLatch.countDown();
+        }
     }
 
     public static class SomeClass {
@@ -136,6 +150,8 @@ public class ScheduledIT {
 
     @Inject
     private TestExceptionHandler testExceptionHandler;
+    @Inject
+    private SchedulingService schedulingService;
 
     @Before
     public void setup() {
@@ -143,7 +159,7 @@ public class ScheduledIT {
 
             @Override
             protected void configure() {
-                GuiceAsync.enableFor(binder());
+                GuiceAsync.enableFeaturesFor(binder(), DefaultFeatures.SCHEDULE);
 
                 bind(TestExceptionHandler.class).asEagerSingleton();
                 bind(TypeWithScheduledMethods.class).asEagerSingleton();
@@ -181,5 +197,11 @@ public class ScheduledIT {
         assertEquals("cancel might not have worked if counter > 1", 1, counterSimpl);
         assertEquals("cancel might not have worked if counter > 1", 1, counterCron);
         assertEquals(1, this.testExceptionHandler.getCount());
+
+        assertEquals(0, counterManual);
+        schedulingService.startManualScheduling();
+        manualLatch.await();
+        assertTrue(counterManual > 0);
+
     }
 }

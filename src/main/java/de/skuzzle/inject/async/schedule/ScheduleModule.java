@@ -29,16 +29,23 @@ import de.skuzzle.inject.proxy.ScopedProxyBinder;
  */
 public final class ScheduleModule extends AbstractModule {
 
+    private final ScheduleProperties scheduleProperties;
+
     /**
      * This constructor is only allowed to be called from within the {@link GuiceAsync}
      * class.
      *
      * @param principal Restricts construction, not allowed to be null.
+     * @param scheduleProperties Additional settings to be passed to the scheduling
+     *            features.
      */
-    public ScheduleModule(GuiceAsync principal) {
+    public ScheduleModule(GuiceAsync principal, ScheduleProperties scheduleProperties) {
         checkArgument(principal != null,
                 "instantiating this module is not allowed. Use the class "
                         + "GuiceAsync to enable asynchronous method support.");
+
+        checkArgument(scheduleProperties != null, "scheduleProperties must not be null");
+        this.scheduleProperties = scheduleProperties;
     }
 
     @Override
@@ -48,19 +55,21 @@ public final class ScheduleModule extends AbstractModule {
                 .in(Singleton.class);
 
         final SchedulingService schedulingService = new SchedulingServiceImpl(
+                scheduleProperties,
                 getProvider(Injector.class),
                 getProvider(TriggerStrategyRegistry.class));
+        bind(SchedulingService.class).toInstance(schedulingService);
 
         final TypeListener scheduleListener = new SchedulerTypeListener(schedulingService);
-        bind(SchedulingService.class).toInstance(schedulingService);
         requestInjection(scheduleListener);
         bindListener(Matchers.any(), scheduleListener);
 
+        // Execution scope
         final Provider<Map<String, Object>> executionMap = () -> ScheduledContextHolder
                 .getContext().getExecution().getProperties();
-
         bindScope(ExecutionScope.class, MapBasedScope.withMapSupplier(executionMap));
 
+        // ScheduledScope
         final Provider<Map<String, Object>> scheduledMap = () -> ScheduledContextHolder
                 .getContext().getProperties();
         bindScope(ScheduledScope.class, MapBasedScope.withMapSupplier(scheduledMap));

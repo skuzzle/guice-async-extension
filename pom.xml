@@ -31,9 +31,6 @@
 		<site.name>guice-async-extension</site.name>
 		<github.name>guice-async-extension</github.name>
 
-		<surefire.useModulePath>false</surefire.useModulePath>
-		<failsafe.useModulePath>false</failsafe.useModulePath>
-
 		<skipIT>false</skipIT>
 	</properties>
 
@@ -123,53 +120,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<source>8</source>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<executions>
-					<execution>
-						<id>default-compile</id>
-						<configuration>
-							<release>9</release>
-						</configuration>
-					</execution>
-					<execution>
-						<id>default-testCompile</id>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-						<configuration>
-							<release>9</release>
-						</configuration>
-					</execution>
-					<execution>
-						<id>base-compile</id>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-						<configuration>
-							<excludes>
-								<exclude>module-info.java</exclude>
-							</excludes>
-						</configuration>
-					</execution>
-				</executions>
-				<configuration>
-					<jdkToolchain>
-						<version>9</version>
-					</jdkToolchain>
-					<release>8</release>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
